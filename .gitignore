@@ -1,0 +1,23 @@
+# ===== 資安邊界防護 / Security boundaries =====
+
+# 編譯產物（已不上傳；用 build-package.ps1 編譯）
+*.exe
+*.dll
+*.exe.config
+
+# WebView2 執行環境（~500MB，非原始碼）
+runtime/
+
+# WebView2 使用者資料（可能含 API key、cookies、瀏覽記錄）
+user_data/
+
+# 本機偵錯日誌（洩漏本機檔案路徑與帳號名稱）
+crash.log
+*.log
+
+# 分發/暫存檔
+*.zip
+dist/
+
+# 圖示以外的多餘二進位可自行加入
+# icon.ico 是原始資源，保留上傳
