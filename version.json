@@ -1,11 +1,11 @@
 {
-  "version": "2026.08.18",
-  "release_date": "2026-08-18",
-  "min_app_version": "2026.08.18",
+  "version": "2026.08.27",
+  "release_date": "2026-08-27",
+  "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復引導頁面 HTML 標籤顯示問題",
-    "en": "Fix guide page HTML tag rendering issue"
+    "zh-TW": "修復引導頁面 HTML 標籤顯示問題；新增自動更新機制與安裝引導程式",
+    "en": "Fix guide page HTML tag rendering; add auto-update mechanism and setup wizard"
   }
 }
