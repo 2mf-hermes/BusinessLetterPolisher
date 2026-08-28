@@ -1,11 +1,11 @@
 {
-  "version": "2026.08.28.2",
-  "release_date": "2026-08-28",
+  "version": "2026.08.29",
+  "release_date": "2026-08-29",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "補齊多國語言介面翻譯；範例信件會依目前選擇的信件語言產生，完整支援 34 種信件語言；修正更新檢查相關文案與顯示；版本更新至 2026.08.28.2。",
-    "en": "Complete missing multilingual UI translations; generate sample letters in the currently selected letter language with dedicated samples for all 34 supported letter languages; correct update-check messaging and display; update version to 2026.08.28.2."
+    "zh-TW": "改善自動更新流程：每次啟動自動檢查更新；發現新版本時在檢查更新按鈕顯示 NEW 徽章並改為下載並更新；下載完成後以更新引導關閉程式、套用更新並自動重新啟動。版本更新至 2026.08.29。",
+    "en": "Improve the automatic update flow: check for updates on every startup; show a NEW badge and change the update button to Download and Update when a newer version is available; after downloading, guide the user through closing the app, applying the update, and automatically relaunching. Update version to 2026.08.29."
   }
 }

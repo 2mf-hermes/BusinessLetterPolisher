@@ -165,9 +165,12 @@ class App : Form
             Directory.CreateDirectory(tempRoot);
             Directory.CreateDirectory(extractDir);
             Log("Downloading update: " + url);
+            MessageBox.Show("即將下載新版程式。下載完成後程式會自動關閉、套用更新並重新啟動。", "更新引導", MessageBoxButtons.OK, MessageBoxIcon.Information);
             using (var wc = new WebClient())
                 await wc.DownloadFileTaskAsync(new Uri(url), zipPath);
+            Log("Download completed: " + zipPath);
             ZipFile.ExtractToDirectory(zipPath, extractDir);
+            Log("Update package extracted: " + extractDir);
 
             string exeName = Path.GetFileName(Application.ExecutablePath);
             string script = "@echo off\r\n" +
@@ -183,7 +186,9 @@ class App : Form
                 "rmdir /s /q " + Quote(tempRoot) + "\r\n";
             File.WriteAllText(scriptPath, script, System.Text.Encoding.Default);
             Process.Start(new ProcessStartInfo(scriptPath) { UseShellExecute = true, WindowStyle = ProcessWindowStyle.Hidden });
-            Log("Update staged; exiting for replacement");
+            Log("Update staged; updater launched");
+            MessageBox.Show("新版已下載完成。按下確定後將關閉目前程式、完成更新，並自動重新啟動。", "準備更新", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Log("Exiting for replacement");
             Application.Exit();
         }
         catch (Exception ex)

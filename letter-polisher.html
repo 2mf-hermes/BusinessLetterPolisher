@@ -1120,42 +1120,42 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.08.28.2';
+var APP_VERSION='2026.08.29';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
-function checkForUpdate(){
+var availableUpdate=null;
+function isNewerVersion(version){
+  var remote=version.split('.').map(Number),local=APP_VERSION.split('.').map(Number);
+  for(var i=0;i<Math.max(remote.length,local.length);i++){
+    var r=remote[i]||0,l=local[i]||0;
+    if(r>l)return true;if(r<l)return false;
+  }
+  return false;
+}
+function renderUpdateButton(){
+  var btn=$('updBtn'),txt=$('updTxt');if(!btn||!txt)return;
+  btn.disabled=false;
+  txt.textContent=availableUpdate?(locale==='zh-TW'?'下載並更新':locale==='zh-CN'?'下载并更新':'Download and Update'):t('checkUpdate');
+  var badge=btn.querySelector('.update-new-badge');
+  if(availableUpdate&&!badge){badge=document.createElement('span');badge.className='update-new-badge';badge.textContent='NEW';badge.style.cssText='margin-left:7px;padding:1px 5px;border-radius:8px;background:#e5484d;color:#fff;font-size:9px;font-weight:700;line-height:14px;';btn.appendChild(badge);}
+  if(!availableUpdate&&badge)badge.remove();
+}
+function startAvailableUpdate(){
+  if(!availableUpdate||!availableUpdate.download_url)return;
+  var notes='';if(availableUpdate.release_notes)notes=availableUpdate.release_notes[locale]||availableUpdate.release_notes.en||'';
+  var msg=t('newVersion')+': '+availableUpdate.version;if(notes)msg+='\n\n'+notes;msg+='\n\n'+t('clickToDownload');
+  if(!confirm(msg))return;
+  if(window.chrome&&window.chrome.webview){window.chrome.webview.postMessage(JSON.stringify({type:'installUpdate',url:availableUpdate.download_url,version:availableUpdate.version}));toast(t('downloadingUpdate'));}
+  else window.open(availableUpdate.download_url,'_blank');
+}
+function checkForUpdate(background){
+  if(availableUpdate&&!background){startAvailableUpdate();return;}
   var btn=$('updBtn'),txt=$('updTxt');
-  if(btn){btn.disabled=true;if(txt)txt.textContent=t('checking');}
-  fetch(UPDATE_URL+'?_t='+Date.now()).then(function(r){return r.json();}).then(function(d){
-    if(btn){btn.disabled=false;if(txt)txt.textContent=t('checkUpdate');}
-    if(!d.version)return;
-    var remote=d.version.split('.').map(Number),local=APP_VERSION.split('.').map(Number);
-    var newer=false;
-    for(var i=0;i<Math.max(remote.length,local.length);i++){
-      var r=remote[i]||0,l=local[i]||0;
-      if(r>l){newer=true;break;}if(r<l)break;
-    }
-    if(newer){
-      var notes='';
-      if(d.release_notes){
-        notes=d.release_notes[locale]||d.release_notes.en||'';
-      }
-      var msg=t('newVersion')+': '+d.version;
-      if(notes)msg+='\n'+notes;
-      if(d.download_url){
-        msg+='\n\n'+t('clickToDownload');
-        if(confirm(msg)){
-          if(window.chrome&&window.chrome.webview){window.chrome.webview.postMessage(JSON.stringify({type:'installUpdate',url:d.download_url,version:d.version}));toast(t('downloadingUpdate'));}
-          else{window.open(d.download_url,'_blank');}
-        }
-      }else{
-        alert(msg);
-      }
-    }else{
-      toast(t('upToDate'));
-    }
+  if(!background&&btn){btn.disabled=true;if(txt)txt.textContent=t('checking');}
+  fetch(UPDATE_URL+'?_t='+Date.now()).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
+    availableUpdate=d.version&&isNewerVersion(d.version)?d:null;renderUpdateButton();
+    if(!background){if(availableUpdate)startAvailableUpdate();else toast(t('upToDate'));}
   }).catch(function(e){
-    if(btn){btn.disabled=false;if(txt)txt.textContent=t('checkUpdate');}
-    toast(t('updateFail'));
+    renderUpdateButton();if(!background)toast(t('updateFail'));
   });
 }
 /* ===== Init ===== */
@@ -1174,6 +1174,7 @@ window.addEventListener('DOMContentLoaded',function(){
   populateLangDropdowns();
   loadTheme();loadCfg();fillF();fillLetterOpts();loadLetterPrefMode();updCnt();loadH();applyI18n();applyGuideHTML();
   if(!localStorage.getItem('bp_guide_done'))openGuide();
+  setTimeout(function(){checkForUpdate(true);},800);
 });
 </script>
 </body>
