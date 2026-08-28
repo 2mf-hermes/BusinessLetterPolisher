@@ -1,11 +1,11 @@
 {
-  "version": "2026.08.27",
-  "release_date": "2026-08-27",
+  "version": "2026.08.28",
+  "release_date": "2026-08-28",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復引導頁面 HTML 標籤顯示問題；新增自動更新機制與安裝引導程式",
-    "en": "Fix guide page HTML tag rendering; add auto-update mechanism and setup wizard"
+    "zh-TW": "修正初始化順序；修正語言同步（zh-HK/zh-MO → zh-TW）；修正信件選項記憶與恢復；新增 30+ 語言動態下拉選單；新增 API Key 顯示／隱藏（眼睛按鈕）",
+    "en": "Fix init order; fix lang sync (zh-HK/zh-MO to zh-TW); fix letterOpts persist/restore; add 30+ language dropdowns; add API Key eye toggle"
   }
 }
