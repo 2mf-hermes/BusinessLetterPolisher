@@ -1,11 +1,11 @@
 {
-  "version": "2026.08.28.1",
+  "version": "2026.08.28.2",
   "release_date": "2026-08-28",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修正初始化順序；修正語言同步（zh-HK/zh-MO → zh-TW）；修正信件選項記憶與恢復；新增 30+ 語言動態下拉選單；新增 API Key 顯示／隱藏（眼睛按鈕）",
-    "en": "Fix init order; fix lang sync (zh-HK/zh-MO to zh-TW); fix letterOpts persist/restore; add 30+ language dropdowns; add API Key eye toggle"
+    "zh-TW": "補齊多國語言介面翻譯；範例信件會依目前選擇的信件語言產生，完整支援 34 種信件語言；修正更新檢查相關文案與顯示；版本更新至 2026.08.28.2。",
+    "en": "Complete missing multilingual UI translations; generate sample letters in the currently selected letter language with dedicated samples for all 34 supported letter languages; correct update-check messaging and display; update version to 2026.08.28.2."
   }
 }
