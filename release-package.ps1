@@ -74,7 +74,8 @@ if (Test-Path (Join-Path $srcDir "runtime")) {
 }
 $fullZip = Join-Path $distDir "BusinessLetterPolisher-full-$version.zip"
 if (Test-Path $fullZip) { Remove-Item $fullZip -Force }
-Compress-Archive -Path (Join-Path $fullStage "*") -DestinationPath $fullZip -Force
+tar.exe -a -c -f $fullZip -C $fullStage .
+if ($LASTEXITCODE -ne 0) { throw "Failed to create full release package: $fullZip" }
 Remove-Item $fullStage -Recurse -Force
 $fullMB = [math]::Round((Get-Item $fullZip).Length/1MB, 2)
 Write-Host ("  完成: $fullZip  ($fullMB MB)") -ForegroundColor Green
