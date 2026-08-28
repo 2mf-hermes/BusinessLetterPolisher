@@ -1,13 +1,17 @@
-# ============================================================
+﻿# ============================================================
 #  產出 GitHub Release 所需的兩個發行包
 #  精簡版: BusinessLetterPolisher.zip (不含 runtime，供 latest/download/)
-#  完整版: BusinessLetterPolisher-full-2026.08.27.zip (含 runtime)
+#  完整版: BusinessLetterPolisher-full-<version>.zip (含 runtime)
 # ============================================================
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $ErrorActionPreference = 'Stop'
 
-$version = "2026.08.27"
 $srcDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$versionFile = Join-Path $srcDir "version.json"
+if (-not (Test-Path $versionFile)) { throw "version.json not found: $versionFile" }
+$versionInfo = Get-Content -Raw -Encoding UTF8 $versionFile | ConvertFrom-Json
+$version = [string]$versionInfo.version
+if (-not $version -or $version.Trim().Length -eq 0) { throw "version.json does not contain a valid version" }
 $distDir = Join-Path (Split-Path -Parent $srcDir) "dist"
 New-Item -ItemType Directory -Path $distDir -Force | Out-Null
 

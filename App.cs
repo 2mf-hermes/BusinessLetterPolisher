@@ -1,6 +1,10 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
+using System.Net;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Web.WebView2.WinForms;
 
@@ -78,11 +82,23 @@ class App : Form
             wv.CoreWebView2.WebMessageReceived += (s, e2) =>
             {
                 Log("JS msg: " + e2.WebMessageAsJson);
+                try
+                {
+                    string json = e2.WebMessageAsJson;
+                    if (json.IndexOf("\"installUpdate\"", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        string url = ExtractJsonString(json, "url");
+                        if (!string.IsNullOrWhiteSpace(url))
+                            BeginInvoke(new Action(async () => await InstallUpdateAsync(url)));
+                    }
+                }
+                catch (Exception ex) { Log("WebMessage error: " + ex); }
             };
 
             wv.CoreWebView2.DOMContentLoaded += (s, e2) =>
             {
                 Log("DOMContentLoaded OK");
+                BeginInvoke(new Action(async () => await ResizeToContentAsync()));
             };
 
             string htmlPath = Path.Combine(exeDir, "letter-polisher.html");
@@ -109,6 +125,78 @@ class App : Form
                 "\u932f\u8aa4", MessageBoxButtons.OK, MessageBoxIcon.Error);
             Application.Exit();
         }
+    }
+
+    async Task ResizeToContentAsync()
+    {
+        try
+        {
+            string raw = await wv.CoreWebView2.ExecuteScriptAsync("Math.max(document.body.scrollHeight,document.documentElement.scrollHeight).toString()");
+            int contentHeight;
+            if (!int.TryParse(raw.Trim('"'), out contentHeight)) return;
+            Rectangle area = Screen.FromControl(this).WorkingArea;
+            int chrome = Math.Max(0, Height - ClientSize.Height);
+            int target = Math.Min(area.Height, Math.Max(MinimumSize.Height, contentHeight + chrome));
+            if (Height < target) Height = target;
+        }
+        catch (Exception ex) { Log("Auto resize error: " + ex.Message); }
+    }
+
+    static string ExtractJsonString(string json, string key)
+    {
+        string marker = "\"" + key + "\":\"";
+        int start = json.IndexOf(marker, StringComparison.OrdinalIgnoreCase);
+        if (start < 0) return null;
+        start += marker.Length;
+        int end = json.IndexOf('\"', start);
+        if (end < 0) return null;
+        return json.Substring(start, end - start).Replace("\\/", "/");
+    }
+
+    async Task InstallUpdateAsync(string url)
+    {
+        string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
+        string tempRoot = Path.Combine(Path.GetTempPath(), "BusinessLetterPolisherUpdate_" + Guid.NewGuid().ToString("N"));
+        string zipPath = Path.Combine(tempRoot, "update.zip");
+        string extractDir = Path.Combine(tempRoot, "payload");
+        string scriptPath = Path.Combine(tempRoot, "apply-update.cmd");
+        try
+        {
+            Directory.CreateDirectory(tempRoot);
+            Directory.CreateDirectory(extractDir);
+            Log("Downloading update: " + url);
+            using (var wc = new WebClient())
+                await wc.DownloadFileTaskAsync(new Uri(url), zipPath);
+            ZipFile.ExtractToDirectory(zipPath, extractDir);
+
+            string exeName = Path.GetFileName(Application.ExecutablePath);
+            string script = "@echo off\r\n" +
+                "setlocal\r\n" +
+                "set TARGET=" + Quote(exeDir) + "\r\n" +
+                "set SOURCE=" + Quote(extractDir) + "\r\n" +
+                "set PID=" + Process.GetCurrentProcess().Id + "\r\n" +
+                ":wait\r\n" +
+                "tasklist /FI \"PID eq %PID%\" 2>NUL | find \"%PID%\" >NUL\r\n" +
+                "if not errorlevel 1 (timeout /t 1 /nobreak >NUL & goto wait)\r\n" +
+                "robocopy \"%SOURCE%\" \"%TARGET%\" /E /R:3 /W:1 >NUL\r\n" +
+                "start \"\" \"%TARGET%\\" + exeName + "\"\r\n" +
+                "rmdir /s /q " + Quote(tempRoot) + "\r\n";
+            File.WriteAllText(scriptPath, script, System.Text.Encoding.Default);
+            Process.Start(new ProcessStartInfo(scriptPath) { UseShellExecute = true, WindowStyle = ProcessWindowStyle.Hidden });
+            Log("Update staged; exiting for replacement");
+            Application.Exit();
+        }
+        catch (Exception ex)
+        {
+            Log("Update failed: " + ex);
+            MessageBox.Show("更新失敗：" + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            try { if (Directory.Exists(tempRoot)) Directory.Delete(tempRoot, true); } catch { }
+        }
+    }
+
+    static string Quote(string value)
+    {
+        return "\"" + value.Replace("\"", "\"\"") + "\"";
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
