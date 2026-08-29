@@ -10,7 +10,7 @@
 
 ## 功能特色
 
-- **iOS 26 玻璃風格** — 優雅的毛玻璃介面，支援亮色 / 暗色模式切換
+- **玻璃質感風格** — 優雅的毛玻璃介面，支援亮色 / 暗色模式切換
 - **多語言介面** — 繁體中文、簡體中文、English，自動偵測系統語言
 - **各家 API** — OpenAI、Anthropic、Google Gemini、Groq、DeepSeek、自架 LLM
 - **API 格式** — OpenAI 相容 / Anthropic / Gemini

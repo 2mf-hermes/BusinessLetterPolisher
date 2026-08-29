@@ -6,7 +6,7 @@
 <title>商業信件潤飾工具 | Business Letter Polisher</title>
 <style>
 /* ============================================================
-   Apple Design System — iOS 26 / macOS 26 Glass Style
+   Modern Glass Design System
    ============================================================ */
 
 /* ===== Theme Tokens ===== */
@@ -19,7 +19,7 @@
   --bd:rgba(255,255,255,.08);--bdh:rgba(255,255,255,.14);
   /* Text */
   --tx:#F2F2F7;--tx2:#989BA0;--tx3:#63666A;
-  /* Accent — Apple system blue */
+  /* Accent — system blue */
   --ac:#0A84FF;--ac2:#409CFF;--acg:rgba(10,132,255,.12);
   --ac3:#5E5CE6;--ac-rg:10,132,255;
   /* Semantic */
@@ -28,7 +28,7 @@
   --sh:0 0 0 .5px rgba(0,0,0,.2),0 2px 8px rgba(0,0,0,.15),0 12px 40px rgba(0,0,0,.2);
   --sh-sm:0 0 0 .5px rgba(0,0,0,.15),0 1px 3px rgba(0,0,0,.1);
   --bl:blur(40px) saturate(1.8);
-  /* Radii — Apple system */
+  /* Radii — system */
   --r:16px;--r2:12px;--r3:10px;--rp:20px;
   /* Timing */
   --ease:cubic-bezier(.25,.1,.25,1);--spring:cubic-bezier(.34,1.56,.64,1);
@@ -49,14 +49,14 @@
 /* ===== Reset & Base ===== */
 *{box-sizing:border-box;margin:0;padding:0;}
 body{
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue","Noto Sans TC","Segoe UI",sans-serif;
+  font-family:"Segoe UI","Noto Sans TC","Helvetica Neue",sans-serif;
   background:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 40%,var(--bg3) 100%);
   background-attachment:fixed;color:var(--tx);line-height:1.5;
   min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
 }
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse 70% 50% at 50% -10%,var(--acg),transparent);pointer-events:none;z-index:0;}
 
-/* ===== Header — iOS navigation bar ===== */
+/* ===== Header — top navigation bar ===== */
 header{
   background:var(--sfh);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
   padding:0 24px;height:52px;display:flex;align-items:center;gap:12px;
@@ -72,7 +72,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .h-spacer{flex:1;}
 .h-ctrls{display:flex;align-items:center;gap:8px;}
 
-/* ===== Apple Custom Select / Menu ===== */
+/* ===== Custom Select / Menu ===== */
 .cs{position:relative;user-select:none;}
 .cs-btn{
   display:inline-flex;align-items:center;gap:5px;
@@ -90,7 +90,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .cs-arr{width:10px;height:10px;flex-shrink:0;color:var(--tx3);transition:transform .2s var(--spring);}
 .cs-btn.open .cs-arr{transform:rotate(180deg);}
 
-/* Dropdown panel — iOS popover glass */
+/* Dropdown panel — glass popover */
 .cs-dd{
   position:absolute;top:calc(100% + 5px);left:0;
   min-width:100%;width:fit-content;
@@ -104,7 +104,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .cs-dd-up{top:auto;bottom:calc(100% + 5px);transform:translateY(4px) scale(.98);}
 .cs-dd-up.open{transform:translateY(0) scale(1);}
 
-/* Options — iOS menu items */
+/* Options — menu items */
 .cs-opt{
   display:flex;align-items:center;justify-content:space-between;gap:8px;
   padding:8px 10px;border-radius:8px;font-size:13px;font-weight:400;
@@ -115,7 +115,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .cs-opt:hover{background:rgba(var(--ac-rg),.08);color:var(--tx);}
 .cs-opt.sel{color:var(--ac);font-weight:500;background:rgba(var(--ac-rg),.06);}
 .cs-opt:active{transform:scale(.98);transition-duration:.06s;}
-/* iOS-style checkmark indicator */
+/* Checkmark indicator */
 .cs-chk{font-size:14px;font-weight:600;color:var(--ac);width:18px;text-align:center;opacity:0;transition:opacity .15s;}
 .cs-opt.sel .cs-chk{opacity:1;}
 /* Hide legacy dot indicators */
@@ -130,7 +130,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 @media(max-width:860px){.row2{grid-template-columns:1fr;}}
 
-/* ===== Cards — Apple glass material ===== */
+/* ===== Cards — glass material ===== */
 .card{
   background:var(--sf);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
   border-radius:var(--r);box-shadow:var(--sh);
@@ -152,7 +152,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 }
 .card-t svg{width:15px;height:15px;opacity:.5;}
 
-/* ===== Form — Apple-style aligned grid ===== */
+/* ===== Form — aligned grid ===== */
 .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;margin-bottom:6px;}
 .opts-grid>.fg:has(#letterLangCS){order:1;}
 .opts-grid>.fg:has(#outLangCS){order:2;}
@@ -209,7 +209,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 [data-theme="light"] .ta.out{background:rgba(var(--ac-rg),.03);border-color:rgba(var(--ac-rg),.12);}
 .cnt{font-size:11px;color:var(--tx3);text-align:right;margin-top:4px;}
 
-/* ===== Buttons — Apple system style ===== */
+/* ===== Buttons — system style ===== */
 .btn{
   display:inline-flex;align-items:center;gap:6px;
   padding:8px 18px;border:none;border-radius:var(--rp);
@@ -221,7 +221,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .btn:disabled{opacity:.3;cursor:not-allowed;}
 .btn:active:not(:disabled){transform:scale(.96);transition-duration:.06s;}
 
-/* Primary — Apple blue pill */
+/* Primary — accent blue pill */
 .btn-p{
   background:var(--ac);color:#fff;
   background-image:linear-gradient(to bottom,rgba(255,255,255,.15),rgba(0,0,0,.08));
@@ -263,7 +263,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .sts.ok{background:rgba(48,209,88,.08);color:var(--ok);border:0.5px solid rgba(48,209,88,.12);}
 .sts.err{background:rgba(255,69,58,.08);color:var(--er);border:0.5px solid rgba(255,69,58,.12);}
 
-/* ===== Tabs — iOS segmented feel ===== */
+/* ===== Tabs — segmented feel ===== */
 .tabs{display:flex;gap:0;border-bottom:0.5px solid var(--bd);margin-bottom:14px;}
 .tab{
   padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;
@@ -301,7 +301,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 }
 .custom-prompt textarea::placeholder{color:var(--tx3);}
 
-/* ===== FABs — Apple-style floating action ===== */
+/* ===== FABs — floating action ===== */
 .fab{
   position:fixed;width:48px;height:48px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
@@ -335,7 +335,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 }
 .fab .bdg.off{display:none;}
 
-/* ===== Overlay + Panel — iOS sheet ===== */
+/* ===== Overlay + Panel — bottom sheet ===== */
 .ov{
   position:fixed;inset:0;background:rgba(0,0,0,.35);
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
@@ -532,7 +532,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
       <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 2l5 5-11 11H2v-5z"/><path d="M11 4l5 5"/></svg>
       <span data-i="inputTitle"></span>
     </div>
-    <!-- Apple-style 2×2 selector grid -->
+    <!-- 2×2 selector grid -->
     <div class="opts-grid">
       <!-- Row 1, Col 1: Language -->
       <div class="fg">
