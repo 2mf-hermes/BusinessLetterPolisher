@@ -85,19 +85,36 @@ class App : Form
             // Capture JS console errors
             wv.CoreWebView2.WebMessageReceived += (s, e2) =>
             {
-                Log("JS msg: " + e2.WebMessageAsJson);
+                string payload = ReadWebMessage(e2);
+                Log("JS msg: " + payload);
                 try
                 {
-                    string json = e2.WebMessageAsJson;
-                    if (json.IndexOf("\"installUpdate\"", StringComparison.OrdinalIgnoreCase) >= 0)
+                    if (payload != null &&
+                        payload.IndexOf("installUpdate", StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        string url = ExtractJsonString(json, "url");
+                        string url = ExtractJsonString(payload, "url");
+                        Log("installUpdate requested, url=" + (url ?? "<none>"));
+                        // Acknowledge immediately so the page knows the host is alive.
+                        ReportUpdate("preparing", -1, "");
                         if (!string.IsNullOrWhiteSpace(url))
                             BeginInvoke(new Action(async () => await InstallUpdateAsync(url)));
+                        else
+                        {
+                            Log("ERROR: no download url in message");
+                            ReportUpdate("error", 0, "\u66f4\u65b0\u7db2\u5740\u7121\u6cd5\u89e3\u6790");
+                        }
                     }
                 }
-                catch (Exception ex) { Log("WebMessage error: " + ex); }
+                catch (Exception ex)
+                {
+                    Log("WebMessage error: " + ex);
+                    ReportUpdate("error", 0, ex.Message);
+                }
             };
+
+            // Expose the flag before page scripts run, so it survives reloads too.
+            await wv.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(
+                "window.hostUpdateSupported=true;");
 
             wv.CoreWebView2.DOMContentLoaded += (s, e2) =>
             {
@@ -213,6 +230,64 @@ class App : Form
         }
         catch (Exception ex) { Log("Measure error: " + ex.Message); }
         return 0;
+    }
+
+    // The page posts a JSON *string* via chrome.webview.postMessage(JSON.stringify(...)).
+    // For a string message, WebMessageAsJson returns that string JSON-encoded again --
+    // quotes become \" and slashes \/ -- so matching against it fails. Prefer the raw
+    // string and fall back to unescaping the JSON form.
+    static string ReadWebMessage(Microsoft.Web.WebView2.Core.CoreWebView2WebMessageReceivedEventArgs e)
+    {
+        try
+        {
+            string s = e.TryGetWebMessageAsString();
+            if (!string.IsNullOrEmpty(s)) return s;
+        }
+        catch { }
+        try
+        {
+            string json = e.WebMessageAsJson;
+            if (string.IsNullOrEmpty(json)) return null;
+            if (json.Length >= 2 && json[0] == '"' && json[json.Length - 1] == '"')
+                return UnescapeJsonString(json.Substring(1, json.Length - 2));
+            return json;
+        }
+        catch { return null; }
+    }
+
+    static string UnescapeJsonString(string value)
+    {
+        var sb = new System.Text.StringBuilder(value.Length);
+        for (int i = 0; i < value.Length; i++)
+        {
+            char c = value[i];
+            if (c != '\\' || i + 1 >= value.Length) { sb.Append(c); continue; }
+            char n = value[++i];
+            switch (n)
+            {
+                case 'n': sb.Append('\n'); break;
+                case 'r': sb.Append('\r'); break;
+                case 't': sb.Append('\t'); break;
+                case 'b': sb.Append('\b'); break;
+                case 'f': sb.Append('\f'); break;
+                case 'u':
+                    if (i + 4 < value.Length)
+                    {
+                        int code;
+                        if (int.TryParse(value.Substring(i + 1, 4), System.Globalization.NumberStyles.HexNumber,
+                            System.Globalization.CultureInfo.InvariantCulture, out code))
+                        {
+                            sb.Append((char)code);
+                            i += 4;
+                            break;
+                        }
+                    }
+                    sb.Append(n);
+                    break;
+                default: sb.Append(n); break;
+            }
+        }
+        return sb.ToString();
     }
 
     static string ExtractJsonString(string json, string key)

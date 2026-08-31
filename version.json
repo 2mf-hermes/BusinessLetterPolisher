@@ -1,12 +1,12 @@
 {
-  "version": "2026.08.31.2",
-  "release_date": "2026-08-31",
+  "version": "2026.08.31.3",
+  "release_date": "2026-09-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "新增：開啟時自動偵測目前內容需要的尺寸並調整視窗大小。螢幕空間足夠時完整顯示不需捲動；空間不足時自動縮到螢幕可用範圍內，並確保視窗完整落在畫面中。修復：先前視窗固定 1200x800，在較小的螢幕上會超出畫面邊界。",
-    "zh-CN": "新增：打开时自动检测当前内容需要的尺寸并调整窗口大小。屏幕空间足够时完整显示无需滚动；空间不足时自动缩到屏幕可用范围内，并确保窗口完整落在画面中。修复：先前窗口固定 1200x800，在较小的屏幕上会超出画面边界。",
-    "en": "Added: the window now measures the page's natural content size on startup and fits itself to it. When the screen has room, everything is shown without scrolling; when it does not, the window is capped to the usable screen area and kept fully on screen. Fixed: the window was previously a fixed 1200x800 and could extend past the edges of smaller screens."
+    "zh-TW": "修復：更新流程卡在「準備中…」不再繼續。主程式收到更新要求時因訊息格式判讀錯誤而完全沒有觸發下載，現已修正，會依序進入下載、解壓縮、安裝、重新啟動。新增：更新逾時偵測，主程式沒有回應時直接顯示錯誤與後續處理方式，不再無限等待。新增：更新失敗畫面可直接手動下載。",
+    "zh-CN": "修复：更新流程卡在「准备中…」不再继续。主程序收到更新请求时因消息格式判读错误而完全没有触发下载，现已修正，会依序进入下载、解压缩、安装、重新启动。新增：更新超时检测，主程序没有响应时直接显示错误与后续处理方式，不再无限等待。新增：更新失败画面可直接手动下载。",
+    "en": "Fixed: the update flow stopped at \"Preparing…\" and never continued. The host misread the format of the update request message and therefore never started the download; it now proceeds through download, extract, install and restart. Added: an update timeout so an unresponsive host reports an error instead of waiting forever. Added: a manual download button on the failure screen."
   }
 }
