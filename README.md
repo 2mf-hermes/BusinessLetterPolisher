@@ -177,7 +177,7 @@ var UPDATE_URL='https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/v
 #### 5. 重新編譯 EXE
 
 ```powershell
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe /target:winexe /win32icon:icon.ico /out:商業信件潤飾工具.exe /reference:Microsoft.Web.WebView2.Core.dll /reference:Microsoft.Web.WebView2.WinForms.dll App.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /win32icon:icon.ico /out:商業信件潤飾工具.exe /reference:Microsoft.Web.WebView2.Core.dll /reference:Microsoft.Web.WebView2.WinForms.dll /reference:System.IO.Compression.dll /reference:System.IO.Compression.FileSystem.dll App.cs
 ```
 
 ### 版本號格式
@@ -226,8 +226,10 @@ C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe /target:winexe /win32icon:
 ### 主程式
 
 ```powershell
-C:\Windows\Microsoft.NET\Framework\v4.0.30319\csc.exe /target:winexe /win32icon:icon.ico /out:商業信件潤飾工具.exe /reference:Microsoft.Web.WebView2.Core.dll /reference:Microsoft.Web.WebView2.WinForms.dll App.cs
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /target:winexe /win32icon:icon.ico /out:商業信件潤飾工具.exe /reference:Microsoft.Web.WebView2.Core.dll /reference:Microsoft.Web.WebView2.WinForms.dll /reference:System.IO.Compression.dll /reference:System.IO.Compression.FileSystem.dll App.cs
 ```
+
+> 只要改過 `App.cs`（例如線上更新流程、下載進度回報），發行前**務必重新執行這個編譯指令**，否則打包出去的 exe 仍是舊的，線上更新會失效。
 
 ### 安裝精靈
 

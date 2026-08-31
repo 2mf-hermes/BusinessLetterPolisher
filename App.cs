@@ -13,6 +13,7 @@ class App : Form
     WebView2 wv;
     System.Windows.Forms.Timer initTimer;
     static string logPath;
+    bool updating;
 
     public App()
     {
@@ -98,6 +99,7 @@ class App : Form
             wv.CoreWebView2.DOMContentLoaded += (s, e2) =>
             {
                 Log("DOMContentLoaded OK");
+                RunScript("window.hostUpdateSupported=true;window.dispatchEvent(new Event('hostready'))");
                 BeginInvoke(new Action(async () => await ResizeToContentAsync()));
             };
 
@@ -155,48 +157,150 @@ class App : Form
 
     async Task InstallUpdateAsync(string url)
     {
+        if (updating) { Log("Update already in progress; ignored"); return; }
+        updating = true;
         string exeDir = Path.GetDirectoryName(Application.ExecutablePath);
         string tempRoot = Path.Combine(Path.GetTempPath(), "BusinessLetterPolisherUpdate_" + Guid.NewGuid().ToString("N"));
         string zipPath = Path.Combine(tempRoot, "update.zip");
         string extractDir = Path.Combine(tempRoot, "payload");
-        string scriptPath = Path.Combine(tempRoot, "apply-update.cmd");
+        string scriptPath = Path.Combine(Path.GetTempPath(), "apply-update-" + Guid.NewGuid().ToString("N") + ".cmd");
         try
         {
             Directory.CreateDirectory(tempRoot);
             Directory.CreateDirectory(extractDir);
             Log("Downloading update: " + url);
-            MessageBox.Show("即將下載新版程式。下載完成後程式會自動關閉、套用更新並重新啟動。", "更新引導", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            using (var wc = new WebClient())
-                await wc.DownloadFileTaskAsync(new Uri(url), zipPath);
-            Log("Download completed: " + zipPath);
+            ReportUpdate("downloading", 0, "");
+            await DownloadWithProgressAsync(url, zipPath);
+            Log("Download completed: " + zipPath + " bytes=" + new FileInfo(zipPath).Length);
+
+            ReportUpdate("extracting", 100, "");
             ZipFile.ExtractToDirectory(zipPath, extractDir);
             Log("Update package extracted: " + extractDir);
 
+            string payloadDir = ResolvePayloadRoot(extractDir);
+            Log("Payload root: " + payloadDir);
+
+            ReportUpdate("installing", 100, "");
             string exeName = Path.GetFileName(Application.ExecutablePath);
             string script = "@echo off\r\n" +
                 "setlocal\r\n" +
                 "set TARGET=" + Quote(exeDir) + "\r\n" +
-                "set SOURCE=" + Quote(extractDir) + "\r\n" +
+                "set SOURCE=" + Quote(payloadDir) + "\r\n" +
                 "set PID=" + Process.GetCurrentProcess().Id + "\r\n" +
                 ":wait\r\n" +
                 "tasklist /FI \"PID eq %PID%\" 2>NUL | find \"%PID%\" >NUL\r\n" +
                 "if not errorlevel 1 (timeout /t 1 /nobreak >NUL & goto wait)\r\n" +
-                "robocopy \"%SOURCE%\" \"%TARGET%\" /E /R:3 /W:1 >NUL\r\n" +
+                "robocopy \"%SOURCE%\" \"%TARGET%\" /E /R:3 /W:1 /XD user_data runtime >NUL\r\n" +
                 "start \"\" \"%TARGET%\\" + exeName + "\"\r\n" +
-                "rmdir /s /q " + Quote(tempRoot) + "\r\n";
+                "rmdir /s /q " + Quote(tempRoot) + "\r\n" +
+                "del /q \"%~f0\"\r\n";
             File.WriteAllText(scriptPath, script, System.Text.Encoding.Default);
             Process.Start(new ProcessStartInfo(scriptPath) { UseShellExecute = true, WindowStyle = ProcessWindowStyle.Hidden });
             Log("Update staged; updater launched");
-            MessageBox.Show("新版已下載完成。按下確定後將關閉目前程式、完成更新，並自動重新啟動。", "準備更新", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            ReportUpdate("restarting", 100, "");
+            await Task.Delay(1200);
             Log("Exiting for replacement");
             Application.Exit();
         }
         catch (Exception ex)
         {
+            updating = false;
             Log("Update failed: " + ex);
-            MessageBox.Show("更新失敗：" + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            ReportUpdate("error", 0, ex.Message);
             try { if (Directory.Exists(tempRoot)) Directory.Delete(tempRoot, true); } catch { }
+            try { if (File.Exists(scriptPath)) File.Delete(scriptPath); } catch { }
         }
+    }
+
+    // Streams the package to disk while reporting progress back to the page.
+    // Cache is bypassed so an updated asset is never served from a stale copy.
+    async Task DownloadWithProgressAsync(string url, string destPath)
+    {
+        try { ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | (SecurityProtocolType)768; }
+        catch { }
+        string requestUrl = url + (url.IndexOf('?') >= 0 ? "&" : "?") + "_ts=" + DateTime.UtcNow.Ticks;
+        var req = (HttpWebRequest)WebRequest.Create(requestUrl);
+        req.Method = "GET";
+        req.UserAgent = "BusinessLetterPolisher-Updater";
+        req.AllowAutoRedirect = true;
+        req.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+        req.Headers["Cache-Control"] = "no-cache";
+        req.Headers["Pragma"] = "no-cache";
+        req.Timeout = 60000;
+        req.ReadWriteTimeout = 120000;
+
+        using (var resp = (HttpWebResponse)await req.GetResponseAsync())
+        using (var input = resp.GetResponseStream())
+        using (var output = new FileStream(destPath, FileMode.Create, FileAccess.Write, FileShare.None, 81920))
+        {
+            long total = resp.ContentLength;
+            long done = 0;
+            int lastPct = -1;
+            var lastTick = DateTime.UtcNow;
+            byte[] buffer = new byte[81920];
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            {
+                await output.WriteAsync(buffer, 0, read);
+                done += read;
+                int pct = total > 0 ? (int)(done * 100 / total) : -1;
+                if (pct != lastPct || (DateTime.UtcNow - lastTick).TotalMilliseconds > 400)
+                {
+                    lastPct = pct;
+                    lastTick = DateTime.UtcNow;
+                    ReportUpdate("downloading", pct, FormatBytes(done) + (total > 0 ? " / " + FormatBytes(total) : ""));
+                }
+            }
+        }
+    }
+
+    // A release zip may wrap everything in a single top-level folder.
+    static string ResolvePayloadRoot(string extractDir)
+    {
+        var files = Directory.GetFiles(extractDir);
+        var dirs = Directory.GetDirectories(extractDir);
+        if (files.Length == 0 && dirs.Length == 1) return ResolvePayloadRoot(dirs[0]);
+        return extractDir;
+    }
+
+    static string FormatBytes(long bytes)
+    {
+        if (bytes >= 1048576) return (bytes / 1048576.0).ToString("0.0") + " MB";
+        if (bytes >= 1024) return (bytes / 1024.0).ToString("0") + " KB";
+        return bytes + " B";
+    }
+
+    void ReportUpdate(string state, int percent, string detail)
+    {
+        try
+        {
+            if (wv == null || wv.CoreWebView2 == null) return;
+            string script = "window.hostUpdateProgress&&window.hostUpdateProgress(" +
+                JsString(state) + "," + percent + "," + JsString(detail ?? "") + ")";
+            if (InvokeRequired) BeginInvoke(new Action(() => RunScript(script)));
+            else RunScript(script);
+        }
+        catch (Exception ex) { Log("ReportUpdate error: " + ex.Message); }
+    }
+
+    void RunScript(string script)
+    {
+        try { var ignored = wv.CoreWebView2.ExecuteScriptAsync(script); }
+        catch (Exception ex) { Log("RunScript error: " + ex.Message); }
+    }
+
+    static string JsString(string value)
+    {
+        var sb = new System.Text.StringBuilder("\"");
+        foreach (char c in value ?? "")
+        {
+            if (c == '"' || c == '\\') sb.Append('\\').Append(c);
+            else if (c == '\n') sb.Append("\\n");
+            else if (c == '\r') sb.Append("\\r");
+            else if (c < ' ') sb.Append("\\u").Append(((int)c).ToString("x4"));
+            else sb.Append(c);
+        }
+        return sb.Append('"').ToString();
     }
 
     static string Quote(string value)

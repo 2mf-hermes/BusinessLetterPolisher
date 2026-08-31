@@ -1,11 +1,11 @@
 {
-  "version": "2026.08.31",
+  "version": "2026.08.31.1",
   "release_date": "2026-08-31",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復「結果顯示語言」選擇簡體中文時仍輸出繁體中文的問題：語言指示改為明確語言全名並強制字體規範，且永遠附加在系統提示後（即使自訂系統提示也不會被覆蓋）。新增「原始信件語言地區」與「結果語言地區」兩個選單，分別告知 AI 原始信件的地區語言習慣，以及潤飾結果要採用的地區用字、拼寫、標點與商務書寫慣例；地區選項會依所選語言自動切換（如繁體中文可選台灣／香港／澳門，英文可選美／英／澳／加等），並隨個人偏好一起儲存。版本更新至 2026.08.31。",
-    "en": "Fix the bug where choosing Simplified Chinese as the output language still produced Traditional Chinese: language instructions now use explicit full language names with a hard character-set rule, and are always appended to the system prompt (so a custom system prompt can no longer drop them). Add two new selectors, Source Language Region and Output Language Region, telling the AI which regional conventions the original letter follows and which regional wording, spelling, punctuation and business-writing conventions the polished result should use. Region options switch automatically with the selected language (e.g. Taiwan/Hong Kong/Macau for Traditional Chinese, US/UK/AU/CA for English) and are saved with your letter preferences. Update version to 2026.08.31."
+    "zh-TW": "修復自動更新只停在「正在下載」、沒有進度、也不會安裝新版本的問題。原因是發行用的執行檔未隨更新程式碼一起重新編譯，宿主端根本沒有處理下載與安裝的程式。本版重新編譯執行檔，並新增：更新進度視窗（顯示下載百分比與已下載／總容量、解壓縮、安裝、重新啟動各階段）、下載改為串流並強制略過快取（避免抓到舊的安裝包）、自動辨識壓縮包內多一層資料夾的情況、套用更新時排除 user_data 與 runtime 以保留個人設定，失敗時直接在視窗顯示錯誤原因。注意：若您目前使用 2026.08.31 或更早版本，該版執行檔不含更新程式，請手動下載本版一次，之後即可正常自動更新。",
+    "en": "Fix the auto-update flow that stopped at \"Downloading\" with no progress and never installed the new version. The shipped executable had not been recompiled after the update logic was added, so the host had no handler for downloading or installing at all. This release recompiles the executable and adds: an update progress dialog (download percentage plus downloaded/total size, extract, install and restart stages), streamed downloads with caching explicitly bypassed so a stale package can no longer be served, automatic detection of an extra wrapper folder inside the release zip, and update application that skips user_data and runtime so personal settings survive; failures now show the reason in the dialog. Note: if you are on 2026.08.31 or earlier, that build contains no updater, so please download this version manually once — automatic updates work from then on."
   }
 }

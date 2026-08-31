@@ -497,6 +497,20 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 }
 .toast.show{opacity:1;transform:translateY(0) scale(1);}
 
+/* ===== Update Progress ===== */
+.upd-ov{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.upd-ov.open{display:flex;}
+.upd-card{width:min(380px,86vw);padding:22px 24px 20px;border-radius:var(--r);background:var(--sfh);border:0.5px solid var(--bd);box-shadow:var(--sh);color:var(--tx);}
+.upd-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.upd-state{font-size:12px;color:var(--tx2);margin-bottom:14px;min-height:16px;}
+.upd-bar{height:6px;border-radius:3px;background:var(--sfi);overflow:hidden;}
+.upd-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .2s var(--ease);}
+.upd-fill.indet{width:35%;animation:updSlide 1.1s var(--ease) infinite;}
+@keyframes updSlide{0%{margin-left:-35%;}100%{margin-left:100%;}}
+.upd-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:8px;}
+.upd-acts{margin-top:16px;display:none;justify-content:flex-end;}
+.upd-acts.show{display:flex;}
+
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -715,6 +729,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 <!-- Detail Modal -->
 <div class="mo" id="dMo" onclick="if(event.target===this)closeMo()"><div class="mo-c"><h3 data-i="detailTitle"></h3><div class="dt" id="dCont"></div><div class="btns"><button class="btn btn-s btn-sm" onclick="closeMo()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg><span data-i="close"></span></button><button class="btn btn-g btn-sm" onclick="cpDetail()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button></div></div></div>
 <div class="toast" id="toast"></div>
+<div class="upd-ov" id="updOv"><div class="upd-card"><div class="upd-title" id="updOvTitle"></div><div class="upd-state" id="updOvState"></div><div class="upd-bar"><div class="upd-fill" id="updOvFill"></div></div><div class="upd-meta"><span id="updOvDetail"></span><span id="updOvPct"></span></div><div class="upd-acts" id="updOvActs"><button class="btn btn-s btn-sm" type="button" onclick="closeUpdOv()"><span id="updOvCloseTxt"></span></button></div></div></div>
 
 <!-- Onboarding Guide -->
 <div class="guide-ov" id="guideOv">
@@ -812,7 +827,7 @@ langZhTW:'繁體中文',langZhCN:'簡體中文',langEn:'English',langJa:'日本�
 lblOutLang:'結果顯示語言',outLangAuto:'跟隨原始語言',
 lblSrcRegion:'原始信件語言地區',lblOutRegion:'結果語言地區',regionAuto:'不指定',
 letterPrefTitle:'原始信件選項喜好',letterPrefHint:'開啟後，每次啟動會套用已儲存的原始信件選項；關閉則沿用上次使用的設定。',letterPrefEnabled:'啟用固定喜好',letterPrefSave:'儲存目前選項為喜好',letterPrefReset:'還原預設選項',letterPrefSaved:'已儲存原始信件選項喜好',letterPrefResetDone:'已還原預設原始信件選項',guideSetupNow:'先選擇設定並保存',
-themeLight:'淺色模式',themeDark:'暗色模式',checking:'檢查中…',checkUpdate:'檢查更新',newVersion:'發現新版本',clickToDownload:'是否要立即下載並安裝更新？',downloadingUpdate:'正在下載更新…',upToDate:'目前已是最新版本',updateFail:'檢查更新失敗',
+themeLight:'淺色模式',themeDark:'暗色模式',checking:'檢查中…',checkUpdate:'檢查更新',newVersion:'發現新版本',clickToDownload:'是否要立即下載並安裝更新？',downloadingUpdate:'正在下載更新…',upToDate:'目前已是最新版本',updateFail:'檢查更新失敗',updTitle:'正在更新',updPreparing:'準備中…',updDownloading:'下載新版中…',updExtracting:'解壓縮中…',updInstalling:'安裝中…',updRestarting:'即將重新啟動…',updErrorTitle:'更新失敗',updClose:'關閉',
 placeholderIn:'在此貼上您的商業信件…',placeholderOut:'潤飾結果將顯示在此處…',
 placeholderCustomTone:'例如：語氣溫和但堅定，帶有同理心…',placeholderCustomPurp:'例如：邀請合作夥伴參加技術研討會…',
 placeholderPrompt:'例如：你是一位資深商務溝通顧問…',sugPlaceholder:'執行潤飾後，此處將顯示差異比較。',sugPlaceholder2:'執行潤飾後，此處將顯示修改建議。',guideW1Title:'歡迎使用商業信件潤飾工具',guideW1Desc:'本工具可協助您快速潤飾商業信件，提升專業度與溝通品質。',guideW1Sub:'支援 OpenAI、Anthropic、Gemini 等多家 API，無需安裝即可使用。',guideW2Title:'設定 API 連線',guideW2Desc:'使用前需設定 AI API 連線。點擊右下角齒輪按鈕可隨時修改。',guideW2Step1:'<b>選擇服務商</b> — 點擊「快速預設」選取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 從服務商官網取得您的專屬金鑰',guideW2Step3:'<b>測試連線</b> — 點擊「測試連線」確認設定正確',guideW3Title:'開始使用',guideW3Desc:'設定完成後，即可開始潤飾您的信件。',guideW3Step1:'<b>選擇設定</b> — 選擇信件語言、潤飾風格、用途與模式',guideW3Step2:'<b>貼上信件</b> — 將原始信件內容貼入下方文字框',guideW3Step3:'<b>點擊潤飾</b> — 按下「開始潤飾」按鈕',guideW3Step4:'<b>查看結果</b> — 潤飾結果將顯示在右側，可複製或下載',guideSkip:'跳過引導',guidePrev:'上一步',guideNext:'下一步',guideDone:'開始使用',guideReopen:'使用引導',checkUpdate:'檢查更新',checking:'檢查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'檢查更新失敗',clickToDownload:'按確定下載'
@@ -847,7 +862,7 @@ langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本�
 lblOutLang:'结果显示语言',outLangAuto:'跟随原始语言',
 lblSrcRegion:'原始信件语言地区',lblOutRegion:'结果语言地区',regionAuto:'不指定',
 letterPrefTitle:'原始信件选项偏好',letterPrefHint:'开启后，每次启动会套用已保存的原始信件选项；关闭则沿用上次使用的设置。',letterPrefEnabled:'启用固定偏好',letterPrefSave:'保存当前选项为偏好',letterPrefReset:'恢复默认选项',letterPrefSaved:'已保存原始信件选项偏好',letterPrefResetDone:'已恢复默认原始信件选项',guideSetupNow:'先选择设置并保存',
-themeLight:'浅色模式',themeDark:'暗色模式',checking:'检查中…',checkUpdate:'检查更新',newVersion:'发现新版本',clickToDownload:'是否要立即下载并安装更新？',downloadingUpdate:'正在下载更新…',upToDate:'当前已是最新版本',updateFail:'检查更新失败',
+themeLight:'浅色模式',themeDark:'暗色模式',checking:'检查中…',checkUpdate:'检查更新',newVersion:'发现新版本',clickToDownload:'是否要立即下载并安装更新？',downloadingUpdate:'正在下载更新…',upToDate:'当前已是最新版本',updateFail:'检查更新失败',updTitle:'正在更新',updPreparing:'准备中…',updDownloading:'下载新版中…',updExtracting:'解压缩中…',updInstalling:'安装中…',updRestarting:'即将重新启动…',updErrorTitle:'更新失败',updClose:'关闭',
 placeholderIn:'在此贴上您的商业信件…',placeholderOut:'润饰结果将显示在此处…',
 placeholderCustomTone:'例如：语气温和但坚定，带有同理心…',placeholderCustomPurp:'例如：邀请合作伙伴参加技术研讨会…',
 placeholderPrompt:'例如：你是一位资深商务沟通顾问…',sugPlaceholder:'执行润饰后，此处将显示差异比较。',sugPlaceholder2:'执行润饰后，此处将显示修改建议。',guideW1Title:'欢迎使用商业信件润饰工具',guideW1Desc:'本工具可协助您快速润饰商业信件，提升专业度与沟通质量。',guideW1Sub:'支挄 OpenAI、Anthropic、Gemini 等多家 API，无需安裝即可使用。',guideW2Title:'设置 API 连接',guideW2Desc:'使用前需设置 AI API 连接。点击右下角齿轮按钮可随时修改。',guideW2Step1:'<b>选择服务商</b> — 点击「快速预设」选取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 从服务商官网获取您的专属金钥',guideW2Step3:'<b>测试连接</b> — 点击「测试连接」确认设置正确',guideW3Title:'开始使用',guideW3Desc:'设置完成后，即可开始润饰您的信件。',guideW3Step1:'<b>选择设置</b> — 选择信件语言、润饰风格、用途与模式',guideW3Step2:'<b>贴上信件</b> — 将原始信件内容贴入下方文本框',guideW3Step3:'<b>点击润饰</b> — 按下「开始润饰」按钮',guideW3Step4:'<b>查看结果</b> — 润饰结果将显示在右侧，可复制或下载',guideSkip:'跳过引导',guidePrev:'上一步',guideNext:'下一步',guideDone:'开始使用',guideReopen:'使用引导',checkUpdate:'检查更新',checking:'检查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'检查更新失败',clickToDownload:'按确定下载'
@@ -880,7 +895,7 @@ purpGeneral:'General',purpProposal:'Proposal',purpFollowup:'Follow-up',purpThank
 purpComplaint:'Complaint',purpIntro:'Introduction',purpNegotiation:'Negotiation',purpResignation:'Resignation',purpApology:'Apology',purpAnnouncement:'Announcement',purpInvitation:'Invitation',purpFeedback:'Feedback',purpCustom:'Custom…',
 langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本語',
 letterPrefTitle:'Original Letter Preferences',letterPrefHint:'When enabled, saved original-letter choices are applied at every launch. When disabled, the last-used settings are kept.',letterPrefEnabled:'Use fixed preferences',letterPrefSave:'Save current choices as preferences',letterPrefReset:'Restore default choices',letterPrefSaved:'Original letter preferences saved',letterPrefResetDone:'Original letter preferences restored to defaults',guideSetupNow:'Choose settings and save first',
-themeLight:'Light Mode',themeDark:'Dark Mode',checking:'Checking…',checkUpdate:'Check for Updates',newVersion:'New version available',clickToDownload:'Download and install the update now?',downloadingUpdate:'Downloading update…',upToDate:'You are using the latest version',updateFail:'Update check failed',
+themeLight:'Light Mode',themeDark:'Dark Mode',checking:'Checking…',checkUpdate:'Check for Updates',newVersion:'New version available',clickToDownload:'Download and install the update now?',downloadingUpdate:'Downloading update…',upToDate:'You are using the latest version',updateFail:'Update check failed',updTitle:'Updating',updPreparing:'Preparing…',updDownloading:'Downloading new version…',updExtracting:'Extracting…',updInstalling:'Installing…',updRestarting:'Restarting shortly…',updErrorTitle:'Update failed',updClose:'Close',
 lblOutLang:'Output Language',outLangAuto:'Follow Original',
 lblSrcRegion:'Source Language Region',lblOutRegion:'Output Language Region',regionAuto:'Not specified',
 placeholderIn:'Paste your business letter here…',placeholderOut:'Polished result will appear here…',
@@ -1267,7 +1282,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.08.31';
+var APP_VERSION='2026.08.31.1';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
@@ -1291,7 +1306,10 @@ function startAvailableUpdate(){
   var notes='';if(availableUpdate.release_notes)notes=availableUpdate.release_notes[locale]||availableUpdate.release_notes.en||'';
   var msg=t('newVersion')+': '+availableUpdate.version;if(notes)msg+='\n\n'+notes;msg+='\n\n'+t('clickToDownload');
   if(!confirm(msg))return;
-  if(window.chrome&&window.chrome.webview){window.chrome.webview.postMessage(JSON.stringify({type:'installUpdate',url:availableUpdate.download_url,version:availableUpdate.version}));toast(t('downloadingUpdate'));}
+  if(window.chrome&&window.chrome.webview){
+    showUpdOv('preparing',-1,'');
+    window.chrome.webview.postMessage(JSON.stringify({type:'installUpdate',url:availableUpdate.download_url,version:availableUpdate.version}));
+  }
   else window.open(availableUpdate.download_url,'_blank');
 }
 function checkForUpdate(background){
@@ -1305,6 +1323,31 @@ function checkForUpdate(background){
     renderUpdateButton();if(!background)toast(t('updateFail'));
   });
 }
+/* ===== Update Progress UI ===== */
+var UPD_STATE_KEY={preparing:'updPreparing',downloading:'updDownloading',extracting:'updExtracting',installing:'updInstalling',restarting:'updRestarting'};
+function closeUpdOv(){var ov=$('updOv');if(ov)ov.classList.remove('open');}
+function showUpdOv(state,percent,detail){
+  var ov=$('updOv');if(!ov)return;
+  ov.classList.add('open');
+  var isErr=state==='error';
+  $('updOvTitle').textContent=isErr?t('updErrorTitle'):t('updTitle');
+  $('updOvState').textContent=isErr?(detail||t('updateFail')):t(UPD_STATE_KEY[state]||'updPreparing');
+  var fill=$('updOvFill'),pctEl=$('updOvPct'),detEl=$('updOvDetail');
+  if(isErr){fill.classList.remove('indet');fill.style.width='100%';fill.style.background='var(--er)';pctEl.textContent='';detEl.textContent='';}
+  else{
+    fill.style.background='';
+    if(typeof percent==='number'&&percent>=0){fill.classList.remove('indet');fill.style.width=Math.min(100,percent)+'%';pctEl.textContent=Math.min(100,percent)+'%';}
+    else{fill.classList.add('indet');fill.style.width='';pctEl.textContent='';}
+    detEl.textContent=detail||'';
+  }
+  var acts=$('updOvActs');$('updOvCloseTxt').textContent=t('updClose');
+  if(isErr)acts.classList.add('show');else acts.classList.remove('show');
+}
+/* Called from the WebView2 host during download/extract/install. */
+window.hostUpdateProgress=function(state,percent,detail){
+  try{showUpdOv(state,typeof percent==='number'?percent:-1,detail||'');}catch(e){}
+};
+
 /* ===== Init ===== */
 function applyGuideHTML(){
   var keys=['guideW2Step1','guideW2Step2','guideW2Step3','guideW3Step1','guideW3Step2','guideW3Step3','guideW3Step4'];
