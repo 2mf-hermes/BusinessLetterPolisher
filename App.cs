@@ -14,6 +14,7 @@ class App : Form
     System.Windows.Forms.Timer initTimer;
     static string logPath;
     bool updating;
+    bool autoFitDone;
 
     public App()
     {
@@ -33,9 +34,11 @@ class App : Form
         catch (Exception ex) { Log("Icon error: " + ex.Message); }
 
         this.Text = "\u5546\u696d\u4fe1\u4ef6\u6f64\u98fe\u5de5\u5177";
-        this.Size = new Size(1200, 800);
+        // Start from a preferred size, but never larger than the screen's usable area.
+        Rectangle startArea = Screen.PrimaryScreen.WorkingArea;
+        this.MinimumSize = new Size(Math.Min(800, startArea.Width), Math.Min(600, startArea.Height));
+        this.Size = new Size(Math.Min(1200, startArea.Width), Math.Min(800, startArea.Height));
         this.StartPosition = FormStartPosition.CenterScreen;
-        this.MinimumSize = new Size(800, 600);
 
         wv = new WebView2();
         wv.Dock = DockStyle.Fill;
@@ -129,19 +132,87 @@ class App : Form
         }
     }
 
+    // Fits the window to the page's natural content size on first load:
+    // if the screen has room, show everything; otherwise cap at the usable area.
     async Task ResizeToContentAsync()
+    {
+        if (autoFitDone) return;
+        try
+        {
+            // Give the page a moment to finish layout (fonts, custom dropdowns).
+            await Task.Delay(150);
+            if (wv == null || wv.CoreWebView2 == null) return;
+            autoFitDone = true;
+
+            double scale = 1.0;
+            using (var g = CreateGraphics()) scale = g.DpiX / 96.0;
+            if (scale <= 0) scale = 1.0;
+
+            Rectangle area = Screen.FromControl(this).WorkingArea;
+            int chromeW = Math.Max(0, Width - ClientSize.Width);
+            int chromeH = Math.Max(0, Height - ClientSize.Height);
+
+            // Step 1: the layout's natural width comes from the container's max-width
+            // plus its horizontal padding, since body.scrollWidth only ever reports
+            // the viewport width while the content still fits.
+            double idealCssW = await MeasureAsync(
+                "(function(){var w=document.querySelector('.wrap');" +
+                "if(!w)return document.documentElement.scrollWidth;" +
+                "var s=getComputedStyle(w);" +
+                "var mx=parseFloat(s.maxWidth);if(!isFinite(mx))mx=w.scrollWidth;" +
+                "var pad=parseFloat(s.paddingLeft)+parseFloat(s.paddingRight);" +
+                "return Math.ceil(Math.max(mx+pad,document.documentElement.scrollWidth));})()");
+
+            if (idealCssW > 0)
+            {
+                int wantW = (int)Math.Ceiling(idealCssW * scale) + chromeW;
+                int targetW = Math.Min(area.Width, Math.Max(MinimumSize.Width, wantW));
+                if (targetW != Width) Width = targetW;
+            }
+
+            // Step 2: height must be measured after the width settles, because a
+            // narrower window reflows the two-column rows into one.
+            await Task.Delay(120);
+            double cssH = await MeasureAsync(
+                "(function(){var b=document.body,e=document.documentElement;" +
+                "return Math.ceil(Math.max(b.scrollHeight,e.scrollHeight,b.offsetHeight,e.offsetHeight));})()");
+
+            if (cssH > 0)
+            {
+                int wantH = (int)Math.Ceiling(cssH * scale) + chromeH;
+                int targetH = Math.Min(area.Height, Math.Max(MinimumSize.Height, wantH));
+                if (targetH != Height) Height = targetH;
+
+                // Content taller than the screen keeps a vertical scrollbar; widen a
+                // little so it does not overlap the layout.
+                if (wantH > targetH && Width < area.Width)
+                    Width = Math.Min(area.Width, Width + SystemInformation.VerticalScrollBarWidth);
+            }
+
+            // Keep the window fully inside the usable area after resizing.
+            int left = Math.Max(area.Left, Math.Min(area.Left + (area.Width - Width) / 2, area.Right - Width));
+            int top = Math.Max(area.Top, Math.Min(area.Top + (area.Height - Height) / 2, area.Bottom - Height));
+            Location = new Point(left, top);
+
+            Log("Auto fit: window=" + Width + "x" + Height +
+                " screen=" + area.Width + "x" + area.Height +
+                " scale=" + scale.ToString("0.00"));
+        }
+        catch (Exception ex) { Log("Auto resize error: " + ex.Message); }
+    }
+
+    async Task<double> MeasureAsync(string script)
     {
         try
         {
-            string raw = await wv.CoreWebView2.ExecuteScriptAsync("Math.max(document.body.scrollHeight,document.documentElement.scrollHeight).toString()");
-            int contentHeight;
-            if (!int.TryParse(raw.Trim('"'), out contentHeight)) return;
-            Rectangle area = Screen.FromControl(this).WorkingArea;
-            int chrome = Math.Max(0, Height - ClientSize.Height);
-            int target = Math.Min(area.Height, Math.Max(MinimumSize.Height, contentHeight + chrome));
-            if (Height < target) Height = target;
+            string raw = await wv.CoreWebView2.ExecuteScriptAsync(script);
+            if (string.IsNullOrEmpty(raw)) return 0;
+            double value;
+            if (double.TryParse(raw.Trim('"'), System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out value)) return value;
         }
-        catch (Exception ex) { Log("Auto resize error: " + ex.Message); }
+        catch (Exception ex) { Log("Measure error: " + ex.Message); }
+        return 0;
     }
 
     static string ExtractJsonString(string json, string key)

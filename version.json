@@ -1,11 +1,12 @@
 {
-  "version": "2026.08.31.1",
+  "version": "2026.08.31.2",
   "release_date": "2026-08-31",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復自動更新只停在「正在下載」、沒有進度、也不會安裝新版本的問題。原因是發行用的執行檔未隨更新程式碼一起重新編譯，宿主端根本沒有處理下載與安裝的程式。本版重新編譯執行檔，並新增：更新進度視窗（顯示下載百分比與已下載／總容量、解壓縮、安裝、重新啟動各階段）、下載改為串流並強制略過快取（避免抓到舊的安裝包）、自動辨識壓縮包內多一層資料夾的情況、套用更新時排除 user_data 與 runtime 以保留個人設定，失敗時直接在視窗顯示錯誤原因。注意：若您目前使用 2026.08.31 或更早版本，該版執行檔不含更新程式，請手動下載本版一次，之後即可正常自動更新。",
-    "en": "Fix the auto-update flow that stopped at \"Downloading\" with no progress and never installed the new version. The shipped executable had not been recompiled after the update logic was added, so the host had no handler for downloading or installing at all. This release recompiles the executable and adds: an update progress dialog (download percentage plus downloaded/total size, extract, install and restart stages), streamed downloads with caching explicitly bypassed so a stale package can no longer be served, automatic detection of an extra wrapper folder inside the release zip, and update application that skips user_data and runtime so personal settings survive; failures now show the reason in the dialog. Note: if you are on 2026.08.31 or earlier, that build contains no updater, so please download this version manually once — automatic updates work from then on."
+    "zh-TW": "新增：開啟時自動偵測目前內容需要的尺寸並調整視窗大小。螢幕空間足夠時完整顯示不需捲動；空間不足時自動縮到螢幕可用範圍內，並確保視窗完整落在畫面中。修復：先前視窗固定 1200x800，在較小的螢幕上會超出畫面邊界。",
+    "zh-CN": "新增：打开时自动检测当前内容需要的尺寸并调整窗口大小。屏幕空间足够时完整显示无需滚动；空间不足时自动缩到屏幕可用范围内，并确保窗口完整落在画面中。修复：先前窗口固定 1200x800，在较小的屏幕上会超出画面边界。",
+    "en": "Added: the window now measures the page's natural content size on startup and fits itself to it. When the screen has room, everything is shown without scrolling; when it does not, the window is capped to the usable screen area and kept fully on screen. Fixed: the window was previously a fixed 1200x800 and could extend past the edges of smaller screens."
   }
 }
