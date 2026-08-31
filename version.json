@@ -1,11 +1,11 @@
 {
-  "version": "2026.08.29",
-  "release_date": "2026-08-29",
+  "version": "2026.08.31",
+  "release_date": "2026-08-31",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "改善自動更新流程：每次啟動自動檢查更新；發現新版本時在檢查更新按鈕顯示 NEW 徽章並改為下載並更新；下載完成後以更新引導關閉程式、套用更新並自動重新啟動。版本更新至 2026.08.29。",
-    "en": "Improve the automatic update flow: check for updates on every startup; show a NEW badge and change the update button to Download and Update when a newer version is available; after downloading, guide the user through closing the app, applying the update, and automatically relaunching. Update version to 2026.08.29."
+    "zh-TW": "修復「結果顯示語言」選擇簡體中文時仍輸出繁體中文的問題：語言指示改為明確語言全名並強制字體規範，且永遠附加在系統提示後（即使自訂系統提示也不會被覆蓋）。新增「原始信件語言地區」與「結果語言地區」兩個選單，分別告知 AI 原始信件的地區語言習慣，以及潤飾結果要採用的地區用字、拼寫、標點與商務書寫慣例；地區選項會依所選語言自動切換（如繁體中文可選台灣／香港／澳門，英文可選美／英／澳／加等），並隨個人偏好一起儲存。版本更新至 2026.08.31。",
+    "en": "Fix the bug where choosing Simplified Chinese as the output language still produced Traditional Chinese: language instructions now use explicit full language names with a hard character-set rule, and are always appended to the system prompt (so a custom system prompt can no longer drop them). Add two new selectors, Source Language Region and Output Language Region, telling the AI which regional conventions the original letter follows and which regional wording, spelling, punctuation and business-writing conventions the polished result should use. Region options switch automatically with the selected language (e.g. Taiwan/Hong Kong/Macau for Traditional Chinese, US/UK/AU/CA for English) and are saved with your letter preferences. Update version to 2026.08.31."
   }
 }

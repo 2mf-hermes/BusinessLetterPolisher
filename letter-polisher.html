@@ -156,10 +156,19 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;margin-bottom:6px;}
 .opts-grid>.fg:has(#letterLangCS){order:1;}
 .opts-grid>.fg:has(#outLangCS){order:2;}
-.opts-grid>.fg:has(#toneCS){order:3;}
-.opts-grid>.fg:has(#polishModeCS){order:4;}
-.opts-grid>.fg:has(#purposeCS){order:5;grid-column:1/-1;}
-@media(max-width:520px){.opts-grid{grid-template-columns:1fr;gap:10px;}.opts-grid>.fg:has(#purposeCS){grid-column:1;}}
+.opts-grid>.fg:has(#srcRegionCS){order:3;}
+.opts-grid>.fg:has(#outRegionCS){order:4;}
+.opts-grid>.fg:has(#toneCS){order:5;}
+.opts-grid>.fg:has(#polishModeCS){order:6;}
+.opts-grid>.fg:has(#purposeCS){order:7;grid-column:1/-1;}
+@media(max-width:520px){
+  .opts-grid{grid-template-columns:1fr;gap:10px;}
+  .opts-grid>.fg:has(#purposeCS){grid-column:1;}
+  /* single column: keep each region right under its own language */
+  .opts-grid>.fg:has(#srcRegionCS){order:2;}
+  .opts-grid>.fg:has(#outLangCS){order:3;}
+  .opts-grid>.fg:has(#outRegionCS){order:4;}
+}
 .fg{display:flex;flex-direction:column;gap:5px;}
 .fg>label{
   font-size:11px;font-weight:500;color:var(--tx2);letter-spacing:.3px;
@@ -631,6 +640,36 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
           <input type="hidden" id="outLang">
         </div>
       </div>
+      <!-- Source language region (optional) -->
+      <div class="fg">
+        <label data-i="lblSrcRegion"></label>
+        <div class="cs" id="srcRegionCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="regionAuto">不指定</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="srcRegionDD">
+            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LANG_REGIONS -->
+          </div>
+          <input type="hidden" id="srcRegion">
+        </div>
+      </div>
+      <!-- Output language region (optional) -->
+      <div class="fg">
+        <label data-i="lblOutRegion"></label>
+        <div class="cs" id="outRegionCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="regionAuto">不指定</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="outRegionDD">
+            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LANG_REGIONS -->
+          </div>
+          <input type="hidden" id="outRegion">
+        </div>
+      </div>
     </div>
     <!-- Custom inputs (hidden by default) -->
     <div class="cust" id="custTone"><label data-i="customToneLabel"></label><input type="text" id="customToneVal" placeholder=""><div class="cust-h" data-i="customToneHint"></div></div>
@@ -771,6 +810,7 @@ purpGeneral:'一般商業溝通',purpProposal:'合作提案',purpFollowup:'跟�
 purpComplaint:'投訴建議',purpIntro:'自我介紹',purpNegotiation:'價格談判',purpResignation:'離職通知',purpApology:'道歉致歉',purpAnnouncement:'公告通知',purpInvitation:'邀請合作',purpFeedback:'回饋評估',purpCustom:'自訂用途…',
 langZhTW:'繁體中文',langZhCN:'簡體中文',langEn:'English',langJa:'日本語',
 lblOutLang:'結果顯示語言',outLangAuto:'跟隨原始語言',
+lblSrcRegion:'原始信件語言地區',lblOutRegion:'結果語言地區',regionAuto:'不指定',
 letterPrefTitle:'原始信件選項喜好',letterPrefHint:'開啟後，每次啟動會套用已儲存的原始信件選項；關閉則沿用上次使用的設定。',letterPrefEnabled:'啟用固定喜好',letterPrefSave:'儲存目前選項為喜好',letterPrefReset:'還原預設選項',letterPrefSaved:'已儲存原始信件選項喜好',letterPrefResetDone:'已還原預設原始信件選項',guideSetupNow:'先選擇設定並保存',
 themeLight:'淺色模式',themeDark:'暗色模式',checking:'檢查中…',checkUpdate:'檢查更新',newVersion:'發現新版本',clickToDownload:'是否要立即下載並安裝更新？',downloadingUpdate:'正在下載更新…',upToDate:'目前已是最新版本',updateFail:'檢查更新失敗',
 placeholderIn:'在此貼上您的商業信件…',placeholderOut:'潤飾結果將顯示在此處…',
@@ -805,6 +845,7 @@ purpGeneral:'一般商业沟通',purpProposal:'合作提案',purpFollowup:'跟�
 purpComplaint:'投诉建议',purpIntro:'自我介绍',purpNegotiation:'价格谈判',purpResignation:'离职通知',purpApology:'道歉致歉',purpAnnouncement:'公告通知',purpInvitation:'邀请合作',purpFeedback:'反馈评估',purpCustom:'自订用途…',
 langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本語',
 lblOutLang:'结果显示语言',outLangAuto:'跟随原始语言',
+lblSrcRegion:'原始信件语言地区',lblOutRegion:'结果语言地区',regionAuto:'不指定',
 letterPrefTitle:'原始信件选项偏好',letterPrefHint:'开启后，每次启动会套用已保存的原始信件选项；关闭则沿用上次使用的设置。',letterPrefEnabled:'启用固定偏好',letterPrefSave:'保存当前选项为偏好',letterPrefReset:'恢复默认选项',letterPrefSaved:'已保存原始信件选项偏好',letterPrefResetDone:'已恢复默认原始信件选项',guideSetupNow:'先选择设置并保存',
 themeLight:'浅色模式',themeDark:'暗色模式',checking:'检查中…',checkUpdate:'检查更新',newVersion:'发现新版本',clickToDownload:'是否要立即下载并安装更新？',downloadingUpdate:'正在下载更新…',upToDate:'当前已是最新版本',updateFail:'检查更新失败',
 placeholderIn:'在此贴上您的商业信件…',placeholderOut:'润饰结果将显示在此处…',
@@ -841,6 +882,7 @@ langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本�
 letterPrefTitle:'Original Letter Preferences',letterPrefHint:'When enabled, saved original-letter choices are applied at every launch. When disabled, the last-used settings are kept.',letterPrefEnabled:'Use fixed preferences',letterPrefSave:'Save current choices as preferences',letterPrefReset:'Restore default choices',letterPrefSaved:'Original letter preferences saved',letterPrefResetDone:'Original letter preferences restored to defaults',guideSetupNow:'Choose settings and save first',
 themeLight:'Light Mode',themeDark:'Dark Mode',checking:'Checking…',checkUpdate:'Check for Updates',newVersion:'New version available',clickToDownload:'Download and install the update now?',downloadingUpdate:'Downloading update…',upToDate:'You are using the latest version',updateFail:'Update check failed',
 lblOutLang:'Output Language',outLangAuto:'Follow Original',
+lblSrcRegion:'Source Language Region',lblOutRegion:'Output Language Region',regionAuto:'Not specified',
 placeholderIn:'Paste your business letter here…',placeholderOut:'Polished result will appear here…',
 placeholderCustomTone:'e.g. Warm but firm, with empathy…',placeholderCustomPurp:'e.g. Invite partner to annual tech conference…',
 placeholderPrompt:'e.g. You are a senior business communication consultant…',sugPlaceholder:'Differences will appear here after polishing.',sugPlaceholder2:'Suggestions will appear here after polishing.',guideW1Title:'Welcome to Business Letter Polisher',guideW1Desc:'This tool helps you quickly polish business letters to improve professionalism and communication quality.',guideW1Sub:'Supports OpenAI, Anthropic, Gemini, and more. No installation required.',guideW2Title:'Set Up API Connection',guideW2Desc:'You need to configure an AI API connection before use. Click the gear button to modify anytime.',guideW2Step1:'<b>Choose Provider</b> — Click Quick Preset to select OpenAI, Anthropic, Gemini, etc.',guideW2Step2:'<b>Enter API Key</b> — Get your secret key from the provider\'s website',guideW2Step3:'<b>Test Connection</b> — Click Test Connection to verify settings',guideW3Title:'Start Using',guideW3Desc:'Once configured, you can start polishing your letters.',guideW3Step1:'<b>Select Settings</b> — Choose language, tone, purpose, and mode',guideW3Step2:'<b>Paste Letter</b> — Paste your original letter content into the text box',guideW3Step3:'<b>Click Polish</b> — Press the Start Polish button',guideW3Step4:'<b>View Results</b> — Results appear on the right, ready to copy or download',guideSkip:'Skip',guidePrev:'Back',guideNext:'Next',guideDone:'Get Started',guideReopen:'User Guide',checkUpdate:'Check for Update',checking:'Checking...',newVersion:'New version available',upToDate:'Up to date',updateFail:'Update check failed',clickToDownload:'Click OK to download',sugPlaceholder2:'Suggestions will appear here after polishing.'
@@ -862,6 +904,86 @@ var LETTER_LANGS=[
   {v:'he',label:'עברית'},{v:'uk',label:'Українська'},{v:'ro',label:'Română'},{v:'hu',label:'Magyar'},
   {v:'fa',label:'فارسی'},{v:'ur',label:'اردو'}
 ];
+/* Explicit language names for the AI prompt (never send i18n keys to the model) */
+var LANG_NAMES={
+  'en':'English','zh-TW':'Traditional Chinese (繁體中文)','zh-CN':'Simplified Chinese (简体中文)',
+  'ja':'Japanese (日本語)','ko':'Korean (한국어)','de':'German (Deutsch)','es':'Spanish (Español)',
+  'fr':'French (Français)','it':'Italian (Italiano)','pt':'Portuguese (Português)','ru':'Russian (Русский)',
+  'ar':'Arabic (العربية)','hi':'Hindi (हिन्दी)','bn':'Bengali (বাংলা)','th':'Thai (ไทย)',
+  'vi':'Vietnamese (Tiếng Việt)','id':'Indonesian (Bahasa Indonesia)','ms':'Malay (Bahasa Melayu)','fil':'Filipino',
+  'tr':'Turkish (Türkçe)','nl':'Dutch (Nederlands)','sv':'Swedish (Svenska)','da':'Danish (Dansk)','no':'Norwegian (Norsk)',
+  'fi':'Finnish (Suomi)','pl':'Polish (Polski)','cs':'Czech (Čeština)','el':'Greek (Ελληνικά)',
+  'he':'Hebrew (עברית)','uk':'Ukrainian (Українська)','ro':'Romanian (Română)','hu':'Hungarian (Magyar)',
+  'fa':'Persian (فارسی)','ur':'Urdu (اردو)'
+};
+/* Regional variants per language: label shown in UI, en sent to the AI */
+var LANG_REGIONS={
+  'zh-TW':[{v:'TW',label:'台灣 Taiwan',en:'Taiwan'},{v:'HK',label:'香港 Hong Kong',en:'Hong Kong'},{v:'MO',label:'澳門 Macau',en:'Macau'}],
+  'zh-CN':[{v:'CN',label:'中国大陆 Mainland China',en:'Mainland China'},{v:'SG',label:'新加坡 Singapore',en:'Singapore'},{v:'MY',label:'马来西亚 Malaysia',en:'Malaysia'}],
+  'en':[{v:'US',label:'United States',en:'the United States (American English)'},{v:'GB',label:'United Kingdom',en:'the United Kingdom (British English)'},{v:'AU',label:'Australia',en:'Australia (Australian English)'},{v:'CA',label:'Canada',en:'Canada (Canadian English)'},{v:'IE',label:'Ireland',en:'Ireland'},{v:'NZ',label:'New Zealand',en:'New Zealand'},{v:'SG',label:'Singapore',en:'Singapore'},{v:'IN',label:'India',en:'India (Indian English)'},{v:'HK',label:'Hong Kong',en:'Hong Kong'},{v:'ZA',label:'South Africa',en:'South Africa'}],
+  'ja':[{v:'JP',label:'日本 Japan',en:'Japan'}],
+  'ko':[{v:'KR',label:'대한민국 South Korea',en:'South Korea'}],
+  'de':[{v:'DE',label:'Deutschland',en:'Germany'},{v:'AT',label:'Österreich',en:'Austria'},{v:'CH',label:'Schweiz',en:'Switzerland'}],
+  'es':[{v:'ES',label:'España',en:'Spain (European Spanish)'},{v:'MX',label:'México',en:'Mexico'},{v:'AR',label:'Argentina',en:'Argentina'},{v:'CO',label:'Colombia',en:'Colombia'},{v:'CL',label:'Chile',en:'Chile'},{v:'US',label:'US Hispanic',en:'the United States (US Hispanic market)'}],
+  'fr':[{v:'FR',label:'France',en:'France'},{v:'CA',label:'Canada / Québec',en:'Canada (Quebec French)'},{v:'BE',label:'Belgique',en:'Belgium'},{v:'CH',label:'Suisse',en:'Switzerland'}],
+  'it':[{v:'IT',label:'Italia',en:'Italy'},{v:'CH',label:'Svizzera',en:'Switzerland'}],
+  'pt':[{v:'PT',label:'Portugal',en:'Portugal (European Portuguese)'},{v:'BR',label:'Brasil',en:'Brazil (Brazilian Portuguese)'}],
+  'ru':[{v:'RU',label:'Россия Russia',en:'Russia'}],
+  'ar':[{v:'MSA',label:'Modern Standard Arabic',en:'Modern Standard Arabic'},{v:'SA',label:'السعودية Saudi Arabia',en:'Saudi Arabia'},{v:'AE',label:'الإمارات UAE',en:'the United Arab Emirates'},{v:'EG',label:'مصر Egypt',en:'Egypt'},{v:'MA',label:'المغرب Morocco',en:'Morocco'}],
+  'hi':[{v:'IN',label:'भारत India',en:'India'}],
+  'bn':[{v:'BD',label:'বাংলাদেশ Bangladesh',en:'Bangladesh'},{v:'IN',label:'ভারত India (West Bengal)',en:'India (West Bengal)'}],
+  'th':[{v:'TH',label:'ไทย Thailand',en:'Thailand'}],
+  'vi':[{v:'VN',label:'Việt Nam',en:'Vietnam'}],
+  'id':[{v:'ID',label:'Indonesia',en:'Indonesia'}],
+  'ms':[{v:'MY',label:'Malaysia',en:'Malaysia'},{v:'SG',label:'Singapura',en:'Singapore'},{v:'BN',label:'Brunei',en:'Brunei'}],
+  'fil':[{v:'PH',label:'Philippines',en:'the Philippines'}],
+  'tr':[{v:'TR',label:'Türkiye',en:'Turkey'}],
+  'nl':[{v:'NL',label:'Nederland',en:'the Netherlands'},{v:'BE',label:'België / Vlaanderen',en:'Belgium (Flemish)'}],
+  'sv':[{v:'SE',label:'Sverige',en:'Sweden'},{v:'FI',label:'Finland',en:'Finland (Finland Swedish)'}],
+  'da':[{v:'DK',label:'Danmark',en:'Denmark'}],
+  'no':[{v:'NO',label:'Norge',en:'Norway'}],
+  'fi':[{v:'FI',label:'Suomi',en:'Finland'}],
+  'pl':[{v:'PL',label:'Polska',en:'Poland'}],
+  'cs':[{v:'CZ',label:'Česko',en:'Czechia'}],
+  'el':[{v:'GR',label:'Ελλάδα Greece',en:'Greece'},{v:'CY',label:'Κύπρος Cyprus',en:'Cyprus'}],
+  'he':[{v:'IL',label:'ישראל Israel',en:'Israel'}],
+  'uk':[{v:'UA',label:'Україна Ukraine',en:'Ukraine'}],
+  'ro':[{v:'RO',label:'România',en:'Romania'},{v:'MD',label:'Moldova',en:'Moldova'}],
+  'hu':[{v:'HU',label:'Magyarország',en:'Hungary'}],
+  'fa':[{v:'IR',label:'ایران Iran',en:'Iran'},{v:'AF',label:'افغانستان Afghanistan (Dari)',en:'Afghanistan (Dari)'}],
+  'ur':[{v:'PK',label:'پاکستان Pakistan',en:'Pakistan'},{v:'IN',label:'بھارت India',en:'India'}]
+};
+function langName(code){return LANG_NAMES[code]||code;}
+function regionInfo(langCode,regionVal){
+  if(!regionVal||regionVal==='auto')return null;
+  var list=LANG_REGIONS[langCode]||[];
+  for(var i=0;i<list.length;i++)if(list[i].v===regionVal)return list[i];
+  return null;
+}
+function populateRegionDD(ddId,hiddenId,langCode,want){
+  var dd=$(ddId),h=$(hiddenId);
+  if(!dd||!h)return;
+  var cur=want||h.value||'auto';
+  dd.querySelectorAll('.cs-opt').forEach(function(o){if(o.getAttribute('data-val')!=='auto')o.remove();});
+  (LANG_REGIONS[langCode]||[]).forEach(function(r){
+    var o=document.createElement('div');
+    o.className='cs-opt';
+    o.setAttribute('data-val',r.v);
+    o.setAttribute('onclick','csPick(this)');
+    o.innerHTML='<span>'+r.label+'</span><span class="cs-chk">\u2713</span>';
+    dd.appendChild(o);
+  });
+  h.value=dd.querySelector('.cs-opt[data-val="'+cur+'"]')?cur:'auto';
+}
+function outLangCode(){var o=v('outLang');return(!o||o==='auto')?v('letterLang'):o;}
+function refreshRegionDDs(want){
+  var w=want||{src:v('srcRegion'),out:v('outRegion')};
+  csSyncAll(); /* normalise letterLang/outLang first (hidden may hold a stale value) */
+  populateRegionDD('srcRegionDD','srcRegion',v('letterLang'),w.src);
+  populateRegionDD('outRegionDD','outRegion',outLangCode(),w.out);
+  LO.srcRegion=v('srcRegion');LO.outRegion=v('outRegion');
+  csSyncAll();
+}
 function populateLangDropdowns(){
   // letterLang dropdown (source language)
   var ll=$('letterLangDD');
@@ -894,7 +1016,7 @@ function populateLangDropdowns(){
 }
 
 var locale='en',DF={apiUrl:'',apiKey:'',modelName:'gpt-4o',temperature:0.7,apiFormat:'openai',customSystemPrompt:'',customTone:'',customPurpose:''},cfg=Object.assign({},DF),lastRes=null,H=[],tt=null;
-var LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto'};
+var LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};
 var PR={openai:{u:'https://api.openai.com/v1/chat/completions',m:'gpt-4o',f:'openai',k:'presetOpenAI'},anthropic:{u:'https://api.anthropic.com/v1/messages',m:'claude-sonnet-4-20250514',f:'anthropic',k:'presetAnthropic'},gemini:{u:'https://generativelanguage.googleapis.com/v1beta/models/GEMINI_MODEL:generateContent',m:'gemini-2.0-flash',f:'gemini',k:'presetGemini'},groq:{u:'https://api.groq.com/openai/v1/chat/completions',m:'llama-3.3-70b-versatile',f:'openai',k:'presetGroq'},deepseek:{u:'https://api.deepseek.com/chat/completions',m:'deepseek-chat',f:'openai',k:'presetDeepSeek'},'openai-compat':{u:'http://localhost:11434/v1/chat/completions',m:'llama3',f:'openai',k:'presetCompat'}};
 
 function t(k){return(T[locale]&&T[locale][k])||T.en[k]||k;}
@@ -912,24 +1034,32 @@ function csToggle(btn){
     dd.classList.add('open');btn.classList.add('open');
   }
 }
+function csLabel(opt){
+  var k=opt.getAttribute('data-i');
+  if(k){var s=t(k);if(s&&s!==k)return s;}
+  var sp=opt.querySelector('span:not(.cs-chk)');
+  if(sp)return sp.textContent;
+  return opt.textContent.replace('\u2713','').trim();
+}
 function csPick(opt){
   var cs=opt.closest('.cs'),h=cs.querySelector('input[type="hidden"]'),btn=cs.querySelector('.cs-btn');
   cs.querySelectorAll('.cs-opt').forEach(function(o){o.classList.remove('sel');});
   opt.classList.add('sel');h.value=opt.dataset.val;
-  var lbl=t(opt.getAttribute('data-i'))||opt.textContent;
-  btn.querySelector('.cs-txt').textContent=lbl;
+  btn.querySelector('.cs-txt').textContent=csLabel(opt);
   cs.querySelector('.cs-dd').classList.remove('open');btn.classList.remove('open');
   var dd=cs.querySelector('.cs-dd');dd.style.position='';dd.style.left='';dd.style.top='';dd.style.width='';dd.style.bottom='';
-  var id=h.id;if(id==='tone'){csLetterOptPick(id);}if(id==='purpose'){csLetterOptPick(id);}if(id==='letterLang'||id==='polishMode'||id==='outLang'){csLetterOptPick(id);}
+  var id=h.id;if(id==='tone'||id==='purpose'||id==='letterLang'||id==='polishMode'||id==='outLang'||id==='srcRegion'||id==='outRegion'){csLetterOptPick(id);}
 }
 function csLangPick(opt){csPick(opt);locale=opt.dataset.val;document.getElementById('langVal').value=locale;localStorage.setItem('bp_lang',locale);applyI18n();}
 function csLetterOptPick(id){
   var val=v(id);
-  if(id==='letterLang')LO.letterLang=val;
+  if(id==='letterLang'){LO.letterLang=val;refreshRegionDDs({src:'auto',out:(v('outLang')==='auto'?'auto':v('outRegion'))});}
   else if(id==='tone'){LO.tone=val;onToneCh();}
   else if(id==='purpose'){LO.purpose=val;onPurpCh();}
   else if(id==='polishMode')LO.polishMode=val;
-  else if(id==='outLang')LO.outLang=val;
+  else if(id==='outLang'){LO.outLang=val;refreshRegionDDs({src:v('srcRegion'),out:'auto'});}
+  else if(id==='srcRegion')LO.srcRegion=val;
+  else if(id==='outRegion')LO.outRegion=val;
   saveLetterOpts();
 }
 function csCloseAll(){
@@ -942,9 +1072,9 @@ function csSyncAll(){
     var val=h.value,txt=cs.querySelector('.cs-txt'),found=false;
     cs.querySelectorAll('.cs-opt').forEach(function(o){
       o.classList.remove('sel');
-      if(o.dataset.val===val){o.classList.add('sel');txt.textContent=t(o.getAttribute('data-i'))||o.textContent;found=true;}
+      if(o.dataset.val===val){o.classList.add('sel');txt.textContent=csLabel(o);found=true;}
     });
-    if(!found){var first=cs.querySelector('.cs-opt');if(first){first.classList.add('sel');txt.textContent=t(first.getAttribute('data-i'))||first.textContent;h.value=first.dataset.val;}}
+    if(!found){var first=cs.querySelector('.cs-opt');if(first){first.classList.add('sel');txt.textContent=csLabel(first);h.value=first.dataset.val;}}
   });
 }
 document.addEventListener('click',function(e){if(!e.target.closest('.cs'))csCloseAll();});
@@ -989,11 +1119,11 @@ function loadCfg(){var s=localStorage.getItem('bp_cfg');if(s)try{cfg=Object.assi
 function toggleApiKeyVisibility(){var inp=document.getElementById('apiKey');var svg=document.getElementById('apiKeyEyeIcon');if(inp.type==='password'){inp.type='text';svg.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0110 20c-5 0-9-7-9-7a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0110 4c5 0 9 7 9 7a18.5 18.5 0 01-2.16 3.19"/><path d="M1 1l18 18" stroke-linecap="round"/>';}else{inp.type='password';svg.innerHTML='<path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/>';}}
 function loadLetterOpts(){var s=localStorage.getItem('bp_letterOpts');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
 function saveLetterOpts(){localStorage.setItem('bp_letterOpts',JSON.stringify(LO));}
-function fillLetterOpts(){sV('letterLang',LO.letterLang);sV('tone',LO.tone);sV('purpose',LO.purpose);sV('polishMode',LO.polishMode);sV('outLang',LO.outLang);csSyncAll();onToneCh();onPurpCh();}
+function fillLetterOpts(){sV('letterLang',LO.letterLang);sV('tone',LO.tone);sV('purpose',LO.purpose);sV('polishMode',LO.polishMode);sV('outLang',LO.outLang);sV('srcRegion',LO.srcRegion||'auto');sV('outRegion',LO.outRegion||'auto');refreshRegionDDs({src:LO.srcRegion||'auto',out:LO.outRegion||'auto'});onToneCh();onPurpCh();}
 function loadLetterPrefMode(){var el=$('letterPrefEnabled');if(el)el.checked=localStorage.getItem('bp_letterPrefEnabled')==='1';}
 function saveLetterPrefMode(){var el=$('letterPrefEnabled');localStorage.setItem('bp_letterPrefEnabled',el&&el.checked?'1':'0');if(el&&el.checked)saveCurrentLetterPrefs();}
-function saveCurrentLetterPrefs(){LO={letterLang:v('letterLang'),tone:v('tone'),purpose:v('purpose'),polishMode:v('polishMode'),outLang:v('outLang')};localStorage.setItem('bp_letterPrefs',JSON.stringify(LO));localStorage.setItem('bp_letterPrefEnabled','1');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=true;saveLetterOpts();toast(t('letterPrefSaved'));}
-function restoreDefaultLetterPrefs(){LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto'};localStorage.removeItem('bp_letterPrefs');localStorage.setItem('bp_letterPrefEnabled','0');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=false;fillLetterOpts();saveLetterOpts();toast(t('letterPrefResetDone'));}
+function saveCurrentLetterPrefs(){LO={letterLang:v('letterLang'),tone:v('tone'),purpose:v('purpose'),polishMode:v('polishMode'),outLang:v('outLang'),srcRegion:v('srcRegion'),outRegion:v('outRegion')};localStorage.setItem('bp_letterPrefs',JSON.stringify(LO));localStorage.setItem('bp_letterPrefEnabled','1');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=true;saveLetterOpts();toast(t('letterPrefSaved'));}
+function restoreDefaultLetterPrefs(){LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};localStorage.removeItem('bp_letterPrefs');localStorage.setItem('bp_letterPrefEnabled','0');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=false;fillLetterOpts();saveLetterOpts();toast(t('letterPrefResetDone'));}
 function applySavedLetterPrefs(){if(localStorage.getItem('bp_letterPrefEnabled')!=='1')return;var s=localStorage.getItem('bp_letterPrefs');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
 function saveCfg(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' ✓');}
 function autoSave(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));}
@@ -1026,13 +1156,30 @@ async function go(){
   var lang=v('letterLang'),outLang=v('outLang'),tone=v('tone'),purp=v('purpose');
   var tK=TL_KEY[tone]||'tonePro';if(tone==='custom'){var ct=v('customToneVal');tK=ct?'custom: '+ct:'Custom';}
   var pK=PL_KEY[purp]||'purpGeneral';if(purp==='custom-purpose'){var cp=v('customPurpVal');pK=cp?'custom: '+cp:'Custom';}
-  var lL=LANG_KEY[lang]||lang;
-  var oL=outLang||lang;if(oL==='auto')oL=lang;
+  var srcCode=lang,outCode=(!outLang||outLang==='auto')?lang:outLang;
+  var srcName=(srcCode&&srcCode!=='auto')?langName(srcCode):'',outName=(outCode&&outCode!=='auto')?langName(outCode):'';
+  var srcR=regionInfo(srcCode,v('srcRegion')),outR=regionInfo(outCode,v('outRegion'));
   var tI=tone==='custom'?(v('customToneVal')||'Adjust tone as appropriate.'):'Style: '+t(tK);
   var pI=purp==='custom-purpose'?(v('customPurpVal')||'Determine appropriate purpose.'):'Purpose: '+t(pK);
   var pm=v('polishMode');
   var modeRule=pm==='content'?'Only polish and refine the provided text as-is. Do NOT add greetings, closings, signatures, subject lines, or any content not in the original. Do NOT restructure into a letter format. Return ONLY the polished version of the provided text.':'Output a complete polished letter including appropriate greeting and closing.';
-  var sysPrompt=cfg.customSystemPrompt||('You are a senior business communication consultant. Polish the letter professionally.\nRules: preserve intent, improve clarity, maintain business etiquette, fix grammar, '+modeRule+' The original text is written in: '+lL+'.\n'+tI+'\n'+pI+'\nOutput language: '+oL+'\n\nAppend "--- Suggestions ---" section (2-5 points) at the end.');
+  /* Language block: always appended, even when a custom system prompt is set,
+     so the chosen output language/region can never be silently dropped. */
+  var langLines=[];
+  langLines.push('[LANGUAGE REQUIREMENTS]');
+  langLines.push(srcName?('- The ORIGINAL letter is written in '+srcName+(srcR?', following the language conventions of '+srcR.en:'')+'.'):'- Detect the language of the original letter automatically.');
+  if(outName){
+    langLines.push('- You MUST write the ENTIRE output in '+outName+(outR?', using the wording, spelling, punctuation and business-writing conventions of '+outR.en:'')+'.');
+    if(srcName&&outName!==srcName)langLines.push('- This is a TRANSLATION task in addition to polishing: the output language ('+outName+') differs from the original language ('+srcName+'). Do NOT keep the original language.');
+    if(outCode==='zh-CN')langLines.push('- Use Simplified Chinese characters (\u7b80\u4f53\u5b57) only. Do NOT output any Traditional Chinese characters, and use Mainland-style vocabulary.');
+    if(outCode==='zh-TW')langLines.push('- Use Traditional Chinese characters (\u7e41\u9ad4\u5b57) only. Do NOT output any Simplified Chinese characters.');
+    langLines.push('- The "--- Suggestions ---" section must also be written in '+outName+'.');
+  }else{
+    langLines.push('- Write the output in the same language as the original letter.');
+  }
+  var langBlock=langLines.join('\n');
+  var basePrompt=cfg.customSystemPrompt||('You are a senior business communication consultant. Polish the letter professionally.\nRules: preserve intent, improve clarity, maintain business etiquette, fix grammar, '+modeRule+'\n'+tI+'\n'+pI);
+  var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\nAppend "--- Suggestions ---" section (2-5 points) at the end.';
 
   var st=Date.now();
   try{var r;if(cfg.apiFormat==='anthropic')r=await callAnthropic(input,sysPrompt);else if(cfg.apiFormat==='gemini')r=await callGemini(input,sysPrompt);else r=await callOpenAI(input,sysPrompt);
@@ -1120,7 +1267,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.08.29';
+var APP_VERSION='2026.08.31';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
