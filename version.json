@@ -1,12 +1,12 @@
 {
-  "version": "2026.08.31.3",
-  "release_date": "2026-09-01",
+  "version": "2026.10.01",
+  "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復：更新流程卡在「準備中…」不再繼續。主程式收到更新要求時因訊息格式判讀錯誤而完全沒有觸發下載，現已修正，會依序進入下載、解壓縮、安裝、重新啟動。新增：更新逾時偵測，主程式沒有回應時直接顯示錯誤與後續處理方式，不再無限等待。新增：更新失敗畫面可直接手動下載。",
-    "zh-CN": "修复：更新流程卡在「准备中…」不再继续。主程序收到更新请求时因消息格式判读错误而完全没有触发下载，现已修正，会依序进入下载、解压缩、安装、重新启动。新增：更新超时检测，主程序没有响应时直接显示错误与后续处理方式，不再无限等待。新增：更新失败画面可直接手动下载。",
-    "en": "Fixed: the update flow stopped at \"Preparing…\" and never continued. The host misread the format of the update request message and therefore never started the download; it now proceeds through download, extract, install and restart. Added: an update timeout so an unresponsive host reports an error instead of waiting forever. Added: a manual download button on the failure screen."
+    "zh-TW": "新增：AI 供應商模式，可儲存多組供應商，並用下拉清單切換。新增：填入 AI URL 與 API Key 後可載入模型清單，直接從清單挑選模型。新增：供應商可自行命名、新增與刪除。改善：既有的單組 API 設定會自動轉成第一組供應商，不需重新輸入。",
+    "zh-CN": "新增：AI 供应商模式，可保存多组供应商，并用下拉列表切换。新增：填入 AI URL 与 API Key 后可载入模型清单，直接从清单选择模型。新增：供应商可自行命名、新增与删除。改善：原有的单组 API 设置会自动转换为第一组供应商，无需重新输入。",
+    "en": "Added: AI provider mode — save multiple providers and switch between them from a drop-down list. Added: after entering the AI URL and API key, load the available model list and pick a model directly. Added: providers can be named, added and deleted. Improved: an existing single API configuration is migrated into the first provider automatically."
   }
 }

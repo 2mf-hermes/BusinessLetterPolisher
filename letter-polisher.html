@@ -724,7 +724,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 <div class="ov" id="hOv" onclick="if(event.target===this)toggleHP()"><div class="panel hist"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span data-i="historyTitle"></span> <span id="hCnt" style="font-size:12px;font-weight:400;color:var(--tx3);"></span></h2><button class="px" onclick="toggleHP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn btn-d btn-sm" onclick="clrH()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 4h10M6 4V3h4v1M5 4v8h6V4"/></svg><span data-i="clearAll"></span></button></div><div class="hl" id="hList"></div></div></div>
 
 <!-- Settings Panel -->
-<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="apiEndpoint"></div><div class="fr"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" title="Show/Hide API Key" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="fr"><div class="fg"><label data-i="modelName"></label><input id="modelName" placeholder="gpt-4o"></div><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="fr f1"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI">OpenAI 相容格式</span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span>OpenAI 相容格式</span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span>Anthropic 格式</span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span>Google Gemini 格式</span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div>
+<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="fr"><div class="fg"><label data-i="provLabel"></label><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="btns" style="margin-top:8px;"><button class="btn btn-s btn-sm" type="button" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button></div><div class="fr"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" title="Show/Hide API Key" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="fr"><div class="fg"><label data-i="modelName"></label><div style="display:flex;align-items:center;gap:6px;"><input id="modelName" placeholder="gpt-4o" style="flex:1;"><div class="cs cs-nosync" id="modelCS" style="width:auto;flex-shrink:0;"><button class="cs-btn" id="loadModelsBtn" onclick="openModelPicker(this)" type="button" style="width:auto;white-space:nowrap;" title=""><span class="cs-txt" data-i="loadModels"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="modelDD"></div><input type="hidden" id="modelPick" value=""></div></div></div><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="fr f1"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div>
 
 <!-- Detail Modal -->
 <div class="mo" id="dMo" onclick="if(event.target===this)closeMo()"><div class="mo-c"><h3 data-i="detailTitle"></h3><div class="dt" id="dCont"></div><div class="btns"><button class="btn btn-s btn-sm" onclick="closeMo()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg><span data-i="close"></span></button><button class="btn btn-g btn-sm" onclick="cpDetail()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button></div></div></div>
@@ -827,7 +827,7 @@ langZhTW:'繁體中文',langZhCN:'簡體中文',langEn:'English',langJa:'日本�
 lblOutLang:'結果顯示語言',outLangAuto:'跟隨原始語言',
 lblSrcRegion:'原始信件語言地區',lblOutRegion:'結果語言地區',regionAuto:'不指定',
 letterPrefTitle:'原始信件選項喜好',letterPrefHint:'開啟後，每次啟動會套用已儲存的原始信件選項；關閉則沿用上次使用的設定。',letterPrefEnabled:'啟用固定喜好',letterPrefSave:'儲存目前選項為喜好',letterPrefReset:'還原預設選項',letterPrefSaved:'已儲存原始信件選項喜好',letterPrefResetDone:'已還原預設原始信件選項',guideSetupNow:'先選擇設定並保存',
-themeLight:'淺色模式',themeDark:'暗色模式',checking:'檢查中…',checkUpdate:'檢查更新',newVersion:'發現新版本',clickToDownload:'是否要立即下載並安裝更新？',downloadingUpdate:'正在下載更新…',upToDate:'目前已是最新版本',updateFail:'檢查更新失敗',updTitle:'正在更新',updPreparing:'準備中…',updDownloading:'下載新版中…',updExtracting:'解壓縮中…',updInstalling:'安裝中…',updRestarting:'即將重新啟動…',updErrorTitle:'更新失敗',updClose:'關閉',updNoResponse:'主程式沒有回應更新要求。請關閉程式後改用手動下載更新。',updStalled:'更新流程中斷，請稍後再試或改用手動下載。',updHostOld:'目前版本的主程式不支援自動更新，將改為開啟瀏覽器下載。',updManualDl:'手動下載',
+themeLight:'淺色模式',themeDark:'暗色模式',checking:'檢查中…',checkUpdate:'檢查更新',newVersion:'發現新版本',clickToDownload:'是否要立即下載並安裝更新？',downloadingUpdate:'正在下載更新…',upToDate:'目前已是最新版本',updateFail:'檢查更新失敗',updTitle:'正在更新',updPreparing:'準備中…',updDownloading:'下載新版中…',updExtracting:'解壓縮中…',updInstalling:'安裝中…',updRestarting:'即將重新啟動…',aiProvider:'AI 供應商',provLabel:'供應商',provName:'供應商名稱',provNew:'新增供應商',provDel:'刪除',provDefault:'AI 供應商',provAdded:'已新增供應商',provDeleted:'已刪除供應商',provDeleteConfirm:'確定要刪除這個供應商嗎？刪除後無法復原。',provLastOne:'至少要保留一個供應商',needKey:'請先輸入 API Key 再載入模型',needUrl:'請先輸入 AI URL 再載入模型',loadModels:'載入模型',loadingModels:'正在載入模型清單…',modelsLoaded:'已載入模型清單，共',modelsFail:'無法載入模型清單，請直接輸入模型名稱',noModels:'此供應商沒有回傳可用的模型',updErrorTitle:'更新失敗',updClose:'關閉',updNoResponse:'主程式沒有回應更新要求。請關閉程式後改用手動下載更新。',updStalled:'更新流程中斷，請稍後再試或改用手動下載。',updHostOld:'目前版本的主程式不支援自動更新，將改為開啟瀏覽器下載。',updManualDl:'手動下載',
 placeholderIn:'在此貼上您的商業信件…',placeholderOut:'潤飾結果將顯示在此處…',
 placeholderCustomTone:'例如：語氣溫和但堅定，帶有同理心…',placeholderCustomPurp:'例如：邀請合作夥伴參加技術研討會…',
 placeholderPrompt:'例如：你是一位資深商務溝通顧問…',sugPlaceholder:'執行潤飾後，此處將顯示差異比較。',sugPlaceholder2:'執行潤飾後，此處將顯示修改建議。',guideW1Title:'歡迎使用商業信件潤飾工具',guideW1Desc:'本工具可協助您快速潤飾商業信件，提升專業度與溝通品質。',guideW1Sub:'支援 OpenAI、Anthropic、Gemini 等多家 API，無需安裝即可使用。',guideW2Title:'設定 API 連線',guideW2Desc:'使用前需設定 AI API 連線。點擊右下角齒輪按鈕可隨時修改。',guideW2Step1:'<b>選擇服務商</b> — 點擊「快速預設」選取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 從服務商官網取得您的專屬金鑰',guideW2Step3:'<b>測試連線</b> — 點擊「測試連線」確認設定正確',guideW3Title:'開始使用',guideW3Desc:'設定完成後，即可開始潤飾您的信件。',guideW3Step1:'<b>選擇設定</b> — 選擇信件語言、潤飾風格、用途與模式',guideW3Step2:'<b>貼上信件</b> — 將原始信件內容貼入下方文字框',guideW3Step3:'<b>點擊潤飾</b> — 按下「開始潤飾」按鈕',guideW3Step4:'<b>查看結果</b> — 潤飾結果將顯示在右側，可複製或下載',guideSkip:'跳過引導',guidePrev:'上一步',guideNext:'下一步',guideDone:'開始使用',guideReopen:'使用引導',checkUpdate:'檢查更新',checking:'檢查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'檢查更新失敗',clickToDownload:'按確定下載'
@@ -862,7 +862,7 @@ langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本�
 lblOutLang:'结果显示语言',outLangAuto:'跟随原始语言',
 lblSrcRegion:'原始信件语言地区',lblOutRegion:'结果语言地区',regionAuto:'不指定',
 letterPrefTitle:'原始信件选项偏好',letterPrefHint:'开启后，每次启动会套用已保存的原始信件选项；关闭则沿用上次使用的设置。',letterPrefEnabled:'启用固定偏好',letterPrefSave:'保存当前选项为偏好',letterPrefReset:'恢复默认选项',letterPrefSaved:'已保存原始信件选项偏好',letterPrefResetDone:'已恢复默认原始信件选项',guideSetupNow:'先选择设置并保存',
-themeLight:'浅色模式',themeDark:'暗色模式',checking:'检查中…',checkUpdate:'检查更新',newVersion:'发现新版本',clickToDownload:'是否要立即下载并安装更新？',downloadingUpdate:'正在下载更新…',upToDate:'当前已是最新版本',updateFail:'检查更新失败',updTitle:'正在更新',updPreparing:'准备中…',updDownloading:'下载新版中…',updExtracting:'解压缩中…',updInstalling:'安装中…',updRestarting:'即将重新启动…',updErrorTitle:'更新失败',updClose:'关闭',updNoResponse:'主程序没有响应更新请求。请关闭程序后改用手动下载更新。',updStalled:'更新流程中断，请稍后再试或改用手动下载。',updHostOld:'当前版本的主程序不支持自动更新，将改为打开浏览器下载。',updManualDl:'手动下载',
+themeLight:'浅色模式',themeDark:'暗色模式',checking:'检查中…',checkUpdate:'检查更新',newVersion:'发现新版本',clickToDownload:'是否要立即下载并安装更新？',downloadingUpdate:'正在下载更新…',upToDate:'当前已是最新版本',updateFail:'检查更新失败',updTitle:'正在更新',updPreparing:'准备中…',updDownloading:'下载新版中…',updExtracting:'解压缩中…',updInstalling:'安装中…',updRestarting:'即将重新启动…',aiProvider:'AI 供应商',provLabel:'供应商',provName:'供应商名称',provNew:'新增供应商',provDel:'删除',provDefault:'AI 供应商',provAdded:'已新增供应商',provDeleted:'已删除供应商',provDeleteConfirm:'确定要删除这个供应商吗？删除后无法恢复。',provLastOne:'至少要保留一个供应商',needKey:'请先输入 API Key 再载入模型',needUrl:'请先输入 AI URL 再载入模型',loadModels:'载入模型',loadingModels:'正在载入模型清单…',modelsLoaded:'已载入模型清单，共',modelsFail:'无法载入模型清单，请直接输入模型名称',noModels:'此供应商没有回传可用的模型',updErrorTitle:'更新失败',updClose:'关闭',updNoResponse:'主程序没有响应更新请求。请关闭程序后改用手动下载更新。',updStalled:'更新流程中断，请稍后再试或改用手动下载。',updHostOld:'当前版本的主程序不支持自动更新，将改为打开浏览器下载。',updManualDl:'手动下载',
 placeholderIn:'在此贴上您的商业信件…',placeholderOut:'润饰结果将显示在此处…',
 placeholderCustomTone:'例如：语气温和但坚定，带有同理心…',placeholderCustomPurp:'例如：邀请合作伙伴参加技术研讨会…',
 placeholderPrompt:'例如：你是一位资深商务沟通顾问…',sugPlaceholder:'执行润饰后，此处将显示差异比较。',sugPlaceholder2:'执行润饰后，此处将显示修改建议。',guideW1Title:'欢迎使用商业信件润饰工具',guideW1Desc:'本工具可协助您快速润饰商业信件，提升专业度与沟通质量。',guideW1Sub:'支挄 OpenAI、Anthropic、Gemini 等多家 API，无需安裝即可使用。',guideW2Title:'设置 API 连接',guideW2Desc:'使用前需设置 AI API 连接。点击右下角齿轮按钮可随时修改。',guideW2Step1:'<b>选择服务商</b> — 点击「快速预设」选取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 从服务商官网获取您的专属金钥',guideW2Step3:'<b>测试连接</b> — 点击「测试连接」确认设置正确',guideW3Title:'开始使用',guideW3Desc:'设置完成后，即可开始润饰您的信件。',guideW3Step1:'<b>选择设置</b> — 选择信件语言、润饰风格、用途与模式',guideW3Step2:'<b>贴上信件</b> — 将原始信件内容贴入下方文本框',guideW3Step3:'<b>点击润饰</b> — 按下「开始润饰」按钮',guideW3Step4:'<b>查看结果</b> — 润饰结果将显示在右侧，可复制或下载',guideSkip:'跳过引导',guidePrev:'上一步',guideNext:'下一步',guideDone:'开始使用',guideReopen:'使用引导',checkUpdate:'检查更新',checking:'检查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'检查更新失败',clickToDownload:'按确定下载'
@@ -895,7 +895,7 @@ purpGeneral:'General',purpProposal:'Proposal',purpFollowup:'Follow-up',purpThank
 purpComplaint:'Complaint',purpIntro:'Introduction',purpNegotiation:'Negotiation',purpResignation:'Resignation',purpApology:'Apology',purpAnnouncement:'Announcement',purpInvitation:'Invitation',purpFeedback:'Feedback',purpCustom:'Custom…',
 langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本語',
 letterPrefTitle:'Original Letter Preferences',letterPrefHint:'When enabled, saved original-letter choices are applied at every launch. When disabled, the last-used settings are kept.',letterPrefEnabled:'Use fixed preferences',letterPrefSave:'Save current choices as preferences',letterPrefReset:'Restore default choices',letterPrefSaved:'Original letter preferences saved',letterPrefResetDone:'Original letter preferences restored to defaults',guideSetupNow:'Choose settings and save first',
-themeLight:'Light Mode',themeDark:'Dark Mode',checking:'Checking…',checkUpdate:'Check for Updates',newVersion:'New version available',clickToDownload:'Download and install the update now?',downloadingUpdate:'Downloading update…',upToDate:'You are using the latest version',updateFail:'Update check failed',updTitle:'Updating',updPreparing:'Preparing…',updDownloading:'Downloading new version…',updExtracting:'Extracting…',updInstalling:'Installing…',updRestarting:'Restarting shortly…',updErrorTitle:'Update failed',updClose:'Close',updNoResponse:'The application did not respond to the update request. Please close it and download the update manually.',updStalled:'The update process stopped responding. Please try again later or download manually.',updHostOld:'This version of the application does not support automatic updates; opening the download in your browser instead.',updManualDl:'Download manually',
+themeLight:'Light Mode',themeDark:'Dark Mode',checking:'Checking…',checkUpdate:'Check for Updates',newVersion:'New version available',clickToDownload:'Download and install the update now?',downloadingUpdate:'Downloading update…',upToDate:'You are using the latest version',updateFail:'Update check failed',updTitle:'Updating',updPreparing:'Preparing…',updDownloading:'Downloading new version…',updExtracting:'Extracting…',updInstalling:'Installing…',updRestarting:'Restarting shortly…',aiProvider:'AI Provider',provLabel:'Provider',provName:'Provider Name',provNew:'Add Provider',provDel:'Delete',provDefault:'AI Provider',provAdded:'Provider added',provDeleted:'Provider deleted',provDeleteConfirm:'Delete this provider? This cannot be undone.',provLastOne:'At least one provider must be kept',needKey:'Enter an API key before loading models',needUrl:'Enter the AI URL before loading models',loadModels:'Load Models',loadingModels:'Loading model list…',modelsLoaded:'Model list loaded:',modelsFail:'Could not load the model list; type the model name instead',noModels:'This provider returned no usable models',updErrorTitle:'Update failed',updClose:'Close',updNoResponse:'The application did not respond to the update request. Please close it and download the update manually.',updStalled:'The update process stopped responding. Please try again later or download manually.',updHostOld:'This version of the application does not support automatic updates; opening the download in your browser instead.',updManualDl:'Download manually',
 lblOutLang:'Output Language',outLangAuto:'Follow Original',
 lblSrcRegion:'Source Language Region',lblOutRegion:'Output Language Region',regionAuto:'Not specified',
 placeholderIn:'Paste your business letter here…',placeholderOut:'Polished result will appear here…',
@@ -1063,7 +1063,7 @@ function csPick(opt){
   btn.querySelector('.cs-txt').textContent=csLabel(opt);
   cs.querySelector('.cs-dd').classList.remove('open');btn.classList.remove('open');
   var dd=cs.querySelector('.cs-dd');dd.style.position='';dd.style.left='';dd.style.top='';dd.style.width='';dd.style.bottom='';
-  var id=h.id;if(id==='tone'||id==='purpose'||id==='letterLang'||id==='polishMode'||id==='outLang'||id==='srcRegion'||id==='outRegion'){csLetterOptPick(id);}
+  var id=h.id;if(id==='tone'||id==='purpose'||id==='letterLang'||id==='polishMode'||id==='outLang'||id==='srcRegion'||id==='outRegion'){csLetterOptPick(id);}else if(id==='provider')onProviderPick(opt.dataset.val);else if(id==='modelPick')onModelPick(opt.dataset.val);
 }
 function csLangPick(opt){csPick(opt);locale=opt.dataset.val;document.getElementById('langVal').value=locale;localStorage.setItem('bp_lang',locale);applyI18n();}
 function csLetterOptPick(id){
@@ -1083,7 +1083,7 @@ function csCloseAll(){
 }
 function csSyncAll(){
   document.querySelectorAll('.cs').forEach(function(cs){
-    var h=cs.querySelector('input[type="hidden"]');if(!h)return;
+    if(cs.classList.contains('cs-nosync'))return;var h=cs.querySelector('input[type="hidden"]');if(!h)return;
     var val=h.value,txt=cs.querySelector('.cs-txt'),found=false;
     cs.querySelectorAll('.cs-opt').forEach(function(o){
       o.classList.remove('sel');
@@ -1126,6 +1126,132 @@ function updateThemeIcon(){
   ic.innerHTML=d==='dark'?'<circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/>':'<path d="M17 10.5A7.5 7.5 0 019.5 3 7 7 0 1017 10.5z"/>';
 }
 
+/* ===== AI Providers ===== */
+var providers=[],activeProvId='';
+function newProvId(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function activeProv(){for(var i=0;i<providers.length;i++)if(providers[i].id===activeProvId)return providers[i];return providers[0]||null;}
+function saveProviders(){try{localStorage.setItem('bp_providers',JSON.stringify(providers));localStorage.setItem('bp_active_provider',activeProvId);}catch(e){}}
+function providerNameFor(url,fmt){if(url){for(var k in PR)if(PR[k].u===url)return t(PR[k].k);}return fmt==='anthropic'?'Anthropic':fmt==='gemini'?'Gemini':t('provDefault');}
+function loadProviders(){
+  var s=localStorage.getItem('bp_providers');
+  if(s)try{var a=JSON.parse(s);if(a&&a.length)providers=a;}catch(e){}
+  activeProvId=localStorage.getItem('bp_active_provider')||'';
+  if(!providers.length){
+    var lg={};try{lg=JSON.parse(localStorage.getItem('bp_cfg')||'{}')||{};}catch(e){}
+    var url=lg.apiUrl||cfg.apiUrl||'',key=lg.apiKey||cfg.apiKey||'',fmt=lg.apiFormat||cfg.apiFormat||'openai',mdl=lg.modelName||cfg.modelName||'';
+    if(url||key)providers.push({id:newProvId(),name:providerNameFor(url,fmt),url:url,key:key,format:fmt,model:mdl,models:[]});
+  }
+  if(!providers.length)providers.push({id:newProvId(),name:t('provDefault'),url:'',key:'',format:'openai',model:'',models:[]});
+  providers.forEach(function(p){if(!p.id)p.id=newProvId();if(!p.format)p.format='openai';if(!p.name)p.name=t('provDefault');if(!(p.models instanceof Array))p.models=[];});
+  var hit=false;for(var i=0;i<providers.length;i++)if(providers[i].id===activeProvId)hit=true;
+  if(!hit)activeProvId=providers[0].id;
+  saveProviders();
+}
+function persistActiveProvider(){
+  var p=activeProv();if(!p||!$('apiUrl')||!$('modelName'))return;
+  if($('provName'))p.name=v('provName');
+  p.url=v('apiUrl');p.key=v('apiKey');p.format=v('apiFormat');p.model=v('modelName');
+  saveProviders();
+}
+function fillProviderFields(){
+  var p=activeProv();if(!p)return;
+  sV('provName',p.name||'');sV('apiUrl',p.url||'');sV('apiKey',p.key||'');sV('apiFormat',p.format||'openai');sV('modelName',p.model||'');
+  csSyncAll();
+}
+function applyActiveProvider(){
+  var p=activeProv();if(!p)return;
+  cfg.apiUrl=p.url||'';cfg.apiKey=p.key||'';cfg.modelName=p.model||'';cfg.apiFormat=p.format||'openai';
+  try{localStorage.setItem('bp_cfg',JSON.stringify(cfg));}catch(e){}
+}
+function refreshProviderDD(){
+  var dd=$('provDD');if(!dd)return;
+  dd.innerHTML=providers.map(function(p){return '<div class="cs-opt'+(p.id===activeProvId?' sel':'')+'" data-val="'+p.id+'" onclick="csPick(this)"><span>'+esc(p.name||'')+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+  var cs=$('provCS');if(cs){var tx=cs.querySelector('.cs-txt');if(tx)tx.textContent=(activeProv()||{}).name||'';}
+  var h=$('provider');if(h)h.value=activeProvId;
+}
+function onProviderPick(id){
+  if(!id||id===activeProvId)return;
+  persistActiveProvider();
+  activeProvId=id;saveProviders();
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+}
+function initProviders(){loadProviders();refreshProviderDD();fillProviderFields();refreshModelDD();applyActiveProvider();}
+function newProvider(){
+  persistActiveProvider();
+  var p={id:newProvId(),name:t('provDefault')+' '+(providers.length+1),url:'',key:'',format:'openai',model:'',models:[]};
+  providers.push(p);activeProvId=p.id;saveProviders();
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  toast(t('provAdded'));
+  var el=$('provName');if(el){el.focus();el.select();}
+}
+function deleteProvider(){
+  if(providers.length<=1){toast(t('provLastOne'));return;}
+  if(!window.confirm(t('provDeleteConfirm')))return;
+  providers=providers.filter(function(p){return p.id!==activeProvId;});
+  activeProvId=providers[0].id;saveProviders();
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  toast(t('provDeleted'));
+}
+function modelsUrlFor(url,fmt){
+  var u=(url||'').trim().replace(/\/+$/,'');if(!u)return '';
+  if(fmt==='gemini'){var m=u.match(/^(.*\/models)\/[^\/:]+(?::[A-Za-z]+)?$/);if(m)return m[1];if(/\/models$/.test(u))return u;return u.replace(/\/v1beta\/.*$/,'/v1beta/models');}
+  if(fmt==='anthropic'){if(/\/messages$/.test(u))return u.replace(/\/messages$/,'/models');if(/\/models$/.test(u))return u;}
+  if(/\/chat\/completions$/.test(u))return u.replace(/\/chat\/completions$/,'/models');
+  if(/\/completions$/.test(u))return u.replace(/\/completions$/,'/models');
+  if(/\/models$/.test(u))return u;
+  return u+'/models';
+}
+function parseModelList(d,fmt){
+  var out=[],seen={};function add(x){x=String(x||'').replace(/^models\//,'');if(!x||seen[x])return;seen[x]=1;out.push(x);}
+  if(fmt==='gemini'){((d&&d.models)||[]).forEach(function(m){if(m.supportedGenerationMethods&&m.supportedGenerationMethods.indexOf('generateContent')<0)return;add(m.name);});}
+  else{((d&&(d.data||d.models))||[]).forEach(function(m){add(m.id||m.name);});}
+  out.sort();return out;
+}
+function refreshModelDD(){
+  var dd=$('modelDD');if(!dd)return;
+  var list=(activeProv()||{}).models||[];
+  dd.innerHTML=list.map(function(m){return '<div class="cs-opt" data-val="'+esc(m)+'" onclick="csPick(this)"><span>'+esc(m)+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+}
+function onModelPick(val){
+  if(!val)return;
+  var inp=$('modelName');if(inp)inp.value=val;
+  var p=activeProv();if(p){p.model=val;saveProviders();}
+  applyActiveProvider();
+}
+async function fetchModelList(){
+  var p=activeProv();if(!p)return null;
+  persistActiveProvider();
+  if(!String(p.url||'').trim()){showTR(t('needUrl'),'err');return null;}
+  if(!String(p.key||'').trim()){showTR(t('needKey'),'err');return null;}
+  var url=modelsUrlFor(p.url,p.format),btn=$('loadModelsBtn');
+  if(btn){btn.disabled=true;var lb=btn.querySelector('.cs-txt');if(lb)lb.textContent=t('loadingModels');}
+  showTR(t('loadingModels'),'info');
+  try{
+    var res;
+    if(p.format==='anthropic')res=await fetch(url,{headers:{'x-api-key':p.key,'anthropic-version':'2023-06-01'}});
+    else if(p.format==='gemini')res=await fetch(url+(url.indexOf('?')>=0?'&':'?')+'key='+encodeURIComponent(p.key));
+    else res=await fetch(url,{headers:{'Authorization':'Bearer '+p.key}});
+    if(!res.ok){var b=await res.text();throw new Error(res.status+': '+String(b).substring(0,160));}
+    var list=parseModelList(await res.json(),p.format);
+    if(!list.length){showTR(t('noModels'),'err');return null;}
+    p.models=list;saveProviders();refreshModelDD();
+    showTR(t('modelsLoaded')+' '+list.length,'ok');
+    return list;
+  }catch(e){showTR(t('modelsFail')+' ('+e.message+')','err');return null;}
+  finally{if(btn){btn.disabled=false;var lb2=btn.querySelector('.cs-txt');if(lb2)lb2.textContent=t('loadModels');}}
+}
+async function openModelPicker(btn){
+  var p=activeProv();if(!p)return;
+  if(!(p.models&&p.models.length)){var list=await fetchModelList();if(!list)return;}
+  refreshModelDD();
+  var dd=$('modelDD');if(!dd||!dd.children.length)return;
+  csCloseAll();
+  var r=btn.getBoundingClientRect(),w=Math.max(220,r.width),left=r.left;
+  if(left+w>window.innerWidth-10)left=Math.max(8,window.innerWidth-w-10);
+  dd.style.position='fixed';dd.style.left=left+'px';dd.style.top=(r.bottom+5)+'px';dd.style.width=w+'px';dd.style.bottom='auto';
+  dd.classList.add('open');btn.classList.add('open');
+}
+
 /* ===== Presets ===== */
 function renderPresetChips(){var el=$('presetChips'),keys=['openai','anthropic','gemini','groq','deepseek','openai-compat'];el.innerHTML=keys.map(function(k){return'<span class="chip" onclick="applyPreset(\''+k+'\',this)">'+t(PR[k].k)+'</span>';}).join('');}
 
@@ -1140,13 +1266,13 @@ function saveLetterPrefMode(){var el=$('letterPrefEnabled');localStorage.setItem
 function saveCurrentLetterPrefs(){LO={letterLang:v('letterLang'),tone:v('tone'),purpose:v('purpose'),polishMode:v('polishMode'),outLang:v('outLang'),srcRegion:v('srcRegion'),outRegion:v('outRegion')};localStorage.setItem('bp_letterPrefs',JSON.stringify(LO));localStorage.setItem('bp_letterPrefEnabled','1');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=true;saveLetterOpts();toast(t('letterPrefSaved'));}
 function restoreDefaultLetterPrefs(){LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};localStorage.removeItem('bp_letterPrefs');localStorage.setItem('bp_letterPrefEnabled','0');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=false;fillLetterOpts();saveLetterOpts();toast(t('letterPrefResetDone'));}
 function applySavedLetterPrefs(){if(localStorage.getItem('bp_letterPrefEnabled')!=='1')return;var s=localStorage.getItem('bp_letterPrefs');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
-function saveCfg(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' ✓');}
-function autoSave(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));}
+function saveCfg(){cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');persistActiveProvider();applyActiveProvider();refreshProviderDD();localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' ✓');}
+function autoSave(){cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');persistActiveProvider();applyActiveProvider();}
 function fillF(){sV('apiUrl',cfg.apiUrl);sV('apiKey',cfg.apiKey);sV('modelName',cfg.modelName);sV('temperature',cfg.temperature);sV('apiFormat',cfg.apiFormat);sV('sysPrompt',cfg.customSystemPrompt);sV('customToneVal',cfg.customTone||'');sV('customPurpVal',cfg.customPurpose||'');csSyncAll();}
 function v(id){return document.getElementById(id).value.trim();}
 function sV(id,val){document.getElementById(id).value=val;}
 function $(id){return document.getElementById(id);}
-function applyPreset(k,el){var p=PR[k];sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);csSyncAll();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');}
+function applyPreset(k,el){var p=PR[k];sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);if(!v('provName'))sV('provName',t(p.k));var ap=activeProv();if(ap)ap.models=[];csSyncAll();refreshModelDD();persistActiveProvider();applyActiveProvider();refreshProviderDD();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');}
 function onToneCh(){v('tone')==='custom'?$('custTone').classList.add('show'):$('custTone').classList.remove('show');}
 function onPurpCh(){v('purpose')==='custom-purpose'?$('custPurp').classList.add('show'):$('custPurp').classList.remove('show');}
 function updCnt(){$('charCnt').textContent=$('letterIn').value.length;}
@@ -1282,7 +1408,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.08.31.3';
+var APP_VERSION='2026.10.01';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
@@ -1402,7 +1528,7 @@ window.addEventListener('DOMContentLoaded',function(){
   var saved=localStorage.getItem('bp_lang');locale=saved||detectLang();if(!T[locale])locale='en';
   document.getElementById('langVal').value=locale;
   populateLangDropdowns();
-  loadTheme();loadCfg();fillF();fillLetterOpts();loadLetterPrefMode();updCnt();loadH();applyI18n();applyGuideHTML();
+  loadTheme();loadCfg();initProviders();fillF();fillLetterOpts();loadLetterPrefMode();updCnt();loadH();applyI18n();applyGuideHTML();
   if(!localStorage.getItem('bp_guide_done'))openGuide();
   setTimeout(function(){checkForUpdate(true);},800);
 });
