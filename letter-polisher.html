@@ -1067,26 +1067,37 @@ function fixedCBOrigin(el){
    would leave them detached from their button - close them instead. */
 document.addEventListener('scroll',function(e){if(e.target===document||(e.target.classList&&e.target.classList.contains('panel-body')))csCloseAll();},true);
 window.addEventListener('resize',function(){csCloseAll();});
-/* Place a dropdown under (or above, when there is no room below) its button,
-   always fully inside the window. */
+/* Place a dropdown under (or above, when there is no room below) its button.
+   The menu must stay glued to the button: it is never shifted away sideways to
+   make it fit (that reads as a misplaced menu) - it shrinks instead, and for a
+   button too close to the edge its right edge is aligned with the button. */
 function csPlaceMenu(btn,dd){
-  var r=btn.getBoundingClientRect(),o=fixedCBOrigin(dd),w=Math.max(Math.round(r.width),200);
+  var r=btn.getBoundingClientRect(),o=fixedCBOrigin(dd),pad=8;
   dd.classList.add('cs-dd-pop');
   dd.style.position='fixed';dd.style.bottom='auto';
   /* min-width:100% on a fixed element resolves against its containing block,
      which here is the whole settings panel - that would overflow the window. */
   dd.style.minWidth='0';
-  dd.style.width=w+'px';
-  w=dd.offsetWidth||w;
-  var h=dd.offsetHeight||0,below=window.innerHeight-r.bottom-8,above=r.top-8;
-  var up=(h>below&&above>below);
-  var vleft=r.left;
-  if(vleft+w>window.innerWidth-8)vleft=window.innerWidth-8-w;
-  if(vleft<8)vleft=8;
-  var vtop=up?r.top-5-h:r.bottom+5;
-  if(vtop<8)vtop=8;
-  dd.style.left=Math.round(vleft-o.x)+'px';
-  dd.style.top=Math.round(vtop-o.y)+'px';
+  var want=Math.max(Math.round(r.width),200),room=window.innerWidth-pad-r.left;
+  var w=want,left=r.left;
+  if(room<want){
+    if(room>=180)w=Math.round(room);
+    else{left=r.right-want;}                 /* narrow button: align right edges */
+    if(left<pad){left=pad;w=Math.min(w,window.innerWidth-2*pad);}
+  }
+  if(left+w>window.innerWidth-pad)left=window.innerWidth-pad-w;
+  if(left<pad)left=pad;
+  dd.style.width=Math.round(w)+'px';
+  var h=dd.offsetHeight||0,below=window.innerHeight-r.bottom-pad,above=r.top-pad;
+  var up=(h>below&&above>below),top=up?r.top-5-h:r.bottom+5;
+  if(top<pad)top=pad;
+  dd.style.left=Math.round(left-o.x)+'px';
+  dd.style.top=Math.round(top-o.y)+'px';
+  /* the fixed containing block may be an ancestor rather than the viewport, so
+     correct the result against the box that was really rendered. */
+  var a=dd.getBoundingClientRect(),dx=a.left-left,dy=a.top-top;
+  if(Math.abs(dx)>0.5)dd.style.left=(parseFloat(dd.style.left)-dx)+'px';
+  if(Math.abs(dy)>0.5)dd.style.top=(parseFloat(dd.style.top)-dy)+'px';
 }
 function csLabel(opt){
   var k=opt.getAttribute('data-i');
@@ -1445,7 +1456,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.2';
+var APP_VERSION='2026.10.01.3';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
