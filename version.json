@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.1",
+  "version": "2026.10.01.2",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復：安裝路徑含空白時更新會在重啟前失敗（出現「Windows 找不到 F:\\Program」），更新檔已無法複製到安裝目錄。",
-    "zh-CN": "修复：安装路径含空白时更新会在重启前失败（出现「Windows 找不到 F:\\Program」），更新文件无法复制到安装目录。",
-    "en": "Fixed: when the install path contained a space, the update failed before restarting (Windows could not find \"F:\\Program\") and the new files were never copied into the install folder."
+    "zh-TW": "修復：新增 AI 供應商後，供應商下拉清單看不到、無法選擇（清單被定位到視窗外）。\n同時修復設定面板內的供應商／API 格式／模型清單被裁切與超出畫面的問題。",
+    "zh-CN": "修复：新增 AI 供应商后，供应商下拉清单看不到、无法选择（清单被定位到窗口外）。\n同时修复设置面板内的供应商／API 格式／模型清单被裁切与超出窗口的问题。",
+    "en": "Fixed: after adding an AI provider the provider dropdown was invisible and unusable because the list was positioned outside the window. The provider, API format and model lists inside the settings sheet are no longer clipped or off screen."
   }
 }
