@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.3",
+  "version": "2026.10.01.4",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復：AI 供應商下拉清單位置偏移。",
-    "zh-CN": "修复：AI 供应商下拉清单位置偏移。",
-    "en": "Fixed: the AI provider dropdown menu was offset from its button."
+    "zh-TW": "修復：AI 供應商下拉選單顯示穩定性、模型下拉選單位置。改善：AI 模型清單支援再次點擊收合。",
+    "zh-CN": "修复：AI 供应商下拉菜单显示稳定性、模型下拉菜单位置。改善：AI 模型列表支持再次点击收起。",
+    "en": "Fixed: the AI provider dropdown disappearing after it opened, and the model dropdown position. Improved: the model list closes when its button is clicked again."
   }
 }

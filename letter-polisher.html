@@ -1040,12 +1040,15 @@ function detectLang(){var l=(navigator.language||navigator.userLanguage||'').toL
 
 /* ===== Custom Select ===== */
 function csToggle(btn){
-  var dd=btn.nextElementSibling,wasOpen=dd.classList.contains('open');
+  /* Close the others first: an open menu is parked in <body> (see csPlaceMenu),
+     so the button's real sibling only comes back once csCloseAll() has run. */
+  var wasOpen=btn.classList.contains('open');
   csCloseAll();
-  if(!wasOpen){
-    dd.classList.add('open');btn.classList.add('open');
-    if(btn.closest('.panel-body'))csPlaceMenu(btn,dd);
-  }
+  if(wasOpen)return;
+  var dd=btn.nextElementSibling;
+  if(!dd||!dd.classList.contains('cs-dd'))return;
+  if(btn.closest('.panel-body'))csPlaceMenu(btn,dd);
+  dd.classList.add('open');btn.classList.add('open');
 }
 /* A position:fixed child is positioned against its nearest ancestor that has a
    transform / filter / backdrop-filter (the settings panel has backdrop-filter),
@@ -1063,41 +1066,82 @@ function fixedCBOrigin(el){
   }
   return {x:0,y:0};
 }
-/* popover menus are placed with fixed coordinates, so any scroll or resize
-   would leave them detached from their button - close them instead. */
-document.addEventListener('scroll',function(e){if(e.target===document||(e.target.classList&&e.target.classList.contains('panel-body')))csCloseAll();},true);
-window.addEventListener('resize',function(){csCloseAll();});
-/* Place a dropdown under (or above, when there is no room below) its button.
-   The menu must stay glued to the button: it is never shifted away sideways to
-   make it fit (that reads as a misplaced menu) - it shrinks instead, and for a
-   button too close to the edge its right edge is aligned with the button. */
+/* An open menu is fixed to the viewport, so scrolling or resizing would leave it
+   detached from its button - keep it glued instead of closing it (closing a menu
+   moments after the click is what made it flicker and vanish). */
+var csRaf=0;
+function csReposition(){
+  if(csRaf)return;
+  csRaf=(window.requestAnimationFrame||function(f){return setTimeout(f,16);})(function(){
+    csRaf=0;
+    var dd=document.querySelector('.cs-dd.open');
+    if(!dd)return;
+    var cs=dd.__cs,btn=cs&&cs.querySelector('.cs-btn');
+    if(!btn){csCloseAll();return;}
+    var r=btn.getBoundingClientRect();
+    if(r.bottom<0||r.top>window.innerHeight){csCloseAll();return;}
+    csPlaceMenu(btn,dd);
+  });
+}
+document.addEventListener('scroll',csReposition,true);
+window.addEventListener('resize',csReposition);
+/* Put an open menu back inside its .cs wrapper (as it is while closed). */
+function csRestore(dd){
+  dd.classList.remove('open');dd.classList.remove('cs-dd-pop');
+  dd.style.position='';dd.style.left='';dd.style.top='';dd.style.width='';
+  dd.style.bottom='';dd.style.minWidth='';dd.style.zIndex='';dd.style.maxHeight='';
+  dd.style.transform='';
+  var cs=dd.__cs;
+  if(cs&&dd.parentElement!==cs){
+    /* the dropdown may have been re-rendered while the menu was parked in <body> */
+    if(!cs.isConnected){if(dd.parentElement===document.body)dd.remove();return;}
+    var b=cs.querySelector('.cs-btn');
+    if(b&&b.parentElement===cs)cs.insertBefore(dd,b.nextSibling);else cs.appendChild(dd);
+  }
+}
+/* Place a menu under (or above, when there is no room below) its button.
+   An open menu is moved to <body> and positioned against the viewport: inside the
+   settings panel it would otherwise be laid out against the panel (the panel has
+   backdrop-filter, so it is the containing block of position:fixed children) and
+   clipped away by the panel's overflow:hidden. The menu always stays glued to the
+   button - it shrinks or right-aligns instead of being shifted sideways - and is
+   clamped only as a last resort. */
 function csPlaceMenu(btn,dd){
-  var r=btn.getBoundingClientRect(),o=fixedCBOrigin(dd),pad=8;
+  var cs=dd.__cs||dd.parentElement;
+  if(cs&&cs.classList&&cs.classList.contains('cs'))dd.__cs=cs;else cs=dd.__cs;
+  if(dd.parentElement!==document.body)document.body.appendChild(dd);
   dd.classList.add('cs-dd-pop');
-  dd.style.position='fixed';dd.style.bottom='auto';
-  /* min-width:100% on a fixed element resolves against its containing block,
-     which here is the whole settings panel - that would overflow the window. */
+  dd.style.position='fixed';dd.style.bottom='auto';dd.style.zIndex='1200';
+  /* a closed menu is scaled down / nudged up by CSS; measure without that, or the
+     correction below would chase the transform of the previous state. */
+  dd.style.transform='none';
+  /* min-width:100% would resolve against the whole viewport now. */
   dd.style.minWidth='0';
-  var want=Math.max(Math.round(r.width),200),room=window.innerWidth-pad-r.left;
-  var w=want,left=r.left;
+  var pad=8,r=btn.getBoundingClientRect();
+  /* aim for 200px, but a narrow button in a cramped corner gets exactly the room
+     that is left, so the menu stays flush with the button instead of jumping. */
+  var room=window.innerWidth-pad-r.left;
+  var want=Math.max(Math.round(r.width),Math.min(200,room));
+  var w=want,left=Math.round(r.left);
   if(room<want){
     if(room>=180)w=Math.round(room);
-    else{left=r.right-want;}                 /* narrow button: align right edges */
+    else{left=Math.round(r.right)-want;}     /* narrow button: align right edges */
     if(left<pad){left=pad;w=Math.min(w,window.innerWidth-2*pad);}
   }
-  if(left+w>window.innerWidth-pad)left=window.innerWidth-pad-w;
+  if(left+w>window.innerWidth-pad)left=Math.max(pad,window.innerWidth-pad-w);
   if(left<pad)left=pad;
   dd.style.width=Math.round(w)+'px';
-  var h=dd.offsetHeight||0,below=window.innerHeight-r.bottom-pad,above=r.top-pad;
-  var up=(h>below&&above>below),top=up?r.top-5-h:r.bottom+5;
+  var h=dd.offsetHeight||0,below=window.innerHeight-pad-r.bottom,above=r.top-pad;
+  var top=(h>below&&above>below)?Math.round(r.top)-5-h:Math.round(r.bottom)+5;
+  if(top+h>window.innerHeight-pad)top=window.innerHeight-pad-h;
   if(top<pad)top=pad;
-  dd.style.left=Math.round(left-o.x)+'px';
-  dd.style.top=Math.round(top-o.y)+'px';
-  /* the fixed containing block may be an ancestor rather than the viewport, so
-     correct the result against the box that was really rendered. */
+  dd.style.left=left+'px';
+  dd.style.top=top+'px';
+  /* last-resort correction against the box that was really rendered. */
   var a=dd.getBoundingClientRect(),dx=a.left-left,dy=a.top-top;
-  if(Math.abs(dx)>0.5)dd.style.left=(parseFloat(dd.style.left)-dx)+'px';
-  if(Math.abs(dy)>0.5)dd.style.top=(parseFloat(dd.style.top)-dy)+'px';
+  if(Math.abs(dx)>0.5)dd.style.left=(left-dx)+'px';
+  if(Math.abs(dy)>0.5)dd.style.top=(top-dy)+'px';
+  dd.style.transform='';
 }
 function csLabel(opt){
   var k=opt.getAttribute('data-i');
@@ -1107,12 +1151,13 @@ function csLabel(opt){
   return opt.textContent.replace('\u2713','').trim();
 }
 function csPick(opt){
-  var cs=opt.closest('.cs'),h=cs.querySelector('input[type="hidden"]'),btn=cs.querySelector('.cs-btn');
+  var openDD=opt.closest('.cs-dd');   /* an open menu is parked in <body> */
+  var cs=opt.closest('.cs')||(openDD&&openDD.__cs),h=cs.querySelector('input[type="hidden"]'),btn=cs.querySelector('.cs-btn');
   cs.querySelectorAll('.cs-opt').forEach(function(o){o.classList.remove('sel');});
   opt.classList.add('sel');h.value=opt.dataset.val;
   btn.querySelector('.cs-txt').textContent=csLabel(opt);
-  cs.querySelector('.cs-dd').classList.remove('open');btn.classList.remove('open');
-  var dd=cs.querySelector('.cs-dd');dd.classList.remove('cs-dd-pop');dd.style.position='';dd.style.left='';dd.style.top='';dd.style.width='';dd.style.bottom='';dd.style.minWidth='';
+  var dd=openDD||cs.querySelector('.cs-dd');
+  csRestore(dd);btn.classList.remove('open');
   var id=h.id;if(id==='tone'||id==='purpose'||id==='letterLang'||id==='polishMode'||id==='outLang'||id==='srcRegion'||id==='outRegion'){csLetterOptPick(id);}else if(id==='provider')onProviderPick(opt.dataset.val);else if(id==='modelPick')onModelPick(opt.dataset.val);
 }
 function csLangPick(opt){csPick(opt);locale=opt.dataset.val;document.getElementById('langVal').value=locale;localStorage.setItem('bp_lang',locale);applyI18n();}
@@ -1128,7 +1173,7 @@ function csLetterOptPick(id){
   saveLetterOpts();
 }
 function csCloseAll(){
-  document.querySelectorAll('.cs-dd.open').forEach(function(d){d.classList.remove('open');d.classList.remove('cs-dd-pop');d.style.position='';d.style.left='';d.style.top='';d.style.width='';d.style.bottom='';d.style.minWidth='';});
+  document.querySelectorAll('.cs-dd.open,.cs-dd.cs-dd-pop').forEach(function(d){csRestore(d);});
   document.querySelectorAll('.cs-btn.open').forEach(function(b){b.classList.remove('open');});
 }
 function csSyncAll(){
@@ -1142,7 +1187,7 @@ function csSyncAll(){
     if(!found){var first=cs.querySelector('.cs-opt');if(first){first.classList.add('sel');txt.textContent=csLabel(first);h.value=first.dataset.val;}}
   });
 }
-document.addEventListener('click',function(e){if(!e.target.closest('.cs'))csCloseAll();});
+document.addEventListener('click',function(e){if(!e.target.closest('.cs')&&!e.target.closest('.cs-dd'))csCloseAll();});
 
 /* ===== i18n ===== */
 function applyI18n(){
@@ -1291,13 +1336,14 @@ async function fetchModelList(){
   finally{if(btn){btn.disabled=false;var lb2=btn.querySelector('.cs-txt');if(lb2)lb2.textContent=t('loadModels');}}
 }
 async function openModelPicker(btn){
+  if(btn.classList.contains('open')){csCloseAll();return;}   /* second click closes it */
   var p=activeProv();if(!p)return;
   if(!(p.models&&p.models.length)){var list=await fetchModelList();if(!list)return;}
   refreshModelDD();
   var dd=$('modelDD');if(!dd||!dd.children.length)return;
   csCloseAll();
-  dd.classList.add('open');btn.classList.add('open');
   csPlaceMenu(btn,dd);
+  dd.classList.add('open');btn.classList.add('open');
 }
 
 /* ===== Presets ===== */
@@ -1456,7 +1502,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.3';
+var APP_VERSION='2026.10.01.4';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
