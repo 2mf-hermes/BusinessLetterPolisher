@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01",
+  "version": "2026.10.01.1",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "新增：AI 供應商模式，可儲存多組供應商，並用下拉清單切換。新增：填入 AI URL 與 API Key 後可載入模型清單，直接從清單挑選模型。新增：供應商可自行命名、新增與刪除。改善：既有的單組 API 設定會自動轉成第一組供應商，不需重新輸入。",
-    "zh-CN": "新增：AI 供应商模式，可保存多组供应商，并用下拉列表切换。新增：填入 AI URL 与 API Key 后可载入模型清单，直接从清单选择模型。新增：供应商可自行命名、新增与删除。改善：原有的单组 API 设置会自动转换为第一组供应商，无需重新输入。",
-    "en": "Added: AI provider mode — save multiple providers and switch between them from a drop-down list. Added: after entering the AI URL and API key, load the available model list and pick a model directly. Added: providers can be named, added and deleted. Improved: an existing single API configuration is migrated into the first provider automatically."
+    "zh-TW": "修復：安裝路徑含空白時更新會在重啟前失敗（出現「Windows 找不到 F:\\Program」），更新檔已無法複製到安裝目錄。",
+    "zh-CN": "修复：安装路径含空白时更新会在重启前失败（出现「Windows 找不到 F:\\Program」），更新文件无法复制到安装目录。",
+    "en": "Fixed: when the install path contained a space, the update failed before restarting (Windows could not find \"F:\\Program\") and the new files were never copied into the install folder."
   }
 }

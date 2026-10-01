@@ -328,17 +328,36 @@ class App : Form
 
             ReportUpdate("installing", 100, "");
             string exeName = Path.GetFileName(Application.ExecutablePath);
+            string updateLog = Path.Combine(Path.GetTempPath(), "blp-update-log.txt");
             string script = "@echo off\r\n" +
-                "setlocal\r\n" +
-                "set TARGET=" + Quote(exeDir) + "\r\n" +
-                "set SOURCE=" + Quote(payloadDir) + "\r\n" +
-                "set PID=" + Process.GetCurrentProcess().Id + "\r\n" +
+                "setlocal enableextensions\r\n" +
+                // quoted "set" form: the variable holds the raw path, so every later
+                // use must add its own quotes. Never store the quotes in the value,
+                // or \"%TARGET%\\app.exe\" splits at the first space.
+                "set \"TARGET=" + exeDir + "\"\r\n" +
+                "set \"SOURCE=" + payloadDir + "\"\r\n" +
+                "set \"TEMP_DIR=" + tempRoot + "\"\r\n" +
+                "set \"LOGFILE=" + updateLog + "\"\r\n" +
+                "set \"PID=" + Process.GetCurrentProcess().Id + "\"\r\n" +
+                "set \"TRIES=0\"\r\n" +
+                "echo [%date% %time%] updater start >> \"%LOGFILE%\"\r\n" +
+                "echo target=%TARGET% >> \"%LOGFILE%\"\r\n" +
                 ":wait\r\n" +
-                "tasklist /FI \"PID eq %PID%\" 2>NUL | find \"%PID%\" >NUL\r\n" +
-                "if not errorlevel 1 (timeout /t 1 /nobreak >NUL & goto wait)\r\n" +
-                "robocopy \"%SOURCE%\" \"%TARGET%\" /E /R:3 /W:1 /XD user_data runtime >NUL\r\n" +
+                "tasklist /FI \"PID eq %PID%\" /NH 2>NUL | findstr /R /C:\"\\<%PID%\\>\" >NUL\r\n" +
+                "if errorlevel 1 goto copy\r\n" +
+                "set /a TRIES+=1\r\n" +
+                "if %TRIES% GEQ 90 goto copy\r\n" +
+                "timeout /t 1 /nobreak >NUL\r\n" +
+                "goto wait\r\n" +
+                ":copy\r\n" +
+                // /IS copies even when the timestamps look equal (robocopy only
+                // compares to the nearest 2 seconds, which can silently skip a
+                // freshly extracted payload), so an update is always applied.
+                "robocopy \"%SOURCE%\" \"%TARGET%\" /E /IS /R:5 /W:1 /XD user_data runtime >> \"%LOGFILE%\" 2>&1\r\n" +
+                "echo robocopy exit=%errorlevel% >> \"%LOGFILE%\"\r\n" +
                 "start \"\" \"%TARGET%\\" + exeName + "\"\r\n" +
-                "rmdir /s /q " + Quote(tempRoot) + "\r\n" +
+                "echo relaunched \"%TARGET%\\" + exeName + "\" >> \"%LOGFILE%\"\r\n" +
+                "rmdir /s /q \"%TEMP_DIR%\"\r\n" +
                 "del /q \"%~f0\"\r\n";
             File.WriteAllText(scriptPath, script, System.Text.Encoding.Default);
             Process.Start(new ProcessStartInfo(scriptPath) { UseShellExecute = true, WindowStyle = ProcessWindowStyle.Hidden });
@@ -447,11 +466,6 @@ class App : Form
             else sb.Append(c);
         }
         return sb.Append('"').ToString();
-    }
-
-    static string Quote(string value)
-    {
-        return "\"" + value.Replace("\"", "\"\"") + "\"";
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)
