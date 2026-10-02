@@ -135,7 +135,12 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 /* ===== Layout ===== */
 .wrap{max-width:1120px;margin:0 auto;padding:20px 24px;display:grid;gap:20px;position:relative;z-index:1;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-@media(max-width:860px){.row2{grid-template-columns:1fr;}}
+@media(max-width:860px){
+  .row2{grid-template-columns:1fr;}
+  /* Stacked layout scrolls; keep empty room under the content so the
+     floating buttons never sit on top of the last control. */
+  .wrap{padding-bottom:84px;}
+}
 
 /* ===== Cards — glass material ===== */
 .card{
@@ -167,14 +172,23 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .opts-grid>.fg:has(#outRegionCS){order:4;}
 .opts-grid>.fg:has(#toneCS){order:5;}
 .opts-grid>.fg:has(#polishModeCS){order:6;}
-.opts-grid>.fg:has(#purposeCS){order:7;grid-column:1/-1;}
+.opts-grid>#custTone{order:7;}
+.opts-grid>.fg:has(#purposeCS){order:8;grid-column:1/-1;}
+.opts-grid>#custPurp{order:9;}
+/* The custom fields sit in the grid so each one opens right under the
+   selector that shows it, as a full-width sub-panel of that field. */
+.opts-grid>.cust{
+  grid-column:1/-1;margin-bottom:0;padding:10px 12px 9px;
+  border:0.5px solid rgba(var(--ac-rg),.22);border-radius:var(--r2);
+  background:rgba(var(--ac-rg),.05);
+}
+.opts-grid>.cust>label{color:var(--ac);margin-bottom:5px;}
+.opts-grid>.cust input{background:var(--sf);border-color:rgba(var(--ac-rg),.18);}
+.opts-grid>.cust .cust-h{color:var(--tx2);}
 @media(max-width:520px){
   .opts-grid{grid-template-columns:1fr;gap:10px;}
-  .opts-grid>.fg:has(#purposeCS){grid-column:1;}
-  /* single column: keep each region right under its own language */
-  .opts-grid>.fg:has(#srcRegionCS){order:2;}
-  .opts-grid>.fg:has(#outLangCS){order:3;}
-  .opts-grid>.fg:has(#outRegionCS){order:4;}
+  /* One column: the DOM order already reads top to bottom, so nothing is
+     reordered - the tab order stays identical to the reading order. */
 }
 .fg{display:flex;flex-direction:column;gap:5px;}
 .fg>label{
@@ -265,7 +279,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .btn-d{background:var(--er);color:#fff;box-shadow:0 1px 3px rgba(255,69,58,.25);}
 .btn-d:hover{filter:brightness(1.08);}
 
-.btn-sm{padding:6px 14px;font-size:11px;}
+.btn-sm{padding:6px 14px;font-size:11px;min-height:28px;}
 .btn.on{background:rgba(var(--ac-rg),.12);border-color:rgba(var(--ac-rg),.3);color:var(--ac);}
 .btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
 
@@ -552,6 +566,19 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(var(--ac-rg),.15);border-radius:3px;}
 ::-webkit-scrollbar-thumb:hover{background:rgba(var(--ac-rg),.25);}
+/* Keyboard focus: clearly visible for keyboard users, silent for mouse users. */
+.btn:focus-visible,.chip:focus-visible,.tab:focus-visible,.cs-btn:focus-visible,
+.cs-opt:focus-visible,.fab:focus-visible,.px:focus-visible,
+.pref-switch input:focus-visible,.pref-switch:focus-within{
+  outline:2px solid var(--ac);outline-offset:2px;
+}
+/* Respect the system "reduce motion" setting. */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    transition-duration:.01ms!important;animation-duration:.01ms!important;
+    animation-iteration-count:1!important;scroll-behavior:auto!important;
+  }
+}
 </style>
 </head>
 <body>
@@ -593,7 +620,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
     </div>
     <!-- 2×2 selector grid -->
     <div class="opts-grid">
-      <!-- Row 1, Col 1: Language -->
+      <!-- Row 1, Col 1: letter language -->
       <div class="fg">
         <label data-i="lblLang"></label>
         <div class="cs" id="letterLangCS">
@@ -610,7 +637,52 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
           <input type="hidden" id="letterLang">
         </div>
       </div>
-      <!-- Row 1, Col 2: Tone -->
+      <!-- Row 1, Col 2: result language -->
+      <div class="fg">
+        <label data-i="lblOutLang"></label>
+        <div class="cs" id="outLangCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="outLangAuto">跟隨原始語言</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="outLangDD">
+            <div class="cs-opt" data-val="auto" data-i="outLangAuto" onclick="csPick(this)"><span>跟隨原始語言</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LETTER_LANGS -->
+          </div>
+          <input type="hidden" id="outLang">
+        </div>
+      </div>
+      <!-- Row 2, Col 1: source region -->
+      <div class="fg">
+        <label data-i="lblSrcRegion"></label>
+        <div class="cs" id="srcRegionCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="regionAuto">不指定</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="srcRegionDD">
+            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LANG_REGIONS -->
+          </div>
+          <input type="hidden" id="srcRegion">
+        </div>
+      </div>
+      <!-- Row 2, Col 2: result region -->
+      <div class="fg">
+        <label data-i="lblOutRegion"></label>
+        <div class="cs" id="outRegionCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="regionAuto">不指定</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="outRegionDD">
+            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LANG_REGIONS -->
+          </div>
+          <input type="hidden" id="outRegion">
+        </div>
+      </div>
+      <!-- Row 3, Col 1: polishing style -->
       <div class="fg">
         <label data-i="lblTone"></label>
         <div class="cs" id="toneCS">
@@ -634,7 +706,24 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
           <input type="hidden" id="tone">
         </div>
       </div>
-      <!-- Row 2, Col 1: Purpose -->
+      <!-- Row 3, Col 2: polishing mode -->
+      <div class="fg">
+        <label data-i="lblMode"></label>
+        <div class="cs" id="polishModeCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="modeFullLetter">完整信件</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd">
+            <div class="cs-opt" data-val="full" data-i="modeFullLetter" onclick="csPick(this)"><span>完整信件</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="content" data-i="modeContentOnly" onclick="csPick(this)"><span>僅潤飾內容</span><span class="cs-chk">✓</span></div>
+          </div>
+          <input type="hidden" id="polishMode">
+        </div>
+      </div>
+      <!-- Custom style input: opens right under the style selector -->
+        <div class="cust" id="custTone"><label data-i="customToneLabel"></label><input type="text" id="customToneVal" placeholder=""><div class="cust-h" data-i="customToneHint"></div></div>
+      <!-- Row 4 (full width): purpose -->
       <div class="fg">
         <label data-i="lblPurpose"></label>
         <div class="cs" id="purposeCS">
@@ -660,70 +749,9 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
           <input type="hidden" id="purpose">
         </div>
       </div>
-      <!-- Row 2, Col 2: Mode -->
-      <div class="fg">
-        <label data-i="lblMode"></label>
-        <div class="cs" id="polishModeCS">
-          <button class="cs-btn" onclick="csToggle(this)" type="button">
-            <span class="cs-txt" data-i="modeFullLetter">完整信件</span>
-            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-          <div class="cs-dd">
-            <div class="cs-opt" data-val="full" data-i="modeFullLetter" onclick="csPick(this)"><span>完整信件</span><span class="cs-chk">✓</span></div>
-            <div class="cs-opt" data-val="content" data-i="modeContentOnly" onclick="csPick(this)"><span>僅潤飾內容</span><span class="cs-chk">✓</span></div>
-          </div>
-          <input type="hidden" id="polishMode">
-        </div>
-      </div>
-      <!-- Output Language: displayed second via grid order -->
-      <div class="fg">
-        <label data-i="lblOutLang"></label>
-        <div class="cs" id="outLangCS">
-          <button class="cs-btn" onclick="csToggle(this)" type="button">
-            <span class="cs-txt" data-i="outLangAuto">跟隨原始語言</span>
-            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-          <div class="cs-dd" id="outLangDD">
-            <div class="cs-opt" data-val="auto" data-i="outLangAuto" onclick="csPick(this)"><span>跟隨原始語言</span><span class="cs-chk">✓</span></div>
-            <!-- Dynamically populated from LETTER_LANGS -->
-          </div>
-          <input type="hidden" id="outLang">
-        </div>
-      </div>
-      <!-- Source language region (optional) -->
-      <div class="fg">
-        <label data-i="lblSrcRegion"></label>
-        <div class="cs" id="srcRegionCS">
-          <button class="cs-btn" onclick="csToggle(this)" type="button">
-            <span class="cs-txt" data-i="regionAuto">不指定</span>
-            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-          <div class="cs-dd" id="srcRegionDD">
-            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
-            <!-- Dynamically populated from LANG_REGIONS -->
-          </div>
-          <input type="hidden" id="srcRegion">
-        </div>
-      </div>
-      <!-- Output language region (optional) -->
-      <div class="fg">
-        <label data-i="lblOutRegion"></label>
-        <div class="cs" id="outRegionCS">
-          <button class="cs-btn" onclick="csToggle(this)" type="button">
-            <span class="cs-txt" data-i="regionAuto">不指定</span>
-            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-          </button>
-          <div class="cs-dd" id="outRegionDD">
-            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
-            <!-- Dynamically populated from LANG_REGIONS -->
-          </div>
-          <input type="hidden" id="outRegion">
-        </div>
-      </div>
+      <!-- Custom purpose input: opens right under the purpose selector -->
+        <div class="cust" id="custPurp"><label data-i="customPurpLabel"></label><input type="text" id="customPurpVal" placeholder=""><div class="cust-h" data-i="customPurpHint"></div></div>
     </div>
-    <!-- Custom inputs (hidden by default) -->
-    <div class="cust" id="custTone"><label data-i="customToneLabel"></label><input type="text" id="customToneVal" placeholder=""><div class="cust-h" data-i="customToneHint"></div></div>
-    <div class="cust" id="custPurp"><label data-i="customPurpLabel"></label><input type="text" id="customPurpVal" placeholder=""><div class="cust-h" data-i="customPurpHint"></div></div>
     <textarea class="ta" id="letterIn" oninput="updCnt()" placeholder=""></textarea>
     <div class="cnt"><span id="charCnt">0</span></div>
     <div class="btns">
@@ -1223,8 +1251,8 @@ function csLangPick(opt){csPick(opt);locale=opt.dataset.val;document.getElementB
 function csLetterOptPick(id){
   var val=v(id);
   if(id==='letterLang'){LO.letterLang=val;refreshRegionDDs({src:'auto',out:(v('outLang')==='auto'?'auto':v('outRegion'))});}
-  else if(id==='tone'){LO.tone=val;onToneCh();}
-  else if(id==='purpose'){LO.purpose=val;onPurpCh();}
+  else if(id==='tone'){LO.tone=val;onToneCh(1);}
+  else if(id==='purpose'){LO.purpose=val;onPurpCh(1);}
   else if(id==='polishMode')LO.polishMode=val;
   else if(id==='outLang'){LO.outLang=val;refreshRegionDDs({src:v('srcRegion'),out:'auto'});}
   else if(id==='srcRegion')LO.srcRegion=val;
@@ -1466,8 +1494,15 @@ function v(id){return document.getElementById(id).value.trim();}
 function sV(id,val){document.getElementById(id).value=val;}
 function $(id){return document.getElementById(id);}
 function applyPreset(k,el){var p=PR[k];sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);if(!v('provName'))sV('provName',t(p.k));var ap=activeProv();if(ap)ap.models=[];csSyncAll();refreshModelDD();persistActiveProvider();applyActiveProvider();refreshProviderDD();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');}
-function onToneCh(){v('tone')==='custom'?$('custTone').classList.add('show'):$('custTone').classList.remove('show');}
-function onPurpCh(){v('purpose')==='custom-purpose'?$('custPurp').classList.add('show'):$('custPurp').classList.remove('show');}
+function custReveal(boxId,inputId,on,focus){
+  var box=$(boxId);if(!box)return;
+  box.classList.toggle('show',on);
+  if(!on||!focus)return;
+  var f=$(inputId);if(f)f.focus({preventScroll:true});
+  if(box.scrollIntoView)box.scrollIntoView({block:'nearest'});
+}
+function onToneCh(focus){custReveal('custTone','customToneVal',v('tone')==='custom',focus);}
+function onPurpCh(focus){custReveal('custPurp','customPurpVal',v('purpose')==='custom-purpose',focus);}
 function updCnt(){$('charCnt').textContent=$('letterIn').value.length;}
 
 /* ===== Panels ===== */
@@ -1601,7 +1636,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.5';
+var APP_VERSION='2026.10.01.6';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
