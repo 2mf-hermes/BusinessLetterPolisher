@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.6",
+  "version": "2026.10.01.7",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "改善：輸入欄位排列、小按鈕點擊區域、鍵盤焦點顯示、窄版版面底部留白。",
-    "zh-CN": "改善：输入栏位排列、小按钮点击区域、键盘焦点显示、窄版版面底部留白。",
-    "en": "Improved: field arrangement, small-button hit areas, keyboard focus visibility, and bottom spacing in the narrow layout."
+    "zh-TW": "修復：快速設定套用、修改建議回答語言、潤飾結果前綴與說明文字。改善：快速設定套用後的提示。",
+    "zh-CN": "修复：快速设置应用、修改建议回答语言、潤饰结果前缀与说明文字。改善：快速设置应用后的提示。",
+    "en": "Fixed: applying quick presets, the language of the suggestion notes, and extra wording around the polished result. Improved: feedback after a preset is applied."
   }
 }

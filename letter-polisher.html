@@ -882,7 +882,7 @@ sending:'正在發送請求…',noInput:'請先輸入信件內容',noApi:'請先
 polishDone:'潤飾完成',noResult:'尚無結果',copied:'已複製',copyFail:'複製失敗',
 downloaded:'已下載',loadedAsIn:'已放入輸入區',emptyDiff:'無差異',noSug:'無額外建議',
 clearConfirm:'確定清空所有歷史紀錄？',cleared:'已清空',deleted:'已刪除',
-presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'自架',
+presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'自架',presetApplied:'已应用快速预设，请填入 API Key',presetApplied:'已套用快速設定，請填入 API Key',
 tonePro:'專業正式',toneFriendly:'親切友善',toneConcise:'簡潔明瞭',tonePersuasive:'具說服力',
 toneApologetic:'誠懇致歉',toneGrateful:'感恩感謝',toneAssertive:'堅定果斷',toneAuthoritative:'權威專業',toneCautious:'嚴謹審慎',toneEncouraging:'鼓勵激勵',toneCustom:'自訂風格…',
 purpGeneral:'一般商業溝通',purpProposal:'合作提案',purpFollowup:'跟進催辦',purpThankyou:'感謝回覆',
@@ -952,7 +952,7 @@ sending:'Sending request…',noInput:'Please enter a letter',noApi:'Please confi
 polishDone:'Complete',noResult:'No result yet',copied:'Copied',copyFail:'Copy failed',
 downloaded:'Downloaded',loadedAsIn:'Loaded into input',emptyDiff:'No differences',noSug:'No suggestions',
 clearConfirm:'Clear all history?',cleared:'Cleared',deleted:'Deleted',
-presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'Self-hosted',
+presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'Self-hosted',presetApplied:'Preset applied — add your API key',presetApplied:'Preset applied \u2014 add your API key',
 tonePro:'Professional',toneFriendly:'Friendly',toneConcise:'Concise',tonePersuasive:'Persuasive',
 toneApologetic:'Apologetic',toneGrateful:'Grateful',toneAssertive:'Assertive',toneAuthoritative:'Authoritative',toneCautious:'Cautious',toneEncouraging:'Encouraging',toneCustom:'Custom…',
 purpGeneral:'General',purpProposal:'Proposal',purpFollowup:'Follow-up',purpThankyou:'Thank You',
@@ -1493,7 +1493,7 @@ function fillF(){sV('apiUrl',cfg.apiUrl);sV('apiKey',cfg.apiKey);sV('modelName',
 function v(id){return document.getElementById(id).value.trim();}
 function sV(id,val){document.getElementById(id).value=val;}
 function $(id){return document.getElementById(id);}
-function applyPreset(k,el){var p=PR[k];sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);if(!v('provName'))sV('provName',t(p.k));var ap=activeProv();if(ap)ap.models=[];csSyncAll();refreshModelDD();persistActiveProvider();applyActiveProvider();refreshProviderDD();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');}
+function applyPreset(k,el){var p=PR[k],nm=t(p.k);var ap=activeProv(),prev=null;try{prev=JSON.parse(localStorage.getItem('bp_providers')||'[]');}catch(e){}var fresh=!ap||(!String(ap.url||'').trim()&&!String(ap.key||'').trim()&&!String(ap.model||'').trim());sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);if(fresh||!v('provName')||/^AI |^AI$/.test(v('provName')))sV('provName',nm);if(ap)ap.models=[];csSyncAll();refreshModelDD();persistActiveProvider();applyActiveProvider();refreshProviderDD();provEditNewId=null;setProvEdit(true);refreshProvCur();csSyncAll();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');try{toast(t('presetApplied')+' · '+nm+' / '+p.m);}catch(e){}}
 function custReveal(boxId,inputId,on,focus){
   var box=$(boxId);if(!box)return;
   box.classList.toggle('show',on);
@@ -1542,19 +1542,27 @@ async function go(){
     if(srcName&&outName!==srcName)langLines.push('- This is a TRANSLATION task in addition to polishing: the output language ('+outName+') differs from the original language ('+srcName+'). Do NOT keep the original language.');
     if(outCode==='zh-CN')langLines.push('- Use Simplified Chinese characters (\u7b80\u4f53\u5b57) only. Do NOT output any Traditional Chinese characters, and use Mainland-style vocabulary.');
     if(outCode==='zh-TW')langLines.push('- Use Traditional Chinese characters (\u7e41\u9ad4\u5b57) only. Do NOT output any Simplified Chinese characters.');
-    langLines.push('- The "--- Suggestions ---" section must also be written in '+outName+'.');
+    langLines.push('- The "--- Suggestions ---" section is ALWAYS written in '+(srcName||"the original letter's language")+(srcR?', following the language conventions of '+srcR.en:'')+', even when the polished letter itself is in '+outName+'. The language choice above applies ONLY to the polished letter, never to the suggestions.');
   }else{
     langLines.push('- Write the output in the same language as the original letter.');
   }
   var langBlock=langLines.join('\n');
   var basePrompt=cfg.customSystemPrompt||('You are a senior business communication consultant. Polish the letter professionally.\nRules: preserve intent, improve clarity, maintain business etiquette, fix grammar, '+modeRule+'\n'+tI+'\n'+pI);
-  var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\nAppend "--- Suggestions ---" section (2-5 points) at the end.';
+  var outRule=[];
+  outRule.push('[OUTPUT RULES \u2014 STRICT]');
+  outRule.push('- Return ONLY the letter itself: greeting, body, closing and signature. No heading, no label, no title line.');
+  outRule.push('- Never open with a preamble such as "Here is the polished version", "Below is the revised letter", "\u4ee5\u4e0b\u70ba\u4fee\u6539\u5f8c\u7684\u7d50\u679c", "\u4ee5\u4e0b\u4e3a\u4fee\u6539\u540e\u7684\u7ed3\u679c" or "\u4ee5\u4e0b\u662f...".');
+  outRule.push('- Do NOT explain what you changed, and do NOT add tips, teaching notes, reminders, warnings, alternative versions, translations or questions.');
+  outRule.push('- Do NOT wrap the letter in code fences or quotation marks.');
+  outRule.push('- The \"--- Suggestions ---\" marker must appear exactly once, after the letter as a whole.');
+  outRule.push('- The \"--- Suggestions ---\" section (see [LANGUAGE REQUIREMENTS] for its language): 2-5 short points, one per line, each stating only WHAT could still be improved. Never restate the polished letter.');
+  var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\n'+outRule.join('\n');
 
   var st=Date.now();
   try{var r;if(cfg.apiFormat==='anthropic')r=await callAnthropic(input,sysPrompt);else if(cfg.apiFormat==='gemini')r=await callGemini(input,sysPrompt);else r=await callOpenAI(input,sysPrompt);
-  var el2=((Date.now()-st)/1000).toFixed(1);var pt=r.split('--- Suggestions ---');var polished=pt[0].trim();var sug=pt.length>1?pt[1].trim():'';
+  var el2=((Date.now()-st)/1000).toFixed(1);var pt=splitResult(r);var polished=pt.polished;var sug=pt.suggestions;
   $('letterOut').value=polished;$('diffV').innerHTML=diffHTML(input,polished);
-  $('sugV').innerHTML=sug?sug.replace(/\n/g,'<br>'):'<span style="color:var(--tx3)">'+esc(t('noSug'))+'</span>';
+  $('sugV').innerHTML=sug?esc(sug).replace(/\n/g,'<br>'):'<span style="color:var(--tx3)">'+esc(t('noSug'))+'</span>';
   lastRes={original:input,polished:polished,suggestions:sug};
   var pb=$('pfB');pb.textContent=el2+'s';pb.className='pf show '+(el2<3?'fast':el2<10?'med':'slow');
   showSts(t('polishDone')+' ('+el2+'s)','ok');addH(input,polished,sug,t(tK),t(pK));
@@ -1564,6 +1572,44 @@ async function go(){
 async function callOpenAI(t2,sp){var r=await fetch(cfg.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},body:JSON.stringify({model:cfg.modelName,temperature:cfg.temperature,messages:[{role:'system',content:sp},{role:'user',content:t2}]})});if(!r.ok){var b=await r.text();throw new Error(r.status+': '+b.substring(0,200));}var d=await r.json();if(d.choices&&d.choices[0]&&d.choices[0].message)return d.choices[0].message.content||'';throw new Error('Unexpected response');}
 async function callAnthropic(t2,sp){var r=await fetch(cfg.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:cfg.modelName,max_tokens:4096,temperature:cfg.temperature,system:sp,messages:[{role:'user',content:t2}]})});if(!r.ok){var b=await r.text();throw new Error(r.status+': '+b.substring(0,200));}var d=await r.json();if(d.content&&d.content[0])return d.content[0].text||'';throw new Error('Unexpected response');}
 async function callGemini(t2,sp){var url=cfg.apiUrl.replace('GEMINI_MODEL',cfg.modelName);var r=await fetch(url+'?key='+cfg.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:sp+'\n\n---\n\n'+t2}]}],generationConfig:{temperature:cfg.temperature}})});if(!r.ok){var b=await r.text();throw new Error(r.status+': '+b.substring(0,200));}var d=await r.json();if(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts)return d.candidates[0].content.parts[0].text||'';throw new Error('Unexpected response');}
+/* ---- result clean-up: keep the letter only, keep the suggestions apart ---- */
+var LEAD_RE=/^\s*(?:(?:#{1,6}\s*|\*\*)?(?:polished|revised|rewritten|final|improved|edited|updated)\s*(?:letter|version|e-?mail|text)?(?:\*\*)?\s*:?\s*$|[-=*\u2500\u2501]{3,}|(?:here(?:'s| is)|below is|following is)\b[^\n]*|(?:sure|certainly|of course|absolutely)\b[^\n]*|(?:\u4ee5\u4e0b|\u4e0b\u9762|\u4e0b\u65b9)[^\n]{0,40}(?:\u7d50\u679c|\u7ed3\u679c|\u4fee\u6539|\u4fee\u6b63|\u6f64\u98fe|\u6da6\u9970|\u4fe1\u4ef6)\s*[:\uff1a]?|[\u7e41\u7b26][\u9ad4\u4f53][\u5b57\u4f53]\s*[\uff1a:])\s*$/i;
+function stripFence(s){
+  var m=String(s||'').trim().match(/^```[a-zA-Z]*\s*\n([\s\S]*?)\n?```\s*$/);
+  return m?m[1]:String(s||'');
+}
+function cleanResult(out){
+  var body=stripFence(out).replace(/\r\n/g,'\n').replace(/\r/g,'\n').trim();
+  if(!body)return '';
+  var ls=body.split('\n'),i=0;
+  while(i<ls.length&&(!ls[i].trim()||LEAD_RE.test(ls[i])))i++;
+  body=ls.slice(i).join('\n').trim();
+  body=body.replace(/^\*\*(.+?)\*\*$/, '$1').trim();
+  return body;
+}
+function splitResult(raw){
+  var s=String(raw||'').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+  var marker='--- Suggestions ---',idx=-1,m;
+  var re=/-{2,}\s*suggestions\s*-{2,}/i;
+  m=re.exec(s);
+  if(m)idx=m.index;
+  else{var low=s.toLowerCase(),k=low.indexOf(marker.toLowerCase());if(k>=0)idx=k;}
+  var letterPart=idx>=0?s.slice(0,idx):s;
+  var sugPart=idx>=0?s.slice(idx).replace(/^[\s\S]*?suggestions[^\n]*\n?/i,''):'';
+  return {polished:cleanResult(letterPart),suggestions:cleanSuggestions(sugPart)};
+}
+function cleanSuggestions(s){
+  var lines=String(s||'').replace(/\r\n/g,'\n').split('\n'),out=[];
+  for(var i=0;i<lines.length;i++){
+    var l=lines[i].replace(/^\s*(?:[-*\u2022\u00b7]|\d+[.)])\s*/,'').trim();
+    if(!l)continue;
+    if(/^```/.test(l))continue;
+    if(/^(?:hope|let me know|feel free|if you (?:want|need|would like)|would you like|note:)/i.test(l))continue;
+    if(/^(?:\u5e0c\u671b|\u5982\u679c\u4f60\u9700\u8981|\u5982\u9700|\u6b61\u8fce\u544a\u77e5|\u6b22\u8fce\u544a\u77e5)/.test(l))continue;
+    out.push(l);
+  }
+  return out.join('\n');
+}
 function showSts(m,tp){var el=$('sts');el.innerHTML='';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=function(){el.classList.remove('show');};el.appendChild(msg);el.appendChild(close);el.className='sts show '+tp;}
 
 /* ===== Test ===== */
@@ -1636,7 +1682,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.6';
+var APP_VERSION='2026.10.01.7';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
