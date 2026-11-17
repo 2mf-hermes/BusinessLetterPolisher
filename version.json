@@ -1,12 +1,45 @@
 {
-  "version": "2026.10.01.9",
+  "version": "2026.10.01.10",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復：開啟時介面文字未顯示、設定面板無法開啟、紀錄面板無法開啟、頂部工具列按鈜無法點擊、設定與紀錄按鈜事件失效。改善：頂部工具列按鈜加上文字標籤。",
-    "zh-CN": "修复：开启时界面文字未显示、设置面板无法打开、记录面板无法打开、顶部工具列按钮无法点击、设置与记录按钮事件失效。改善：顶部工具列按钮加上文字标签。",
-    "en": "Fixed: interface text not showing on launch, Settings panel not opening, History panel not opening, top toolbar buttons not clickable, and Settings/History button handlers not firing. Improved: top toolbar buttons now carry text labels."
+    "zh-TW": [
+      "修復：",
+      "- 開啟時界面文字缺漏",
+      "- 頁首標題未顯示",
+      "- 設定面板在小視窗下裁切",
+      "- 歷史面板在小視窗下裁切",
+      "",
+      "改善：",
+      "- 內容超出視窗時自動調整大小",
+      "- 面板內容自動滾動",
+      "- 初始化流程將各步驟独立保護"
+    ],
+    "zh-CN": [
+      "修复：",
+      "- 开启时界面文字缺漏",
+      "- 页首标题未显示",
+      "- 设置面板在小视窗下裁切",
+      "- 历史面板在小视窗下裁切",
+      "",
+      "改善：",
+      "- 内容超出视窗时自动调整大小",
+      "- 面板内容自动滚动",
+      "- 初始化流程将各步骤独立保护"
+    ],
+    "en": [
+      "Fixed:",
+      "- Missing interface text on startup",
+      "- Header title not displayed",
+      "- Settings panel clipped in small windows",
+      "- History panel clipped in small windows",
+      "",
+      "Improved:",
+      "- Content auto-resizes when exceeding the window",
+      "- Panel content scrolls automatically",
+      "- Init flow guards each step independently"
+    ]
   }
 }
