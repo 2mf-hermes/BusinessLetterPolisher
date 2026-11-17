@@ -6,8 +6,9 @@
 $srcDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $outputDir = Join-Path (Split-Path -Parent $srcDir) "dist"
 
-# Version from date
-$version = Get-Date -Format "yyyy.MM.dd"
+# Version from version.json
+$versionJson = Get-Content (Join-Path $srcDir "version.json") | ConvertFrom-Json
+$version = $versionJson.version
 $zipName = "BusinessLetterPolisher-v$version.zip"
 $zipPath = Join-Path $outputDir $zipName
 $stageDir = Join-Path $outputDir "stage_$version"

@@ -1,0 +1,80 @@
+  1118	function toggleTheme(){
+  1119	  var h=document.documentElement,cur=h.getAttribute('data-theme'),n=cur==='dark'?'light':'dark';
+  1120	  h.setAttribute('data-theme',n);localStorage.setItem('bp_theme',n);
+  1121	  document.getElementById('themeBtn').title=t(n==='dark'?'themeLight':'themeDark');updateThemeIcon();
+  1122	}
+  1123	function loadTheme(){var s=localStorage.getItem('bp_theme');if(s)document.documentElement.setAttribute('data-theme',s);updateThemeIcon();}
+  1124	function updateThemeIcon(){
+  1125	  var d=document.documentElement.getAttribute('data-theme'),ic=document.getElementById('themeIc');
+  1126	  ic.innerHTML=d==='dark'?'<circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/>':'<path d="M17 10.5A7.5 7.5 0 019.5 3 7 7 0 1017 10.5z"/>';
+  1127	}
+  1128	
+  1129	/* ===== Presets ===== */
+  1130	function renderPresetChips(){var el=$('presetChips'),keys=['openai','anthropic','gemini','groq','deepseek','openai-compat'];el.innerHTML=keys.map(function(k){return'<span class="chip" onclick="applyPreset(\''+k+'\',this)">'+t(PR[k].k)+'</span>';}).join('');}
+  1131	
+  1132	/* ===== Settings ===== */
+  1133	function loadCfg(){var s=localStorage.getItem('bp_cfg');if(s)try{cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}}
+  1134	function toggleApiKeyVisibility(){var inp=document.getElementById('apiKey');var svg=document.getElementById('apiKeyEyeIcon');if(inp.type==='password'){inp.type='text';svg.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0110 20c-5 0-9-7-9-7a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0110 4c5 0 9 7 9 7a18.5 18.5 0 01-2.16 3.19"/><path d="M1 1l18 18" stroke-linecap="round"/>';}else{inp.type='password';svg.innerHTML='<path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy… (line truncated)
+  1135	function loadLetterOpts(){var s=localStorage.getItem('bp_letterOpts');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
+  1136	function saveLetterOpts(){localStorage.setItem('bp_letterOpts',JSON.stringify(LO));}
+  1137	function fillLetterOpts(){sV('letterLang',LO.letterLang);sV('tone',LO.tone);sV('purpose',LO.purpose);sV('polishMode',LO.polishMode);sV('outLang',LO.outLang);sV('srcRegion',LO.srcRegion||'auto');sV('outRegion',LO.outRegion||'auto');refreshRegionDDs({src:LO.srcRegion||'auto',out:LO.outRegion||'auto'});onToneCh();onPurpCh();}
+  1138	function loadLetterPrefMode(){var el=$('letterPrefEnabled');if(el)el.checked=localStorage.getItem('bp_letterPrefEnabled')==='1';}
+  1139	function saveLetterPrefMode(){var el=$('letterPrefEnabled');localStorage.setItem('bp_letterPrefEnabled',el&&el.checked?'1':'0');if(el&&el.checked)saveCurrentLetterPrefs();}
+  1140	function saveCurrentLetterPrefs(){LO={letterLang:v('letterLang'),tone:v('tone'),purpose:v('purpose'),polishMode:v('polishMode'),outLang:v('outLang'),srcRegion:v('srcRegion'),outRegion:v('outRegion')};localStorage.setItem('bp_letterPrefs',JSON.stringify(LO));localStorage.setItem('bp_letterPrefEnabled','1');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=true;saveLetterOpts();toast(t('letterPrefSaved'));}
+  1141	function restoreDefaultLetterPrefs(){LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};localStorage.removeItem('bp_letterPrefs');localStorage.setItem('bp_letterPrefEnabled','0');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=false;fillLetterOpts();saveLetterOpts();toast(t('letterPrefResetDone'));}
+  1142	function applySavedLetterPrefs(){if(localStorage.getItem('bp_letterPrefEnabled')!=='1')return;var s=localStorage.getItem('bp_letterPrefs');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
+  1143	function saveCfg(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' ✓');}
+  1144	function autoSave(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));}
+  1145	function fillF(){sV('apiUrl',cfg.apiUrl);sV('apiKey',cfg.apiKey);sV('modelName',cfg.modelName);sV('temperature',cfg.temperature);sV('apiFormat',cfg.apiFormat);sV('sysPrompt',cfg.customSystemPrompt);sV('customToneVal',cfg.customTone||'');sV('customPurpVal',cfg.customPurpose||'');csSyncAll();}
+  1146	function v(id){return document.getElementById(id).value.trim();}
+  1147	function sV(id,val){document.getElementById(id).value=val;}
+  1148	function $(id){return document.getElementById(id);}
+  1149	function applyPreset(k,el){var p=PR[k];sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);csSyncAll();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');}
+  1150	function onToneCh(){v('tone')==='custom'?$('custTone').classList.add('show'):$('custTone').classList.remove('show');}
+  1151	function onPurpCh(){v('purpose')==='custom-purpose'?$('custPurp').classList.add('show'):$('custPurp').classList.remove('show');}
+  1152	function updCnt(){$('charCnt').textContent=$('letterIn').value.length;}
+  1153	
+  1154	/* ===== Panels ===== */
+  1155	function toggleSP(){var o=$('sOv'),b=$('fabS');o.classList.contains('open')?(o.classList.remove('open'),b.classList.remove('on')):(o.classList.add('open'),b.classList.add('on'));}
+  1156	function toggleHP(){var o=$('hOv'),b=$('fabH');o.classList.contains('open')?(o.classList.remove('open'),b.classList.remove('on')):(o.classList.add('open'),b.classList.add('on'));}
+  1157	
+  1158	/* ===== Tabs ===== */
+  1159	function swTab(n,el){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});document.querySelectorAll('.tp').forEach(function(x){x.classList.remove('on');});el.classList.add('on');$('tp-'+n).classList.add('on');}
+  1160	function resetTabs(){var tabs=document.querySelectorAll('.tab'),ps=document.querySelectorAll('.tp');tabs.forEach(function(x){x.classList.remove('on');});ps.forEach(function(x){x.classList.remove('on');});if(tabs[0])tabs[0].classList.add('on');if(ps[0])ps[0].classList.add('on');}
+  1161	
+  1162	/* ===== Polish ===== */
+  1163	async function go(){
+  1164	  var input=$('letterIn').value.trim();
+  1165	  if(!input){showSts(t('noInput'),'err');return;}
+  1166	  autoSave();
+  1167	  if(!cfg.apiUrl||!cfg.apiKey){showSts(t('noApi'),'err');return;}
+  1168	  var btn=$('goBtn'),txt=$('goTxt');
+  1169	  btn.disabled=true;txt.innerHTML='<span class="sp"></span> '+t('polishing');
+  1170	  showSts(t('sending'),'info');
+  1171	  var lang=v('letterLang'),outLang=v('outLang'),tone=v('tone'),purp=v('purpose');
+  1172	  var tK=TL_KEY[tone]||'tonePro';if(tone==='custom'){var ct=v('customToneVal');tK=ct?'custom: '+ct:'Custom';}
+  1173	  var pK=PL_KEY[purp]||'purpGeneral';if(purp==='custom-purpose'){var cp=v('customPurpVal');pK=cp?'custom: '+cp:'Custom';}
+  1174	  var srcCode=lang,outCode=(!outLang||outLang==='auto')?lang:outLang;
+  1175	  var srcName=(srcCode&&srcCode!=='auto')?langName(srcCode):'',outName=(outCode&&outCode!=='auto')?langName(outCode):'';
+  1176	  var srcR=regionInfo(srcCode,v('srcRegion')),outR=regionInfo(outCode,v('outRegion'));
+  1177	  var tI=tone==='custom'?(v('customToneVal')||'Adjust tone as appropriate.'):'Style: '+t(tK);
+  1178	  var pI=purp==='custom-purpose'?(v('customPurpVal')||'Determine appropriate purpose.'):'Purpose: '+t(pK);
+  1179	  var pm=v('polishMode');
+  1180	  var modeRule=pm==='content'?'Only polish and refine the provided text as-is. Do NOT add greetings, closings, signatures, subject lines, or any content not in the original. Do NOT restructure into a letter format. Return ONLY the polished version of the provided text.':'Output a complete polished letter including appropriate greeting and closing.';
+  1181	  /* Language block: always appended, even when a custom system prompt is set,
+  1182	     so the chosen output language/region can never be silently dropped. */
+  1183	  var langLines=[];
+  1184	  langLines.push('[LANGUAGE REQUIREMENTS]');
+  1185	  langLines.push(srcName?('- The ORIGINAL letter is written in '+srcName+(srcR?', following the language conventions of '+srcR.en:'')+'.'):'- Detect the language of the original letter automatically.');
+  1186	  if(outName){
+  1187	    langLines.push('- You MUST write the ENTIRE output in '+outName+(outR?', using the wording, spelling, punctuation and business-writing conventions of '+outR.en:'')+'.');
+  1188	    if(srcName&&outName!==srcName)langLines.push('- This is a TRANSLATION task in addition to polishing: the output language ('+outName+') differs from the original language ('+srcName+'). Do NOT keep the original language.');
+  1189	    if(outCode==='zh-CN')langLines.push('- Use Simplified Chinese characters (\u7b80\u4f53\u5b57) only. Do NOT output any Traditional Chinese characters, and use Mainland-style vocabulary.');
+  1190	    if(outCode==='zh-TW')langLines.push('- Use Traditional Chinese characters (\u7e41\u9ad4\u5b57) only. Do NOT output any Simplified Chinese characters.');
+  1191	    langLines.push('- The "--- Suggestions ---" section must also be written in '+outName+'.');
+  1192	  }else{
+  1193	    langLines.push('- Write the output in the same language as the original letter.');
+  1194	  }
+  1195	  var langBlock=langLines.join('\n');
+  1196	  var basePrompt=cfg.customSystemPrompt||('You are a senior business communication consultant. Polish the letter professionally.\nRules: preserve intent, improve clarity, maintain business etiquette, fix grammar, '+modeRule+'\n'+tI+'\n'+pI);
+  1197	  var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\nAppend "--- Suggestions ---" section (2-5 points) at the end.';

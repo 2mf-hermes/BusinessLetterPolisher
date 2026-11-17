@@ -1,0 +1,11 @@
+Show each custom field under its own selector and tidy the interface details
+
+The 潤飾風格 / 信件用途 custom inputs now live inside the field grid, right
+below the selector that opens them, with the DOM order matching the visual
+order so the tab order still reads top to bottom.
+
+Audited the whole shell in a real browser at 1194x877, 780x900 and 520x900 and
+fixed what came out: small buttons were 25px tall (now 28px minimum), the
+stacked layout left the last control under the floating buttons (now 84px of
+clearance), keyboard focus is now visible, and a reduced-motion preference is
+honoured.

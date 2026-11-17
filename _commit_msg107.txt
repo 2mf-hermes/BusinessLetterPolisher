@@ -1,0 +1,10 @@
+Make quick presets work and keep AI chatter out of the result
+
+- Quick presets now apply for real: the provider takes the preset name, the
+  connection block opens so the change is visible, the summary line refreshes
+  and a short confirmation appears.
+- The "Suggestions" section is written in the original letter's language, not
+  in the output language.
+- The polished result is stripped of preambles ("Here is ..." / "以下是修改後
+  的結果"), explanations, fences and trailing advice; suggestions are split off
+  cleanly and escaped when rendered.

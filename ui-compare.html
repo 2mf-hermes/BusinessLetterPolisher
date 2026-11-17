@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>介面調整前後對照 — v2026.10.01.6</title>
+<style>
+  :root{color-scheme:light dark}
+  body{margin:0;padding:28px 32px;font:15px/1.7 -apple-system,"Segoe UI","Microsoft JhengHei",sans-serif;background:#0f1115;color:#e8eaed}
+  h1{font-size:20px;margin:0 0 4px}
+  p.sub{margin:0 0 24px;color:#9aa0a6;font-size:13px}
+  h2{font-size:15px;margin:28px 0 10px;color:#c9cdd2}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  figure{margin:0;background:#171a1f;border:1px solid #2a2f36;border-radius:10px;padding:10px}
+  figure img{width:100%;display:block;border-radius:6px}
+  figcaption{margin-top:8px;font-size:12.5px;color:#9aa0a6}
+  ol{margin:8px 0 0;padding-left:20px;font-size:14px}
+  code{background:#22262c;padding:1px 5px;border-radius:4px;font-size:13px}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<h1>輸入欄位排列 — 調整前後對照</h1>
+<p class="sub">v2026.10.01.5（前） 對比 v2026.10.01.6（後）；兩者皆已展開「自訂風格」與「自訂信件用途」欄位。</p>
+
+<h2>寬版 1194×877</h2>
+<div class="grid">
+  <figure><img src="ui-input-before.png" alt="調整前 寬版"><figcaption>調整前：自訂風格輸入區與「潤飾風格」不相鄰。</figcaption></figure>
+  <figure><img src="ui-input-after.png" alt="調整後 寬版"><figcaption>調整後：自訂風格輸入區緊接在「潤飾風格」下方、「信件用途」上方。</figcaption></figure>
+</div>
+
+<h2>窄版 520×900</h2>
+<div class="grid">
+  <figure><img src="ui-input-before-narrow.png" alt="調整前 窄版"><figcaption>調整前</figcaption></figure>
+  <figure><img src="ui-input-after-narrow.png" alt="調整後 窄版"><figcaption>調整後</figcaption></figure>
+</div>
+
+<h2>欄位視覺順序（實測）</h2>
+<ol>
+  <li>信件語言 ／ 結果顯示語言</li>
+  <li>原始信件語言地區 ／ 結果語言地區</li>
+  <li>潤飾風格 ／ 潤飾模式</li>
+  <li><code>自訂風格描述</code>（緊接潤飾風格之下）</li>
+  <li>信件用途</li>
+  <li><code>自訂信件用途</code>（緊接信件用途之下）</li>
+</ol>
+
+<h2>本版同時修正的人性化項目</h2>
+<ol>
+  <li>小按鈕點擊區域：<code>.btn-sm</code> 最小高度 28px，手指點擊命中率提升。</li>
+  <li>鍵盤焦點顯示：所有可操作元件補上可見 focus ring。</li>
+  <li>窄版（≤860px）堆疊時，浮動按鈕下方補足淨空，不再蓋住內容。</li>
+  <li>支援 <code>prefers-reduced-motion</code>：系統設定減少動態時自動收斂過場動畫。</li>
+  <li>DOM 順序＝視覺順序＝Tab 焦點順序，避免鍵盤走訪跳動。</li>
+</ol>
+</body>
+</html>

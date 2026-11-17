@@ -1,0 +1,12 @@
+Keep the provider menu in place and collapse the connection block
+
+The AI provider/model dropdowns still jumped out of view after they opened:
+.cs-dd animated `all`, so csPlaceMenu() measured the START of the transition
+and the self-correction pushed the menu off screen. Only opacity animates now,
+placement freezes the transitions while measuring, the correction is bounded,
+and a menu opened during the settings-panel slide is re-placed once the slide
+settles.
+
+The AI URL / key / model / temperature fields now stay hidden until Add or
+Edit opens them, with a header, even row spacing and an active state on the
+edit button.

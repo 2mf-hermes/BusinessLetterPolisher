@@ -1,0 +1,130 @@
+  1140	    var lg={};try{lg=JSON.parse(localStorage.getItem('bp_cfg')||'{}')||{};}catch(e){}
+  1141	    var url=lg.apiUrl||cfg.apiUrl||'',key=lg.apiKey||cfg.apiKey||'',fmt=lg.apiFormat||cfg.apiFormat||'openai',mdl=lg.modelName||cfg.modelName||'';
+  1142	    if(url||key)providers.push({id:newProvId(),name:providerNameFor(url,fmt),url:url,key:key,format:fmt,model:mdl,models:[]});
+  1143	  }
+  1144	  if(!providers.length)providers.push({id:newProvId(),name:t('provDefault'),url:'',key:'',format:'openai',model:'',models:[]});
+  1145	  providers.forEach(function(p){if(!p.id)p.id=newProvId();if(!p.format)p.format='openai';if(!p.name)p.name=t('provDefault');if(!(p.models instanceof Array))p.models=[];});
+  1146	  var hit=false;for(var i=0;i<providers.length;i++)if(providers[i].id===activeProvId)hit=true;
+  1147	  if(!hit)activeProvId=providers[0].id;
+  1148	  saveProviders();
+  1149	}
+  1150	function persistActiveProvider(){
+  1151	  var p=activeProv();if(!p||!$('apiUrl')||!$('modelName'))return;
+  1152	  if($('provName'))p.name=v('provName');
+  1153	  p.url=v('apiUrl');p.key=v('apiKey');p.format=v('apiFormat');p.model=v('modelName');
+  1154	  saveProviders();
+  1155	}
+  1156	function fillProviderFields(){
+  1157	  var p=activeProv();if(!p)return;
+  1158	  sV('provName',p.name||'');sV('apiUrl',p.url||'');sV('apiKey',p.key||'');sV('apiFormat',p.format||'openai');sV('modelName',p.model||'');
+  1159	  csSyncAll();
+  1160	}
+  1161	function applyActiveProvider(){
+  1162	  var p=activeProv();if(!p)return;
+  1163	  cfg.apiUrl=p.url||'';cfg.apiKey=p.key||'';cfg.modelName=p.model||'';cfg.apiFormat=p.format||'openai';
+  1164	  try{localStorage.setItem('bp_cfg',JSON.stringify(cfg));}catch(e){}
+  1165	}
+  1166	function refreshProviderDD(){
+  1167	  var dd=$('provDD');if(!dd)return;
+  1168	  dd.innerHTML=providers.map(function(p){return '<div class="cs-opt'+(p.id===activeProvId?' sel':'')+'" data-val="'+p.id+'" onclick="csPick(this)"><span>'+esc(p.name||'')+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+  1169	  var cs=$('provCS');if(cs){var tx=cs.querySelector('.cs-txt');if(tx)tx.textContent=(activeProv()||{}).name||'';}
+  1170	  var h=$('provider');if(h)h.value=activeProvId;
+  1171	}
+  1172	function onProviderPick(id){
+  1173	  if(!id||id===activeProvId)return;
+  1174	  persistActiveProvider();
+  1175	  activeProvId=id;saveProviders();
+  1176	  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  1177	}
+  1178	function initProviders(){loadProviders();refreshProviderDD();fillProviderFields();refreshModelDD();applyActiveProvider();}
+  1179	function newProvider(){
+  1180	  persistActiveProvider();
+  1181	  var p={id:newProvId(),name:t('provDefault')+' '+(providers.length+1),url:'',key:'',format:'openai',model:'',models:[]};
+  1182	  providers.push(p);activeProvId=p.id;saveProviders();
+  1183	  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  1184	  toast(t('provAdded'));
+  1185	  var el=$('provName');if(el){el.focus();el.select();}
+  1186	}
+  1187	function deleteProvider(){
+  1188	  if(providers.length<=1){toast(t('provLastOne'));return;}
+  1189	  if(!window.confirm(t('provDeleteConfirm')))return;
+  1190	  providers=providers.filter(function(p){return p.id!==activeProvId;});
+  1191	  activeProvId=providers[0].id;saveProviders();
+  1192	  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  1193	  toast(t('provDeleted'));
+  1194	}
+  1195	function modelsUrlFor(url,fmt){
+  1196	  var u=(url||'').trim().replace(/\/+$/,'');if(!u)return '';
+  1197	  if(fmt==='gemini'){var m=u.match(/^(.*\/models)\/[^\/:]+(?::[A-Za-z]+)?$/);if(m)return m[1];if(/\/models$/.test(u))return u;return u.replace(/\/v1beta\/.*$/,'/v1beta/models');}
+  1198	  if(fmt==='anthropic'){if(/\/messages$/.test(u))return u.replace(/\/messages$/,'/models');if(/\/models$/.test(u))return u;}
+  1199	  if(/\/chat\/completions$/.test(u))return u.replace(/\/chat\/completions$/,'/models');
+  1200	  if(/\/completions$/.test(u))return u.replace(/\/completions$/,'/models');
+  1201	  if(/\/models$/.test(u))return u;
+  1202	  return u+'/models';
+  1203	}
+  1204	function parseModelList(d,fmt){
+  1205	  var out=[],seen={};function add(x){x=String(x||'').replace(/^models\//,'');if(!x||seen[x])return;seen[x]=1;out.push(x);}
+  1206	  if(fmt==='gemini'){((d&&d.models)||[]).forEach(function(m){if(m.supportedGenerationMethods&&m.supportedGenerationMethods.indexOf('generateContent')<0)return;add(m.name);});}
+  1207	  else{((d&&(d.data||d.models))||[]).forEach(function(m){add(m.id||m.name);});}
+  1208	  out.sort();return out;
+  1209	}
+  1210	function refreshModelDD(){
+  1211	  var dd=$('modelDD');if(!dd)return;
+  1212	  var list=(activeProv()||{}).models||[];
+  1213	  dd.innerHTML=list.map(function(m){return '<div class="cs-opt" data-val="'+esc(m)+'" onclick="csPick(this)"><span>'+esc(m)+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+  1214	}
+  1215	function onModelPick(val){
+  1216	  if(!val)return;
+  1217	  var inp=$('modelName');if(inp)inp.value=val;
+  1218	  var p=activeProv();if(p){p.model=val;saveProviders();}
+  1219	  applyActiveProvider();
+  1220	}
+  1221	async function fetchModelList(){
+  1222	  var p=activeProv();if(!p)return null;
+  1223	  persistActiveProvider();
+  1224	  if(!String(p.url||'').trim()){showTR(t('needUrl'),'err');return null;}
+  1225	  if(!String(p.key||'').trim()){showTR(t('needKey'),'err');return null;}
+  1226	  var url=modelsUrlFor(p.url,p.format),btn=$('loadModelsBtn');
+  1227	  if(btn){btn.disabled=true;var lb=btn.querySelector('.cs-txt');if(lb)lb.textContent=t('loadingModels');}
+  1228	  showTR(t('loadingModels'),'info');
+  1229	  try{
+  1230	    var res;
+  1231	    if(p.format==='anthropic')res=await fetch(url,{headers:{'x-api-key':p.key,'anthropic-version':'2023-06-01'}});
+  1232	    else if(p.format==='gemini')res=await fetch(url+(url.indexOf('?')>=0?'&':'?')+'key='+encodeURIComponent(p.key));
+  1233	    else res=await fetch(url,{headers:{'Authorization':'Bearer '+p.key}});
+  1234	    if(!res.ok){var b=await res.text();throw new Error(res.status+': '+String(b).substring(0,160));}
+  1235	    var list=parseModelList(await res.json(),p.format);
+  1236	    if(!list.length){showTR(t('noModels'),'err');return null;}
+  1237	    p.models=list;saveProviders();refreshModelDD();
+  1238	    showTR(t('modelsLoaded').replace('{n}',list.length),'ok');
+  1239	    return list;
+  1240	  }catch(e){showTR(t('modelsFail')+' ('+e.message+')','err');return null;}
+  1241	  finally{if(btn){btn.disabled=false;var lb2=btn.querySelector('.cs-txt');if(lb2)lb2.textContent=t('loadModels');}}
+  1242	}
+  1243	async function openModelPicker(btn){
+  1244	  var p=activeProv();if(!p)return;
+  1245	  if(!(p.models&&p.models.length)){var list=await fetchModelList();if(!list)return;}
+  1246	  refreshModelDD();
+  1247	  var dd=$('modelDD');if(!dd||!dd.children.length)return;
+  1248	  csCloseAll();
+  1249	  var r=btn.getBoundingClientRect(),w=Math.max(220,r.width),left=r.left;
+  1250	  if(left+w>window.innerWidth-10)left=Math.max(8,window.innerWidth-w-10);
+  1251	  dd.style.position='fixed';dd.style.left=left+'px';dd.style.top=(r.bottom+5)+'px';dd.style.width=w+'px';dd.style.bottom='auto';
+  1252	  dd.classList.add('open');btn.classList.add('open');
+  1253	}
+  1254	
+  1255	/* ===== Presets ===== */
+  1256	function renderPresetChips(){var el=$('presetChips'),keys=['openai','anthropic','gemini','groq','deepseek','openai-compat'];el.innerHTML=keys.map(function(k){return'<span class="chip" onclick="applyPreset(\''+k+'\',this)">'+t(PR[k].k)+'</span>';}).join('');}
+  1257	
+  1258	/* ===== Settings ===== */
+  1259	function loadCfg(){var s=localStorage.getItem('bp_cfg');if(s)try{cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}}
+  1260	function toggleApiKeyVisibility(){var inp=document.getElementById('apiKey');var svg=document.getElementById('apiKeyEyeIcon');if(inp.type==='password'){inp.type='text';svg.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0110 20c-5 0-9-7-9-7a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0110 4c5 0 9 7 9 7a18.5 18.5 0 01-2.16 3.19"/><path d="M1 1l18 18" stroke-linecap="round"/>';}else{inp.type='password';svg.innerHTML='<path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy… (line truncated)
+  1261	function loadLetterOpts(){var s=localStorage.getItem('bp_letterOpts');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
+  1262	function saveLetterOpts(){localStorage.setItem('bp_letterOpts',JSON.stringify(LO));}
+  1263	function fillLetterOpts(){sV('letterLang',LO.letterLang);sV('tone',LO.tone);sV('purpose',LO.purpose);sV('polishMode',LO.polishMode);sV('outLang',LO.outLang);sV('srcRegion',LO.srcRegion||'auto');sV('outRegion',LO.outRegion||'auto');refreshRegionDDs({src:LO.srcRegion||'auto',out:LO.outRegion||'auto'});onToneCh();onPurpCh();}
+  1264	function loadLetterPrefMode(){var el=$('letterPrefEnabled');if(el)el.checked=localStorage.getItem('bp_letterPrefEnabled')==='1';}
+  1265	function saveLetterPrefMode(){var el=$('letterPrefEnabled');localStorage.setItem('bp_letterPrefEnabled',el&&el.checked?'1':'0');if(el&&el.checked)saveCurrentLetterPrefs();}
+  1266	function saveCurrentLetterPrefs(){LO={letterLang:v('letterLang'),tone:v('tone'),purpose:v('purpose'),polishMode:v('polishMode'),outLang:v('outLang'),srcRegion:v('srcRegion'),outRegion:v('outRegion')};localStorage.setItem('bp_letterPrefs',JSON.stringify(LO));localStorage.setItem('bp_letterPrefEnabled','1');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=true;saveLetterOpts();toast(t('letterPrefSaved'));}
+  1267	function restoreDefaultLetterPrefs(){LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};localStorage.removeItem('bp_letterPrefs');localStorage.setItem('bp_letterPrefEnabled','0');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=false;fillLetterOpts();saveLetterOpts();toast(t('letterPrefResetDone'));}
+  1268	function applySavedLetterPrefs(){if(localStorage.getItem('bp_letterPrefEnabled')!=='1')return;var s=localStorage.getItem('bp_letterPrefs');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
+  1269	function saveCfg(){cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');persistActiveProvider();applyActiveProvider();refreshProviderDD();localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' ✓');}

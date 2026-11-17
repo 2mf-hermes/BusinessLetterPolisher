@@ -333,22 +333,6 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .custom-prompt textarea::placeholder{color:var(--tx3);}
 
 /* ===== FABs — floating action ===== */
-.fab{
-  position:fixed;width:48px;height:48px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;z-index:900;transition:all .2s var(--spring);user-select:none;
-}
-.fab:hover{transform:scale(1.08);}
-.fab:active{transform:scale(.9);transition-duration:.06s;}
-.fab svg{width:18px;height:18px;}
-.fab .tip{
-  position:absolute;bottom:56px;right:0;
-  background:var(--sfh);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  color:var(--tx);font-size:11px;padding:5px 10px;border-radius:8px;
-  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s var(--ease);
-  border:0.5px solid var(--bd);box-shadow:var(--sh-sm);
-}
-.fab:hover .tip{opacity:1;}
 .fab-s{
   bottom:24px;right:24px;background:var(--sf);
   border:0.5px solid var(--bd);color:var(--tx2);box-shadow:var(--sh);
@@ -359,12 +343,6 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
   border:0.5px solid var(--bd);color:var(--tx2);box-shadow:var(--sh);
 }
 .fab-h.on{background:var(--ac3);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(var(--ac-rg),.3);}
-.fab .bdg{
-  position:absolute;top:-3px;right:-3px;background:var(--er);
-  color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 3px;
-}
-.fab .bdg.off{display:none;}
 
 /* ===== Overlay + Panel — bottom sheet ===== */
 .ov{
@@ -568,10 +546,6 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 ::-webkit-scrollbar-thumb:hover{background:rgba(var(--ac-rg),.25);}
 /* Keyboard focus: clearly visible for keyboard users, silent for mouse users. */
 .btn:focus-visible,.chip:focus-visible,.tab:focus-visible,.cs-btn:focus-visible,
-.cs-opt:focus-visible,.fab:focus-visible,.px:focus-visible,
-.pref-switch input:focus-visible,.pref-switch:focus-within{
-  outline:2px solid var(--ac);outline-offset:2px;
-}
 /* Respect the system "reduce motion" setting. */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{
@@ -605,6 +579,12 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
     </div>
     <button class="cs-btn" id="themeBtn" onclick="toggleTheme()" title="" style="padding:5px 8px;">
       <svg id="themeIc" viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/></svg>
+    <button id="settingsBtn" class="cs-btn" onclick="$('sOv').classList.add('show')" title="" style="padding:5px 8px;">
+      <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="2.5"/><path d="M10 1v3m0 12v3M19 10h-3M4 10H1m15.36-5.36l-2.12 2.12M6.76 13.24l-2.12 2.12m12.72 0l-2.12-2.12M6.76 6.76L4.64 4.64"/></svg>
+    </button>
+    <button id="historyBtn" class="cs-btn" onclick="$('hOv').classList.add('show')" title="" style="padding:5px 8px;">
+      <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.5l3 2"/></svg>
+    </button>
     </button>
   </div>
 </header>
@@ -781,14 +761,12 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 </div></div>
 
 <!-- FABs -->
-<div class="fab fab-h" id="fabH" onclick="toggleHP()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span class="bdg off" id="hBdg"></span><span class="tip" data-i="tipHistory"></span></div>
-<div class="fab fab-s" id="fabS" onclick="toggleSP()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span class="tip" id="fabSTip" data-i="tipSettings"></span></div>
 
 <!-- History Panel -->
 <div class="ov" id="hOv" onclick="if(event.target===this)toggleHP()"><div class="panel hist"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span data-i="historyTitle"></span> <span id="hCnt" style="font-size:12px;font-weight:400;color:var(--tx3);"></span></h2><button class="px" onclick="toggleHP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn btn-d btn-sm" onclick="clrH()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 4h10M6 4V3h4v1M5 4v8h6V4"/></svg><span data-i="clearAll"></span></button></div><div class="hl" id="hList"></div></div></div>
 
 <!-- Settings Panel -->
-<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div></div><div class="btns" style="margin-top:8px;"><button class="btn btn-s btn-sm" type="button" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div style="display:flex;align-items:center;gap:6px;"><input id="modelName" placeholder="gpt-4o" style="flex:1;"><div class="cs cs-nosync" id="modelCS" style="width:auto;flex-shrink:0;"><button class="cs-btn" id="loadModelsBtn" onclick="openModelPicker(this)" type="button" style="width:auto;white-space:nowrap;" title=""><span class="cs-txt" data-i="loadModels"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="modelDD"></div><input type="hidden" id="modelPick" value=""></div></div></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div>
+<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div></div><div class="btns" style="margin-top:8px;"><button class="btn btn-s btn-sm" type="button" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div style="display:flex;align-items:center;gap:6px;"><input id="modelName" placeholder="gpt-4o" style="flex:1;"><div style="display:inline-block" style="width:auto;flex-shrink:0;"><button class="cs-btn" id="loadModelsBtn" onclick="openModelPicker(this)" style="min-width:100px" type="button" style="width:auto;white-space:nowrap;" title=""><span class="cs-txt" data-i="loadModels"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div><div class="cs-dd" id="modelDD" style="display:none;position:absolute;z-index:1200;"></div></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div>
 
 <!-- Detail Modal -->
 <div class="mo" id="dMo" onclick="if(event.target===this)closeMo()"><div class="mo-c"><h3 data-i="detailTitle"></h3><div class="dt" id="dCont"></div><div class="btns"><button class="btn btn-s btn-sm" onclick="closeMo()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg><span data-i="close"></span></button><button class="btn btn-g btn-sm" onclick="cpDetail()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button></div></div></div>
@@ -1049,7 +1027,7 @@ function populateRegionDD(ddId,hiddenId,langCode,want){
     o.className='cs-opt';
     o.setAttribute('data-val',r.v);
     o.setAttribute('onclick','csPick(this)');
-    o.innerHTML='<span>'+r.label+'</span><span class="cs-chk">\u2713</span>';
+    o.innerHTML='<span>'+esc(r.label)+'</span><span class="cs-chk">\u2713</span>';
     dd.appendChild(o);
   });
   h.value=dd.querySelector('.cs-opt[data-val="'+cur+'"]')?cur:'auto';
@@ -1073,7 +1051,7 @@ function populateLangDropdowns(){
       var o=document.createElement('div');
       o.className='cs-opt';o.setAttribute('data-val',l.v);
       o.setAttribute('onclick','csPick(this)');
-      o.innerHTML='<span>'+l.label+'</span><span class="cs-chk">\u2713</span>';
+      o.innerHTML='<span>'+esc(l.label)+'</span><span class="cs-chk">\u2713</span>';
       ll.appendChild(o);
     });
     ll.setAttribute('data-pop','1');
@@ -1087,7 +1065,7 @@ function populateLangDropdowns(){
       var o=document.createElement('div');
       o.className='cs-opt';o.setAttribute('data-val',l.v);
       o.setAttribute('onclick','csPick(this)');
-      o.innerHTML='<span>'+l.label+'</span><span class="cs-chk">\u2713</span>';
+      o.innerHTML='<span>'+esc(l.label)+'</span><span class="cs-chk">\u2713</span>';
       ol.appendChild(o);
     });
     ol.setAttribute('data-pop','1');
@@ -1142,11 +1120,12 @@ function csReposition(){
     var cs=dd.__cs,btn=cs&&cs.querySelector('.cs-btn');
     if(!btn){csCloseAll();return;}
     var r=btn.getBoundingClientRect();
-    if(r.bottom<0||r.top>window.innerHeight){csCloseAll();return;}
+    /* 只在按鈕完全不可見時才關閉，否則只重新定位 */
+    if(r.bottom<-50||r.top>window.innerHeight+50){csCloseAll();return;}
     csPlaceMenu(btn,dd);
   });
 }
-document.addEventListener('scroll',csReposition,true);
+document.addEventListener('scroll',csReposition,true);  /* 捲軸操作時重新定位，不關閉 */
 window.addEventListener('resize',csReposition);
 /* Put an open menu back inside its .cs wrapper (as it is while closed). */
 function csRestore(dd){
@@ -1274,7 +1253,7 @@ function csSyncAll(){
     if(!found){var first=cs.querySelector('.cs-opt');if(first){first.classList.add('sel');txt.textContent=csLabel(first);h.value=first.dataset.val;}}
   });
 }
-document.addEventListener('click',function(e){if(!e.target.closest('.cs')&&!e.target.closest('.cs-dd'))csCloseAll();});
+document.addEventListener('click',function(e){if(!e.target.closest('.cs')&&!e.target.closest('.cs-dd')&&!e.target.closest('.cs-dd-pop'))csCloseAll();});  /* 點擊外部關閉 */
 
 /* ===== i18n ===== */
 function applyI18n(){
@@ -1355,7 +1334,7 @@ function refreshProviderDD(){
 function onProviderPick(id){
   if(!id||id===activeProvId)return;
   persistActiveProvider();
-  activeProvId=id;saveProviders();
+  activeProvId=id;var newP=activeProv();if(newP)newP.models=[];saveProviders();
   provEditNewId=null;setProvEdit(false);
   fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
 }
@@ -1432,13 +1411,28 @@ function parseModelList(d,fmt){
 function refreshModelDD(){
   var dd=$('modelDD');if(!dd)return;
   var list=(activeProv()||{}).models||[];
-  dd.innerHTML=list.map(function(m){return '<div class="cs-opt" data-val="'+esc(m)+'" onclick="csPick(this)"><span>'+esc(m)+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+  if(list.length){
+    dd.innerHTML=list.map(function(m){return '<div class="cs-opt" data-val="'+esc(m)+'" onclick="pickModel(this)"><span>'+esc(m)+'</span></div>';}).join('');
+    dd.style.display='';  /* 有清單就顯示容器 */
+  }else{
+    dd.innerHTML='';
+    dd.style.display='none';
+  }
 }
 function onModelPick(val){
   if(!val)return;
   var inp=$('modelName');if(inp)inp.value=val;
   var p=activeProv();if(p){p.model=val;saveProviders();}
   applyActiveProvider();
+}
+
+function pickModel(opt){
+  var val=opt.dataset.val;
+  if(!val)return;
+  var inp=$('modelName');if(inp)inp.value=val;
+  var p=activeProv();if(p){p.model=val;saveProviders();}
+  applyActiveProvider();
+  var dd=$('modelDD');if(dd)dd.style.display='none';
 }
 async function fetchModelList(){
   var p=activeProv();if(!p)return null;
@@ -1463,14 +1457,17 @@ async function fetchModelList(){
   finally{if(btn){btn.disabled=false;var lb2=btn.querySelector('.cs-txt');if(lb2)lb2.textContent=t('loadModels');}}
 }
 async function openModelPicker(btn){
-  if(btn.classList.contains('open')){csCloseAll();return;}   /* second click closes it */
+  var dd=$('modelDD');if(!dd)return;
+  if(dd.style.display!=='none'){dd.style.display='none';return;}  /* 再次點擊關閉 */
   var p=activeProv();if(!p)return;
   if(!(p.models&&p.models.length)){var list=await fetchModelList();if(!list)return;}
   refreshModelDD();
-  var dd=$('modelDD');if(!dd||!dd.children.length)return;
-  csCloseAll();
-  csPlaceMenu(btn,dd);
-  dd.classList.add('open');btn.classList.add('open');
+  /* 定位在按鈕下方 */
+  var r=btn.getBoundingClientRect();
+  dd.style.left=r.left+'px';
+  dd.style.top=(r.bottom+4)+'px';
+  dd.style.minWidth=r.width+'px';
+  dd.style.display='block';
 }
 
 /* ===== Presets ===== */
@@ -1556,6 +1553,7 @@ async function go(){
   outRule.push('- Do NOT wrap the letter in code fences or quotation marks.');
   outRule.push('- The \"--- Suggestions ---\" marker must appear exactly once, after the letter as a whole.');
   outRule.push('- The \"--- Suggestions ---\" section (see [LANGUAGE REQUIREMENTS] for its language): 2-5 short points, one per line, each stating only WHAT could still be improved. Never restate the polished letter.');
+  outRule.push('- If your analysis mentions "method", "approach", "technique", "consideration", or explanatory notes, move ALL of them to the Suggestions section. The letter itself contains ONLY the polished content.');
   var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\n'+outRule.join('\n');
 
   var st=Date.now();
@@ -1585,6 +1583,9 @@ function cleanResult(out){
   while(i<ls.length&&(!ls[i].trim()||LEAD_RE.test(ls[i])))i++;
   body=ls.slice(i).join('\n').trim();
   body=body.replace(/^\*\*(.+?)\*\*$/, '$1').trim();
+  /* 移除 AI 方法論描述（method/approach/technique/consideration 開頭的段落） */
+  body=body.replace(/^(?:method|approach|technique|consideration|note)\s*:\s*.+$/gim,'').trim();
+  body=body.replace(/\n{3,}/g,'\n\n');  /* 清理多餘空行 */
   return body;
 }
 function splitResult(raw){
@@ -1596,7 +1597,12 @@ function splitResult(raw){
   else{var low=s.toLowerCase(),k=low.indexOf(marker.toLowerCase());if(k>=0)idx=k;}
   var letterPart=idx>=0?s.slice(0,idx):s;
   var sugPart=idx>=0?s.slice(idx).replace(/^[\s\S]*?suggestions[^\n]*\n?/i,''):'';
-  return {polished:cleanResult(letterPart),suggestions:cleanSuggestions(sugPart)};
+  var letter=cleanResult(letterPart),sug=cleanSuggestions(sugPart);
+  /* 若信件部分仍含方法論描述，提取至建議 */
+  var methodRe=/(?:^|\n)((?:method|approach|technique|consideration|note)\s*:.+?)(?=\n|$)/gi,m,extra=[];
+  while((m=methodRe.exec(letter)))extra.push(m[1].trim());
+  if(extra.length){letter=letter.replace(methodRe,'').replace(/\n{3,}/g,'\n\n').trim();sug=(extra.join('\n')+(sug?'\n'+sug:'')).trim();}
+  return {polished:letter,suggestions:sug};
 }
 function cleanSuggestions(s){
   var lines=String(s||'').replace(/\r\n/g,'\n').split('\n'),out=[];
@@ -1610,7 +1616,7 @@ function cleanSuggestions(s){
   }
   return out.join('\n');
 }
-function showSts(m,tp){var el=$('sts');el.innerHTML='';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=function(){el.classList.remove('show');};el.appendChild(msg);el.appendChild(close);el.className='sts show '+tp;}
+function showSts(m,tp){var el=$('sts');el.innerHTML='';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=function(){el.classList.remove('show');};el.appendChild(msg);el.appendChild(close);el.className='sts show '+tp;setTimeout(function(){if(el.scrollHeight>el.clientHeight||el.scrollWidth>el.clientWidth)el.style.maxWidth='calc(100vw - 32px)';},50);}
 
 /* ===== Test ===== */
 async function testConn(){
@@ -1682,7 +1688,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.7';
+var APP_VERSION='2026.10.01.8';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
@@ -1794,7 +1800,7 @@ function applyGuideHTML(){
   var lis=document.querySelectorAll('.guide-list li[data-i]');
   lis.forEach(function(li){
     var k=li.getAttribute('data-i');var v=t(k);
-    if(v&&v.indexOf('<')>=0)li.innerHTML=v;
+    if(v&&v.indexOf('<')>=0)li.textContent=v;
   });
 }
 window.addEventListener('DOMContentLoaded',function(){

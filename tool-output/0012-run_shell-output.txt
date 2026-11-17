@@ -1,0 +1,109 @@
+1099 var PR={openai:{u:'https://api.openai.com/v1/chat/completions',m:'gpt-4o',f:'openai',k:'presetOpenAI'},anthropic:{u:'https://api.anthropic.com/v1/messages',m:'claude-sonnet-4-20250514',f:'anthropic',k:'presetAnthropic'},gemini:{u:'https://generativelanguage.googleapis.com/v1beta/models/GEMINI_MODEL:generateContent',m:'gemini-2.0-flash',f:'gemini',k:'presetGemini'},groq:{u:'https://api.groq.com/openai/v1/chat/completions',m:'llama-3.3-70b-versatile',f:'openai',k:'presetGroq'},deepseek:{u:'https://api.deepseek.com/chat/completions',m:'deepseek-chat',f:'openai',k:'presetDeepSeek'},'openai-compat':{u:'http://localhost:11434/v1/chat/completions',m:'llama3',f:'openai',k:'presetCompat'}};
+1100 
+--- go() ---
+1516 /* ===== Polish ===== */
+1517 async function go(){
+1518   var input=$('letterIn').value.trim();
+1519   if(!input){showSts(t('noInput'),'err');return;}
+1520   autoSave();
+1521   if(!cfg.apiUrl||!cfg.apiKey){showSts(t('noApi'),'err');return;}
+1522   var btn=$('goBtn'),txt=$('goTxt');
+1523   btn.disabled=true;txt.innerHTML='<span class="sp"></span> '+t('polishing');
+1524   showSts(t('sending'),'info');
+1525   var lang=v('letterLang'),outLang=v('outLang'),tone=v('tone'),purp=v('purpose');
+1526   var tK=TL_KEY[tone]||'tonePro';if(tone==='custom'){var ct=v('customToneVal');tK=ct?'custom: '+ct:'Custom';}
+1527   var pK=PL_KEY[purp]||'purpGeneral';if(purp==='custom-purpose'){var cp=v('customPurpVal');pK=cp?'custom: '+cp:'Custom';}
+1528   var srcCode=lang,outCode=(!outLang||outLang==='auto')?lang:outLang;
+1529   var srcName=(srcCode&&srcCode!=='auto')?langName(srcCode):'',outName=(outCode&&outCode!=='auto')?langName(outCode):'';
+1530   var srcR=regionInfo(srcCode,v('srcRegion')),outR=regionInfo(outCode,v('outRegion'));
+1531   var tI=tone==='custom'?(v('customToneVal')||'Adjust tone as appropriate.'):'Style: '+t(tK);
+1532   var pI=purp==='custom-purpose'?(v('customPurpVal')||'Determine appropriate purpose.'):'Purpose: '+t(pK);
+1533   var pm=v('polishMode');
+1534   var modeRule=pm==='content'?'Only polish and refine the provided text as-is. Do NOT add greetings, closings, signatures, subject lines, or any content not in the original. Do NOT restructure into a letter format. Return ONLY the polished version of the provided text.':'Output a complete polished l
+1535   /* Language block: always appended, even when a custom system prompt is set,
+1536      so the chosen output language/region can never be silently dropped. */
+1537   var langLines=[];
+1538   langLines.push('[LANGUAGE REQUIREMENTS]');
+1539   langLines.push(srcName?('- The ORIGINAL letter is written in '+srcName+(srcR?', following the language conventions of '+srcR.en:'')+'.'):'- Detect the language of the original letter automatically.');
+1540   if(outName){
+1541     langLines.push('- You MUST write the ENTIRE output in '+outName+(outR?', using the wording, spelling, punctuation and business-writing conventions of '+outR.en:'')+'.');
+1542     if(srcName&&outName!==srcName)langLines.push('- This is a TRANSLATION task in addition to polishing: the output language ('+outName+') differs from the original language ('+srcName+'). Do NOT keep the original language.');
+1543     if(outCode==='zh-CN')langLines.push('- Use Simplified Chinese characters (\u7b80\u4f53\u5b57) only. Do NOT output any Traditional Chinese characters, and use Mainland-style vocabulary.');
+1544     if(outCode==='zh-TW')langLines.push('- Use Traditional Chinese characters (\u7e41\u9ad4\u5b57) only. Do NOT output any Simplified Chinese characters.');
+1545     langLines.push('- The "--- Suggestions ---" section must also be written in '+outName+'.');
+1546   }else{
+1547     langLines.push('- Write the output in the same language as the original letter.');
+1548   }
+1549   var langBlock=langLines.join('\n');
+1550   var basePrompt=cfg.customSystemPrompt||('You are a senior business communication consultant. Polish the letter professionally.\nRules: preserve intent, improve clarity, maintain business etiquette, fix grammar, '+modeRule+'\n'+tI+'\n'+pI);
+1551   var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\nAppend "--- Suggestions ---" section (2-5 points) at the end.';
+1552 
+1553   var st=Date.now();
+1554   try{var r;if(cfg.apiFormat==='anthropic')r=await callAnthropic(input,sysPrompt);else if(cfg.apiFormat==='gemini')r=await callGemini(input,sysPrompt);else r=await callOpenAI(input,sysPrompt);
+1555   var el2=((Date.now()-st)/1000).toFixed(1);var pt=r.split('--- Suggestions ---');var polished=pt[0].trim();var sug=pt.length>1?pt[1].trim():'';
+1556   $('letterOut').value=polished;$('diffV').innerHTML=diffHTML(input,polished);
+1557   $('sugV').innerHTML=sug?sug.replace(/\n/g,'<br>'):'<span style="color:var(--tx3)">'+esc(t('noSug'))+'</span>';
+1558   lastRes={original:input,polished:polished,suggestions:sug};
+1559   var pb=$('pfB');pb.textContent=el2+'s';pb.className='pf show '+(el2<3?'fast':el2<10?'med':'slow');
+1560   showSts(t('polishDone')+' ('+el2+'s)','ok');addH(input,polished,sug,t(tK),t(pK));
+1561   }catch(err){showSts('Error: '+err.message,'err');}
+1562   finally{btn.disabled=false;txt.textContent=t('startPolish');}
+1563 }
+1564 async function callOpenAI(t2,sp){var r=await fetch(cfg.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},body:JSON.stringify({model:cfg.modelName,temperature:cfg.temperature,messages:[{role:'system',content:sp},{role:'user',content:t2}]})});if(!r.
+1565 async function callAnthropic(t2,sp){var r=await fetch(cfg.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:cfg.modelName,max_tokens:4096,temperature:cfg.temperature,system:sp,messages:[{role:'user',co
+1566 async function callGemini(t2,sp){var url=cfg.apiUrl.replace('GEMINI_MODEL',cfg.modelName);var r=await fetch(url+'?key='+cfg.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:sp+'\n\n---\n\n'+t2}]}],generationConfig:{temperature:cfg.tempera
+1567 function showSts(m,tp){var el=$('sts');el.innerHTML='';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=funct
+1568 
+1569 /* ===== Test ===== */
+1570 async function testConn(){
+1571   autoSave();if(!cfg.apiUrl||!cfg.apiKey){showTR(t('testFill'),'err');return;}
+1572   var btn=$('testBtn'),ot=btn.textContent;btn.disabled=true;btn.innerHTML='<span class="sp" style="border-color:rgba(255,255,255,.15);border-top-color:var(--ac)"></span> '+t('testing');
+1573   showTR(t('testing'),'info');
+1574   try{var r;if(cfg.apiFormat==='anthropic')r=await callAnthropic('Hello.','Reply OK');else if(cfg.apiFormat==='gemini')r=await callGemini('Hello.','Reply OK');else r=await callOpenAI('Hello.','Reply OK');showTR(t('testOk')+': '+r.substring(0,60),'ok');}
+1575   catch(e){showTR(t('testFail')+': '+e.message,'err');}
+1576   finally{btn.disabled=false;btn.textContent=ot;}
+1577 }
+1578 function showTR(m,tp){var el=$('testR');el.innerHTML='';var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.c
+1579 
+1580 /* ===== Diff ===== */
+1581 function diffHTML(a,b){var al=a.split('\n'),bl=b.split('\n'),h='',mx=Math.max(al.length,bl.length);for(var i=0;i<mx;i++){var o=al[i]||'',n=bl[i]||'';if(o===n)h+='<div style="padding:1px 6px;color:var(--tx3)">'+esc(o)+'</div>';else{if(o)h+='<div class="df-o">- '+esc(o)+'</div>';if(n)h+='<div class="d
+1582 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+1583 
+1584 /* ===== History ===== */
+1585 function loadH(){var s=localStorage.getItem('bp_h');if(s)try{H=JSON.parse(s);}catch(e){}renderH();}
+1586 function addH(o,p,s,tone,purp){H.unshift({id:Date.now(),date:new Date().toLocaleString(),original:o,polished:p,suggestions:s,tone:tone,purpose:purp});if(H.length>50)H=H.slice(0,50);localStorage.setItem('bp_h',JSON.stringify(H));renderH();}
+1587 function renderH(){var el=$('hList'),ct=$('hCnt'),bd=$('hBdg');ct.textContent=H.length?'('+H.length+')':'';bd.textContent=H.length;H.length?bd.classList.remove('off'):bd.classList.add('off');if(!H.length){el.innerHTML='<div style="text-align:center;color:var(--tx3);padding:20px;font-size:13px;">'+t(
+1588 function showDetail(id){var f=null;for(var i=0;i<H.length;i++)if(H[i].id===id){f=H[i];break;}if(!f)return;$('dCont').innerHTML='<strong>【'+t('original')+'】</strong>\n'+esc(f.original)+'\n\n<strong>【'+t('polished')+'】</strong>\n'+esc(f.polished)+'\n\n<strong>【'+t('suggestions')+'】</strong>\n'+esc(f.s
+1589 function delH(id){H=H.filter(function(x){return x.id!==id;});localStorage.setItem('bp_h',JSON.stringify(H));renderH();toast(t('deleted'));}
+1590 function clrH(){if(!confirm(t('clearConfirm')))return;H=[];localStorage.removeItem('bp_h');renderH();toast(t('cleared'));}
+1591 
+1592 /* ===== Modal ===== */
+1593 function closeMo(){$('dMo').classList.remove('show');}
+1594 function cpDetail(){cpTxt(window._dp||'');}
+1595 
+1596 /* ===== Clipboard ===== */
+1597 function copyOut(){var tx=$('letterOut').value;if(!tx){toast(t('noResult'));return;}cpTxt(tx);}
+1598 function cpTxt(tx){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(tx).then(function(){toast(t('copied'));}).catch(function(){fbCp(tx);});}else fbCp(tx);}
+1599 function fbCp(tx){var a=document.createElement('textarea');a.value=tx;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(t('copied'));}catch(e){toast(t('copyFail'));}document.body.removeChild(a);}
+1600 function dlResult(){var tx=$('letterOut').value;if(!tx){toast(t('noResult'));return;}var b=new Blob(['\uFEFF'+tx],{type:'text/plain;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='polished_'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revoke
+1601 
+1602 /* ===== Actions ===== */
+1603 function useAsIn(){var tx=$('letterOut').value;if(!tx)return;$('letterIn').value=tx;updCnt();window.scrollTo({top:0,behavior:'smooth'});toast(t('loadedAsIn'));}
+1604 function clearAll(){$('letterIn').value='';$('letterOut').value='';updCnt();$('diffV').innerHTML='<span style="color:var(--tx3)">'+esc(t('sugPlaceholder'))+'</span>';$('sugV').innerHTML='<span style="color:var(--tx3)">'+esc(t('sugPlaceholder2'))+'</span>';$('sts').classList.remove('show');$('pfB').c
+1605 function loadSample(){
+1606   var lang=v('letterLang');
+1607   if(lang==='auto')lang=locale;
+1608   var samples={
+1609     'ko':'왕 매니저님께,\n\n지난주 귀사의 디지털 전환 프로젝트 협력 가능성을 논의할 수 있도록 시간을 내주셔서 감사합니다. 내부 검토 결과, 저희는 이번 협력에 큰 관심이 있으며 양사의 역량이 좋은 시너지를 만들 수 있다고 생각합니다.\n\n이번 주 금요일까지 세부 제안서와 견적서를 전달드리겠습니다. 궁금한 점이 있으시면 언제든지 연락해 주세요.\n\n감사합니다.\n이샤오밍\n영업 매니저\nXX Technology','de':'Sehr geehrter Herr Wang,\n\nvielen Dank, dass Sie si
+1610     'zh-TW':'王經理您好：\n\n感謝您上週撥冗與我們團隊進行會議，討論關於貴公司數位轉型專案的合作可能性。\n\n經過內部討論後，我們對於這個合作方向感到相當有興趣。我們認為我們的技術能力與貴公司的產業經驗可以產生很好的協同效應。\n\n關於合作方式，我們有以下初步想法：\n1. 第一階段：需求訪談與系統規劃（預計2週）\n2. 第二階段：原型開發與測試（預計6週）\n3. 第三階段：正式上線與後續維護\n\n預算方面，我們會在本週五前提供一份詳細的報價單給您參考。\n\n如果有任何問題，歡迎隨時與我聯繫。\n\n順頌商祺\n李小明\n業務經理\nXX 科技有限公司','zh-C
+1611 
+1612 /* ===== Onboarding Guide ===== */
+1613 var guideStep=1,guideTotal=3;
+1614 function openGuide(){guideStep=1;updGuideUI();$('guideOv').classList.add('open');}
+1615 function guideOpenSettings(){$('guideOv').classList.remove('open');if(!$('sOv').classList.contains('open'))toggleSP();}
+1616 function closeGuide(){$('guideOv').classList.remove('open');localStorage.setItem('bp_guide_done','1');}
+1617 function skipGuide(){closeGuide();}
+1618 function guideNav(d){
+1619   var ns=guideStep+d;
+1620   if(ns>guideTotal){closeGuide();return;}
+

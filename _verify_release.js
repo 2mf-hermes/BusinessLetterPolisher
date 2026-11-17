@@ -1,0 +1,15 @@
+const fs = require('fs');
+const html = fs.readFileSync('letter-polisher.html', 'utf8');
+const langMatch = html.match(/var LETTER_LANGS=\[([\s\S]*?)\];/);
+const sampleMatch = html.match(/var samples=\{([\s\S]*?)\};\$\('letterIn'\)/);
+if (!langMatch || !sampleMatch) throw new Error('Required language/sample block not found');
+const langs = [...langMatch[1].matchAll(/\{v:'([^']+)',label:/g)].map(m => m[1]);
+const samples = [...sampleMatch[1].matchAll(/(?:^|,)\s*'([^']+)':/g)].map(m => m[1]);
+const missing = langs.filter(x => !samples.includes(x));
+console.log('LANG_COUNT=' + langs.length);
+console.log('SAMPLE_COUNT=' + samples.length);
+console.log('MISSING=' + missing.join(','));
+if (missing.length) process.exitCode = 1;
+const scriptMatch = html.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+if (!scriptMatch) throw new Error('Script block not found');
+fs.writeFileSync('_syntax_check.js', scriptMatch[1]);

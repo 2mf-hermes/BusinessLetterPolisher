@@ -1,0 +1,13 @@
+*** Begin Patch
+*** Update File: 商業信件潤飾工具/letter-polisher.html
+@@ function renderPresetChips(){var el=$('presetChips'),keys=['openai','anthropic','gemini','groq','deepseek','openai-compat'];el.innerHTML=keys.map(function(k){return'<span class="chip" onclick="applyPreset(\''+k+'\',this)">'+t(PR[k].k)+'</span>';}).join('');}
+
+/* ===== Settings ===== */
+function loadCfg(){var s=localStorage.getItem('bp_cfg');if(s)try{cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}}
++function loadLetterOpts(){var s=localStorage.getItem('bp_letterOpts');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
++function saveLetterOpts(){localStorage.setItem('bp_letterOpts',JSON.stringify(LO));}
++function fillLetterOpts(){sV('letterLang',LO.letterLang);sV('tone',LO.tone);sV('purpose',LO.purpose);sV('polishMode',LO.polishMode);sV('outLang',LO.outLang);csSyncAll();onToneCh();onPurpCh();}
+ function saveCfg(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' \u2713');}
+ function autoSave(){cfg.apiUrl=v('apiUrl');cfg.apiKey=v('apiKey');cfg.modelName=v('modelName');cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.apiFormat=v('apiFormat');cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');localStorage.setItem('bp_cfg',JSON.stringify(cfg));}
+ function fillF(){sV('apiUrl',cfg.apiUrl);sV('apiKey',cfg.apiKey);sV('modelName',cfg.modelName);sV('temperature',cfg.temperature);sV('apiFormat',cfg.apiFormat);sV('sysPrompt',cfg.customSystemPrompt);sV('customToneVal',cfg.customTone||'');sV('customPurpVal',cfg.customPurpose||'');csSyncAll();}
+*** End Patch

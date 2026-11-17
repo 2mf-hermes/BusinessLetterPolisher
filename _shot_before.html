@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>商業信件潤飾工具 | Business Letter Polisher</title>
+<style>
+/* ============================================================
+   Modern Glass Design System
+   ============================================================ */
+
+/* ===== Theme Tokens ===== */
+:root{
+  /* Surface */
+  --bg:#0C1117;--bg2:#131A24;--bg3:#090D12;
+  --sf:rgba(30,34,44,.62);--sfh:rgba(22,26,36,.88);
+  --sfhov:rgba(40,46,60,.7);--sfi:rgba(255,255,255,.05);
+  /* Border */
+  --bd:rgba(255,255,255,.08);--bdh:rgba(255,255,255,.14);
+  /* Text */
+  --tx:#F2F2F7;--tx2:#989BA0;--tx3:#63666A;
+  /* Accent — system blue */
+  --ac:#0A84FF;--ac2:#409CFF;--acg:rgba(10,132,255,.12);
+  --ac3:#5E5CE6;--ac-rg:10,132,255;
+  /* Semantic */
+  --ok:#30D158;--wn:#FF9F0A;--er:#FF453A;
+  /* Elevation */
+  --sh:0 0 0 .5px rgba(0,0,0,.2),0 2px 8px rgba(0,0,0,.15),0 12px 40px rgba(0,0,0,.2);
+  --sh-sm:0 0 0 .5px rgba(0,0,0,.15),0 1px 3px rgba(0,0,0,.1);
+  --bl:blur(40px) saturate(1.8);
+  /* Radii — system */
+  --r:16px;--r2:12px;--r3:10px;--rp:20px;
+  /* Timing */
+  --ease:cubic-bezier(.25,.1,.25,1);--spring:cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme="light"]{
+  --bg:#F2F2F7;--bg2:#E5E5EA;--bg3:#F8F8FA;
+  --sf:rgba(255,255,255,.72);--sfh:rgba(255,255,255,.92);
+  --sfhov:rgba(255,255,255,.95);--sfi:rgba(0,0,0,.04);
+  --bd:rgba(0,0,0,.09);--bdh:rgba(0,0,0,.16);
+  --tx:#1C1C1E;--tx2:#8E8E93;--tx3:#C7C7CC;
+  --ac:#007AFF;--ac2:#0063D1;--acg:rgba(0,122,255,.1);
+  --ac3:#5856D6;--ac-rg:0,122,255;
+  --ok:#34C759;--wn:#FF9500;--er:#FF3B30;
+  --sh:0 0 0 .5px rgba(0,0,0,.08),0 2px 8px rgba(0,0,0,.06),0 12px 40px rgba(0,0,0,.1);
+  --sh-sm:0 0 0 .5px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04);
+}
+
+/* ===== Reset & Base ===== */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:"Segoe UI","Noto Sans TC","Helvetica Neue",sans-serif;
+  background:linear-gradient(165deg,var(--bg) 0%,var(--bg2) 40%,var(--bg3) 100%);
+  background-attachment:fixed;color:var(--tx);line-height:1.5;
+  min-height:100vh;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:50vh;background:radial-gradient(ellipse 70% 50% at 50% -10%,var(--acg),transparent);pointer-events:none;z-index:0;}
+
+/* ===== Header — top navigation bar ===== */
+header{
+  background:var(--sfh);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
+  padding:0 24px;height:52px;display:flex;align-items:center;gap:12px;
+  border-bottom:0.5px solid var(--bd);position:sticky;top:0;z-index:100;
+}
+.logo{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,var(--ac),var(--ac3));
+  border-radius:8px;color:#fff;box-shadow:0 1px 6px rgba(var(--ac-rg),.3);
+}
+.logo svg{width:17px;height:17px;}
+header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
+.h-spacer{flex:1;}
+.h-ctrls{display:flex;align-items:center;gap:8px;}
+
+/* ===== Custom Select / Menu ===== */
+.cs{position:relative;user-select:none;}
+.cs-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 26px 6px 10px;border:0.5px solid var(--bd);
+  border-radius:var(--r3);font-size:12px;font-weight:500;
+  color:var(--tx);background:var(--sfi);cursor:pointer;
+  font-family:inherit;transition:all .18s var(--ease);
+  white-space:nowrap;min-width:0;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.cs-btn:hover{background:rgba(var(--ac-rg),.06);border-color:rgba(var(--ac-rg),.2);}
+.cs-btn:active{transform:scale(.96);transition-duration:.08s;}
+.cs-btn.open{border-color:rgba(var(--ac-rg),.3);background:rgba(var(--ac-rg),.08);box-shadow:0 0 0 3px rgba(var(--ac-rg),.1);}
+.cs-icon{display:inline-flex;width:14px;height:14px;flex-shrink:0;color:var(--tx2);}
+.cs-arr{width:10px;height:10px;flex-shrink:0;color:var(--tx3);transition:transform .2s var(--spring);}
+.cs-btn.open .cs-arr{transform:rotate(180deg);}
+
+/* Dropdown panel — glass popover */
+.cs-dd{
+  position:absolute;top:calc(100% + 5px);left:0;
+  min-width:100%;width:fit-content;
+  background:var(--sfh);backdrop-filter:blur(48px) saturate(2);-webkit-backdrop-filter:blur(48px) saturate(2);
+  border:0.5px solid var(--bd);border-radius:var(--r2);
+  box-shadow:var(--sh);z-index:200;padding:4px;
+  opacity:0;pointer-events:none;
+  /* Only opacity may animate here. A menu is moved to <body> and positioned with
+     inline left/top, and a live transition makes the first getBoundingClientRect()
+     report the START of the animation (the old coordinates inside the panel) - the
+     self-correction in csPlaceMenu() then shoved the menu off screen. Transform is
+     never animated either, so no measurement can ever be polluted by one. */
+  transition:opacity .16s var(--ease);
+}
+.cs-dd.open{opacity:1;pointer-events:auto;animation:csFadeIn .16s var(--ease) both;}
+.cs-dd-fx{transition:none!important;animation:none!important;}
+.cs-dd-up{top:auto;bottom:calc(100% + 5px);}
+@keyframes csFadeIn{from{opacity:0;}to{opacity:1;}}
+.cs-dd-pop{max-height:min(64vh,360px);overflow-y:auto;overscroll-behavior:contain;}
+
+/* Options — menu items */
+.cs-opt{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:8px 10px;border-radius:8px;font-size:13px;font-weight:400;
+  color:var(--tx2);cursor:pointer;transition:all .12s var(--ease);
+  line-height:1.4;white-space:nowrap;
+}
+
+.cs-opt:hover{background:rgba(var(--ac-rg),.08);color:var(--tx);}
+.cs-opt.sel{color:var(--ac);font-weight:500;background:rgba(var(--ac-rg),.06);}
+.cs-opt:active{transform:scale(.98);transition-duration:.06s;}
+/* Checkmark indicator */
+.cs-chk{font-size:14px;font-weight:600;color:var(--ac);width:18px;text-align:center;opacity:0;transition:opacity .15s;}
+.cs-opt.sel .cs-chk{opacity:1;}
+/* Hide legacy dot indicators */
+.cs-dot{display:none!important;}
+
+/* Header compact select */
+.h-cs .cs-btn{padding:5px 22px 5px 9px;font-size:11px;}
+.h-cs .cs-opt{padding:6px 10px;font-size:12px;}
+
+/* ===== Layout ===== */
+.wrap{max-width:1120px;margin:0 auto;padding:20px 24px;display:grid;gap:20px;position:relative;z-index:1;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:860px){.row2{grid-template-columns:1fr;}}
+
+/* ===== Cards — glass material ===== */
+.card{
+  background:var(--sf);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
+  border-radius:var(--r);box-shadow:var(--sh);
+  padding:22px;border:0.5px solid var(--bd);
+  transition:border-color .3s var(--ease);position:relative;overflow:visible;
+}
+.card:hover{border-color:var(--bdh);}
+/* Top accent line — subtle gradient bar */
+.card::before{
+  content:'';position:absolute;top:0;left:24px;right:24px;height:2px;
+  border-radius:0 0 2px 2px;opacity:.5;transition:opacity .3s;
+}
+.card:hover::before{opacity:.85;}
+.card-inp::before{background:linear-gradient(90deg,transparent,var(--ac),transparent);}
+.card-out::before{background:linear-gradient(90deg,transparent,var(--ok),transparent);}
+.card-t{
+  font-size:13px;font-weight:600;margin-bottom:16px;color:var(--tx);
+  display:flex;align-items:center;gap:8px;letter-spacing:-.1px;
+}
+.card-t svg{width:15px;height:15px;opacity:.5;}
+
+/* ===== Form — aligned grid ===== */
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;margin-bottom:6px;}
+.opts-grid>.fg:has(#letterLangCS){order:1;}
+.opts-grid>.fg:has(#outLangCS){order:2;}
+.opts-grid>.fg:has(#srcRegionCS){order:3;}
+.opts-grid>.fg:has(#outRegionCS){order:4;}
+.opts-grid>.fg:has(#toneCS){order:5;}
+.opts-grid>.fg:has(#polishModeCS){order:6;}
+.opts-grid>.fg:has(#purposeCS){order:7;grid-column:1/-1;}
+@media(max-width:520px){
+  .opts-grid{grid-template-columns:1fr;gap:10px;}
+  .opts-grid>.fg:has(#purposeCS){grid-column:1;}
+  /* single column: keep each region right under its own language */
+  .opts-grid>.fg:has(#srcRegionCS){order:2;}
+  .opts-grid>.fg:has(#outLangCS){order:3;}
+  .opts-grid>.fg:has(#outRegionCS){order:4;}
+}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg>label{
+  font-size:11px;font-weight:500;color:var(--tx2);letter-spacing:.3px;
+  text-transform:uppercase;height:16px;line-height:16px;
+}
+.fg .cs-btn{width:100%;justify-content:space-between;}
+.fg .cs{width:100%;}
+.cs-dd{max-height:320px;overflow-y:auto;}
+.fg input,.fg textarea{
+  padding:9px 12px;border:0.5px solid var(--bd);border-radius:var(--r3);
+  font-size:13px;color:var(--tx);background:var(--sfi);
+  transition:all .2s var(--ease);font-family:inherit;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.fg input:hover,.fg textarea:hover{border-color:var(--bdh);}
+.fg input:focus,.fg textarea:focus{
+  outline:none;border-color:var(--ac);
+  box-shadow:0 0 0 3.5px rgba(var(--ac-rg),.12);
+}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--tx3);}
+.fg .mono{font-family:"SF Mono","Cascadia Code","Fira Code",monospace;font-size:12px;}
+
+/* ===== Chips ===== */
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.chip{
+  padding:5px 12px;border-radius:var(--rp);font-size:11px;font-weight:500;
+  cursor:pointer;border:0.5px solid var(--bd);background:var(--sfi);
+  color:var(--tx2);transition:all .2s var(--ease);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.chip:hover{border-color:rgba(var(--ac-rg),.25);color:var(--ac);background:rgba(var(--ac-rg),.06);}
+.chip:active{transform:scale(.95);transition-duration:.06s;}
+.chip.on{background:rgba(var(--ac-rg),.12);color:var(--ac);border-color:rgba(var(--ac-rg),.3);}
+
+/* ===== Textarea ===== */
+.ta{
+  width:100%;min-height:260px;padding:14px;border:0.5px solid var(--bd);
+  border-radius:var(--r2);font-size:13px;line-height:1.9;resize:vertical;
+  font-family:inherit;color:var(--tx);background:var(--sfi);
+  transition:all .2s var(--ease);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.ta:hover{border-color:var(--bdh);}
+.ta:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3.5px rgba(var(--ac-rg),.12);}
+.ta::placeholder{color:var(--tx3);}
+.ta.out{background:rgba(var(--ac-rg),.03);border-color:rgba(var(--ac-rg),.1);}
+[data-theme="light"] .ta.out{background:rgba(var(--ac-rg),.03);border-color:rgba(var(--ac-rg),.12);}
+.cnt{font-size:11px;color:var(--tx3);text-align:right;margin-top:4px;}
+
+/* ===== Buttons — system style ===== */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 18px;border:none;border-radius:var(--rp);
+  font-size:13px;font-weight:600;cursor:pointer;
+  transition:all .18s var(--ease);font-family:inherit;
+  letter-spacing:-.1px;line-height:1;
+}
+.btn svg{width:14px;height:14px;flex-shrink:0;}
+.btn:disabled{opacity:.3;cursor:not-allowed;}
+.btn:active:not(:disabled){transform:scale(.96);transition-duration:.06s;}
+
+/* Primary — accent blue pill */
+.btn-p{
+  background:var(--ac);color:#fff;
+  background-image:linear-gradient(to bottom,rgba(255,255,255,.15),rgba(0,0,0,.08));
+  box-shadow:0 1px 3px rgba(var(--ac-rg),.3),inset 0 .5px 0 rgba(255,255,255,.12);
+}
+.btn-p:hover:not(:disabled){
+  filter:brightness(1.08);
+  box-shadow:0 2px 8px rgba(var(--ac-rg),.35),inset 0 .5px 0 rgba(255,255,255,.12);
+  transform:translateY(-.5px);
+}
+.btn-p:active:not(:disabled){transform:scale(.96);filter:brightness(.95);}
+
+/* Secondary — glass */
+.btn-s{
+  background:var(--sfi);color:var(--tx);border:0.5px solid var(--bd);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.btn-s:hover{background:rgba(var(--ac-rg),.06);border-color:rgba(var(--ac-rg),.18);color:var(--ac);}
+
+/* Green */
+.btn-g{background:var(--ok);color:#fff;box-shadow:0 1px 3px rgba(48,209,88,.25);}
+.btn-g:hover{filter:brightness(1.08);}
+
+/* Red */
+.btn-d{background:var(--er);color:#fff;box-shadow:0 1px 3px rgba(255,69,58,.25);}
+.btn-d:hover{filter:brightness(1.08);}
+
+.btn-sm{padding:6px 14px;font-size:11px;}
+.btn.on{background:rgba(var(--ac-rg),.12);border-color:rgba(var(--ac-rg),.3);color:var(--ac);}
+.btns{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+
+/* ===== Spinner ===== */
+.sp{display:inline-block;width:12px;height:12px;border:1.5px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ===== Status ===== */
+.sts{padding:9px 12px;border-radius:var(--r3);font-size:12px;display:none;align-items:center;gap:5px;margin-top:7px;}
+.sts.show{display:flex;}
+.sts.info{background:var(--acg);color:var(--ac);border:0.5px solid rgba(var(--ac-rg),.12);}
+.sts.ok{background:rgba(48,209,88,.08);color:var(--ok);border:0.5px solid rgba(48,209,88,.12);}
+.sts.err{background:rgba(255,69,58,.08);color:var(--er);border:0.5px solid rgba(255,69,58,.12);}
+
+/* ===== Tabs — segmented feel ===== */
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--bd);margin-bottom:14px;}
+.tab{
+  padding:8px 14px;font-size:12px;font-weight:500;cursor:pointer;
+  color:var(--tx3);border-bottom:2px solid transparent;
+  margin-bottom:-0.5px;transition:all .2s var(--ease);
+}
+.tab:hover{color:var(--tx2);}
+.tab.on{color:var(--ac);border-bottom-color:var(--ac);}
+.tp{display:none;}.tp.on{display:block;}
+
+/* ===== Performance badge ===== */
+.pf{font-size:10px;padding:2px 8px;border-radius:10px;margin-left:auto;font-weight:500;display:none;letter-spacing:.1px;}
+.pf.show{display:inline-flex;align-items:center;}
+.pf.fast{background:rgba(48,209,88,.1);color:var(--ok);}
+.pf.med{background:rgba(255,159,10,.1);color:var(--wn);}
+.pf.slow{background:rgba(255,69,58,.1);color:var(--er);}
+
+/* ===== Custom input areas ===== */
+.cust{margin-bottom:10px;display:none;animation:fadeSlideIn .2s var(--ease);}
+.cust.show{display:block;}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+.cust>label{font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:4px;display:block;}
+.cust input{
+  width:100%;padding:9px 12px;border:0.5px solid var(--bd);border-radius:var(--r3);
+  font-size:13px;font-family:inherit;color:var(--tx);background:var(--sfi);transition:all .2s var(--ease);
+}
+.cust input:focus{outline:none;border-color:var(--ac);box-shadow:0 0 0 3.5px rgba(var(--ac-rg),.12);}
+.cust-h{font-size:10px;color:var(--tx3);margin-top:3px;}
+.custom-prompt{margin-top:10px;padding:12px;background:var(--sfi);border:0.5px solid var(--bd);border-radius:var(--r2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.custom-prompt label{font-size:11px;font-weight:600;color:var(--tx2);margin-bottom:5px;display:block;}
+.custom-prompt textarea{
+  width:100%;min-height:72px;padding:9px;border:0.5px solid var(--bd);
+  border-radius:var(--r3);font-size:12px;font-family:inherit;resize:vertical;
+  background:var(--sfi);color:var(--tx);transition:all .2s var(--ease);
+}
+.custom-prompt textarea::placeholder{color:var(--tx3);}
+
+/* ===== FABs — floating action ===== */
+.fab{
+  position:fixed;width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:900;transition:all .2s var(--spring);user-select:none;
+}
+.fab:hover{transform:scale(1.08);}
+.fab:active{transform:scale(.9);transition-duration:.06s;}
+.fab svg{width:18px;height:18px;}
+.fab .tip{
+  position:absolute;bottom:56px;right:0;
+  background:var(--sfh);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  color:var(--tx);font-size:11px;padding:5px 10px;border-radius:8px;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s var(--ease);
+  border:0.5px solid var(--bd);box-shadow:var(--sh-sm);
+}
+.fab:hover .tip{opacity:1;}
+.fab-s{
+  bottom:24px;right:24px;background:var(--sf);
+  border:0.5px solid var(--bd);color:var(--tx2);box-shadow:var(--sh);
+}
+.fab-s.on{background:var(--er);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(255,69,58,.3);}
+.fab-h{
+  bottom:24px;right:82px;background:var(--sf);
+  border:0.5px solid var(--bd);color:var(--tx2);box-shadow:var(--sh);
+}
+.fab-h.on{background:var(--ac3);color:#fff;border-color:transparent;box-shadow:0 2px 12px rgba(var(--ac-rg),.3);}
+.fab .bdg{
+  position:absolute;top:-3px;right:-3px;background:var(--er);
+  color:#fff;font-size:9px;min-width:16px;height:16px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-weight:600;padding:0 3px;
+}
+.fab .bdg.off{display:none;}
+
+/* ===== Overlay + Panel — bottom sheet ===== */
+.ov{
+  position:fixed;inset:0;background:rgba(0,0,0,.35);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  z-index:950;display:none;justify-content:flex-end;align-items:stretch;
+}
+.ov.open{display:flex;}
+.panel{
+  width:500px;max-width:90vw;height:100vh;max-height:100vh;background:var(--sfh);
+  backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
+  box-shadow:-8px 0 48px rgba(0,0,0,.25);overflow:hidden;padding:26px;
+  animation:slideIn .28s var(--spring);border-left:0.5px solid var(--bd);
+  display:flex;flex-direction:column;
+}
+.panel.hist{width:420px;max-width:88vw;}
+.panel>.ph{flex:0 0 auto;}
+.panel-body{flex:1 1 auto;min-height:0;overflow-y:auto;max-height:none;padding-bottom:18px;}
+.pref-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0;}
+.pref-row .pref-text{font-size:12px;color:var(--tx2);line-height:1.5;}
+.pref-switch{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2);cursor:pointer;}
+.pref-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.ph{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:18px;padding-bottom:14px;border-bottom:0.5px solid var(--bd);
+}
+.ph h2{font-size:16px;font-weight:700;color:var(--tx);display:flex;align-items:center;gap:8px;letter-spacing:-.2px;}
+.ph h2 svg{width:18px;height:18px;opacity:.45;}
+.px{
+  width:28px;height:28px;border-radius:50%;border:none;
+  background:var(--sfi);color:var(--tx2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s var(--ease);
+}
+.px svg{width:11px;height:11px;}
+.px:hover{background:rgba(var(--ac-rg),.08);color:var(--tx);}
+.px:active{transform:scale(.88);transition-duration:.06s;}
+.ps{margin-bottom:14px;padding-bottom:14px;border-bottom:0.5px solid var(--bd);}
+.ps:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.ps-t{font-size:10px;font-weight:600;color:var(--tx3);margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase;}
+
+/* ===== AI provider: in-use line + collapsible connection block ===== */
+.prov-cur{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  margin-top:9px;font-size:11px;color:var(--tx3);line-height:1.5;
+}
+.prov-cur b{color:var(--tx2);font-weight:600;}
+.prov-cur code{
+  font-family:"SF Mono","Cascadia Code","Fira Code",monospace;font-size:11px;
+  color:var(--ac);background:rgba(var(--ac-rg),.09);padding:1px 6px;border-radius:5px;
+}
+.prov-cur .prov-sep{opacity:.45;}
+.prov-cur .prov-off{color:var(--tx3);font-style:italic;}
+.prov-edit{
+  display:none;margin-top:12px;padding:12px 12px 2px;
+  border:0.5px solid var(--bd);border-radius:var(--r2);background:var(--sfi);
+}
+.prov-edit.open{display:block;animation:csFadeIn .18s var(--ease) both;}
+.prov-edit>.pe-h{
+  display:flex;align-items:center;gap:7px;margin-bottom:12px;
+  font-size:10px;font-weight:600;color:var(--tx3);letter-spacing:.5px;text-transform:uppercase;
+}
+.prov-edit>.pe-h::before{content:'';width:3px;height:11px;border-radius:2px;background:var(--ac);opacity:.75;}
+.prov-edit>.prow:last-of-type{margin-bottom:2px;}
+.prov-edit .btns{margin-top:2px;margin-bottom:12px;}
+.prow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.prow.one{grid-template-columns:1fr;}
+@media(max-width:560px){.prow{grid-template-columns:1fr;}}
+
+/* ===== History ===== */
+.hl{max-height:calc(100vh - 160px);overflow-y:auto;}
+.hi{
+  padding:11px;border:0.5px solid var(--bd);border-radius:var(--r2);
+  margin-bottom:7px;cursor:pointer;transition:all .2s var(--ease);
+  background:var(--sfi);
+}
+.hi:hover{border-color:rgba(var(--ac-rg),.2);background:rgba(var(--ac-rg),.06);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.hi:active{transform:scale(.98);transition-duration:.06s;}
+.hi .hm{font-size:10px;color:var(--tx3);margin-bottom:3px;display:flex;justify-content:space-between;}
+.hi .hp{font-size:12px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hi .ht{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;}
+.tg{font-size:9px;padding:2px 8px;border-radius:10px;background:rgba(var(--ac-rg),.08);color:var(--ac);font-weight:500;}
+
+/* ===== Diff ===== */
+.df-o{background:rgba(255,69,58,.07);text-decoration:line-through;padding:2px 6px;border-radius:4px;color:var(--er);}
+.df-n{background:rgba(48,209,88,.07);padding:2px 6px;border-radius:4px;color:var(--ok);}
+
+/* ===== Modal ===== */
+.mo{
+  position:fixed;inset:0;background:rgba(0,0,0,.4);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  z-index:1000;display:none;justify-content:center;align-items:center;
+}
+.mo.show{display:flex;}
+.mo-c{
+  background:var(--sfh);backdrop-filter:var(--bl);-webkit-backdrop-filter:var(--bl);
+  border-radius:var(--r);padding:24px;max-width:580px;width:90%;max-height:80vh;
+  overflow-y:auto;box-shadow:var(--sh);border:0.5px solid var(--bd);
+  animation:modalIn .22s var(--spring);
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(8px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.mo-c h3{margin-bottom:14px;font-size:16px;color:var(--tx);font-weight:700;letter-spacing:-.2px;}
+.mo-c .dt{white-space:pre-wrap;font-size:13px;line-height:1.8;color:var(--tx2);}
+.mo-c .btns{margin-top:14px;justify-content:flex-end;}
+
+/* ===== Onboarding Guide ===== */
+.guide-ov{
+  position:fixed;inset:0;z-index:1000;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .35s var(--ease);
+}
+.guide-ov.open{opacity:1;pointer-events:auto;}
+.guide-card{
+  width:480px;max-width:calc(100vw - 40px);max-height:calc(100vh - 32px);
+  background:var(--sfh);backdrop-filter:blur(48px) saturate(2);-webkit-backdrop-filter:blur(48px) saturate(2);
+  border:0.5px solid var(--bd);border-radius:18px;
+  box-shadow:0 24px 80px rgba(0,0,0,.25),0 0 0 0.5px var(--bd);
+  overflow-y:auto;overflow-x:hidden;transform:scale(.92) translateY(16px);transition:transform .4s var(--spring);
+  overscroll-behavior:contain;
+}
+.guide-ov.open .guide-card{transform:scale(1) translateY(0);}
+.guide-step{display:none;padding:36px 32px 28px;animation:guideFadeIn .35s var(--ease);}
+.guide-step.on{display:block;}
+@keyframes guideFadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.guide-icon{
+  width:56px;height:56px;border-radius:16px;margin:0 auto 20px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(145deg,var(--ac),var(--ac3));
+  box-shadow:0 4px 16px rgba(var(--ac-rg),.25);
+}
+.guide-icon svg{width:28px;height:28px;color:#fff;}
+.guide-step h3{
+  font-size:18px;font-weight:600;color:var(--tx);text-align:center;
+  letter-spacing:-.3px;margin-bottom:6px;
+}
+.guide-step p{
+  font-size:13px;color:var(--tx2);text-align:center;line-height:1.7;margin-bottom:0;
+}
+.guide-step p.guide-sub{font-size:12px;color:var(--tx3);margin-top:4px;}
+.guide-list{margin:18px 0 0;padding:0;list-style:none;counter-reset:guideNum;}
+.guide-list li{
+  counter-increment:guideNum;position:relative;
+  padding:10px 12px 10px 44px;margin-bottom:6px;
+  border-radius:10px;font-size:13px;color:var(--tx2);line-height:1.6;
+  background:var(--sfi);border:0.5px solid var(--bd);
+}
+.guide-list li::before{
+  content:counter(guideNum);position:absolute;left:12px;top:10px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--ac);color:#fff;font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;
+}
+.guide-list li b{color:var(--tx);font-weight:500;}
+.guide-dots{display:flex;justify-content:center;gap:7px;padding:0 32px 24px;}
+.guide-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--bd);transition:all .25s var(--ease);
+}
+.guide-dot.on{background:var(--ac);width:20px;border-radius:4px;}
+.guide-nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px 24px;gap:8px;
+}
+.guide-nav .btn{font-size:13px;padding:8px 20px;}
+.guide-skip{background:none;border:none;color:var(--tx3);font-size:12px;cursor:pointer;padding:8px 4px;font-family:inherit;}
+.guide-skip:hover{color:var(--tx2);}
+
+/* ===== Toast ===== */
+.toast{
+  position:fixed;bottom:84px;right:24px;
+  padding:10px 20px;border-radius:var(--rp);
+  background:var(--sfh);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  color:var(--tx);font-size:12px;font-weight:500;z-index:9999;
+  opacity:0;transform:translateY(8px) scale(.95);
+  transition:all .22s var(--spring);pointer-events:none;
+  box-shadow:var(--sh);border:0.5px solid var(--bd);
+  display:flex;align-items:center;gap:6px;
+}
+.toast.show{opacity:1;transform:translateY(0) scale(1);}
+
+/* ===== Update Progress ===== */
+.upd-ov{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.upd-ov.open{display:flex;}
+.upd-card{width:min(380px,86vw);padding:22px 24px 20px;border-radius:var(--r);background:var(--sfh);border:0.5px solid var(--bd);box-shadow:var(--sh);color:var(--tx);}
+.upd-title{font-size:14px;font-weight:600;margin-bottom:4px;}
+.upd-state{font-size:12px;color:var(--tx2);margin-bottom:14px;min-height:16px;}
+.upd-bar{height:6px;border-radius:3px;background:var(--sfi);overflow:hidden;}
+.upd-fill{height:100%;width:0%;border-radius:3px;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .2s var(--ease);}
+.upd-fill.indet{width:35%;animation:updSlide 1.1s var(--ease) infinite;}
+@keyframes updSlide{0%{margin-left:-35%;}100%{margin-left:100%;}}
+.upd-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--tx3);margin-top:8px;}
+.upd-acts{margin-top:16px;display:none;justify-content:flex-end;}
+.upd-acts.show{display:flex;}
+
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(var(--ac-rg),.15);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:rgba(var(--ac-rg),.25);}
+</style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<header>
+  <span class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 4l10 8 10-8"/></svg>
+  </span>
+  <h1 id="hdrTitle"></h1>
+  <span class="h-spacer"></span>
+  <div class="h-ctrls">
+    <div class="cs h-cs" id="langCS">
+      <button class="cs-btn" onclick="csToggle(this)" type="button">
+        <span class="cs-txt" data-i="langZhTW">繁體中文</span>
+        <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+      <div class="cs-dd">
+        <div class="cs-opt" data-val="zh-TW" data-i="langZhTW" onclick="csLangPick(this)"><span>繁體中文</span><span class="cs-chk">✓</span></div>
+        <div class="cs-opt" data-val="zh-CN" data-i="langZhCN" onclick="csLangPick(this)"><span>简体中文</span><span class="cs-chk">✓</span></div>
+        <div class="cs-opt" data-val="en" data-i="langEn" onclick="csLangPick(this)"><span>English</span><span class="cs-chk">✓</span></div>
+      </div>
+      <input type="hidden" id="langVal">
+    </div>
+    <button class="cs-btn" id="themeBtn" onclick="toggleTheme()" title="" style="padding:5px 8px;">
+      <svg id="themeIc" viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ===== Main ===== -->
+<div class="wrap"><div class="row2">
+
+  <!-- Input Card -->
+  <div class="card card-inp">
+    <div class="card-t">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M13 2l5 5-11 11H2v-5z"/><path d="M11 4l5 5"/></svg>
+      <span data-i="inputTitle"></span>
+    </div>
+    <!-- 2×2 selector grid -->
+    <div class="opts-grid">
+      <!-- Row 1, Col 1: Language -->
+      <div class="fg">
+        <label data-i="lblLang"></label>
+        <div class="cs" id="letterLangCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="langZhTW">繁體中文</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="letterLangDD">
+            <div class="cs-opt" data-val="zh-TW" data-i="langZhTW" onclick="csPick(this)"><span>繁體中文</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="zh-CN" data-i="langZhCN" onclick="csPick(this)"><span>简体中文</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="en" data-i="langEn" onclick="csPick(this)"><span>English</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="ja" data-i="langJa" onclick="csPick(this)"><span>日本語</span><span class="cs-chk">✓</span></div>
+          </div>
+          <input type="hidden" id="letterLang">
+        </div>
+      </div>
+      <!-- Row 1, Col 2: Tone -->
+      <div class="fg">
+        <label data-i="lblTone"></label>
+        <div class="cs" id="toneCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="tonePro">專業正式</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd">
+            <div class="cs-opt" data-val="professional" data-i="tonePro" onclick="csPick(this)"><span>專業正式</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="friendly" data-i="toneFriendly" onclick="csPick(this)"><span>親切友善</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="concise" data-i="toneConcise" onclick="csPick(this)"><span>簡潔明瞭</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="persuasive" data-i="tonePersuasive" onclick="csPick(this)"><span>具說服力</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="apologetic" data-i="toneApologetic" onclick="csPick(this)"><span>誠懇致歉</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="grateful" data-i="toneGrateful" onclick="csPick(this)"><span>感恩感謝</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="assertive" data-i="toneAssertive" onclick="csPick(this)"><span>堅定果斷</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="authoritative" data-i="toneAuthoritative" onclick="csPick(this)"><span>權威專業</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="cautious" data-i="toneCautious" onclick="csPick(this)"><span>嚴謹審慎</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="encouraging" data-i="toneEncouraging" onclick="csPick(this)"><span>鼓勵激勵</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="custom" data-i="toneCustom" onclick="csPick(this)"><span>自訂風格…</span><span class="cs-chk">✓</span></div>
+          </div>
+          <input type="hidden" id="tone">
+        </div>
+      </div>
+      <!-- Row 2, Col 1: Purpose -->
+      <div class="fg">
+        <label data-i="lblPurpose"></label>
+        <div class="cs" id="purposeCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="purpGeneral">一般商業溝通</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd">
+            <div class="cs-opt" data-val="general" data-i="purpGeneral" onclick="csPick(this)"><span>一般商業溝通</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="proposal" data-i="purpProposal" onclick="csPick(this)"><span>合作提案</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="followup" data-i="purpFollowup" onclick="csPick(this)"><span>跟進催辦</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="thankyou" data-i="purpThankyou" onclick="csPick(this)"><span>感謝回覆</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="complaint" data-i="purpComplaint" onclick="csPick(this)"><span>投訴建議</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="introduction" data-i="purpIntro" onclick="csPick(this)"><span>自我介紹</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="negotiation" data-i="purpNegotiation" onclick="csPick(this)"><span>價格談判</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="resignation" data-i="purpResignation" onclick="csPick(this)"><span>離職通知</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="apology" data-i="purpApology" onclick="csPick(this)"><span>道歉致歉</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="announcement" data-i="purpAnnouncement" onclick="csPick(this)"><span>公告通知</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="invitation" data-i="purpInvitation" onclick="csPick(this)"><span>邀請合作</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="feedback" data-i="purpFeedback" onclick="csPick(this)"><span>回饋評估</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="custom-purpose" data-i="purpCustom" onclick="csPick(this)"><span>自訂用途…</span><span class="cs-chk">✓</span></div>
+          </div>
+          <input type="hidden" id="purpose">
+        </div>
+      </div>
+      <!-- Row 2, Col 2: Mode -->
+      <div class="fg">
+        <label data-i="lblMode"></label>
+        <div class="cs" id="polishModeCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="modeFullLetter">完整信件</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd">
+            <div class="cs-opt" data-val="full" data-i="modeFullLetter" onclick="csPick(this)"><span>完整信件</span><span class="cs-chk">✓</span></div>
+            <div class="cs-opt" data-val="content" data-i="modeContentOnly" onclick="csPick(this)"><span>僅潤飾內容</span><span class="cs-chk">✓</span></div>
+          </div>
+          <input type="hidden" id="polishMode">
+        </div>
+      </div>
+      <!-- Output Language: displayed second via grid order -->
+      <div class="fg">
+        <label data-i="lblOutLang"></label>
+        <div class="cs" id="outLangCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="outLangAuto">跟隨原始語言</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="outLangDD">
+            <div class="cs-opt" data-val="auto" data-i="outLangAuto" onclick="csPick(this)"><span>跟隨原始語言</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LETTER_LANGS -->
+          </div>
+          <input type="hidden" id="outLang">
+        </div>
+      </div>
+      <!-- Source language region (optional) -->
+      <div class="fg">
+        <label data-i="lblSrcRegion"></label>
+        <div class="cs" id="srcRegionCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="regionAuto">不指定</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="srcRegionDD">
+            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LANG_REGIONS -->
+          </div>
+          <input type="hidden" id="srcRegion">
+        </div>
+      </div>
+      <!-- Output language region (optional) -->
+      <div class="fg">
+        <label data-i="lblOutRegion"></label>
+        <div class="cs" id="outRegionCS">
+          <button class="cs-btn" onclick="csToggle(this)" type="button">
+            <span class="cs-txt" data-i="regionAuto">不指定</span>
+            <svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+          <div class="cs-dd" id="outRegionDD">
+            <div class="cs-opt" data-val="auto" data-i="regionAuto" onclick="csPick(this)"><span>不指定</span><span class="cs-chk">✓</span></div>
+            <!-- Dynamically populated from LANG_REGIONS -->
+          </div>
+          <input type="hidden" id="outRegion">
+        </div>
+      </div>
+    </div>
+    <!-- Custom inputs (hidden by default) -->
+    <div class="cust" id="custTone"><label data-i="customToneLabel"></label><input type="text" id="customToneVal" placeholder=""><div class="cust-h" data-i="customToneHint"></div></div>
+    <div class="cust" id="custPurp"><label data-i="customPurpLabel"></label><input type="text" id="customPurpVal" placeholder=""><div class="cust-h" data-i="customPurpHint"></div></div>
+    <textarea class="ta" id="letterIn" oninput="updCnt()" placeholder=""></textarea>
+    <div class="cnt"><span id="charCnt">0</span></div>
+    <div class="btns">
+      <button class="btn btn-p" id="goBtn" onclick="go()"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0l2 5.5L15 5l-4.5 3.5L13 15 8 11.5 3 15l2.5-6.5L1 5l5 .5z"/></svg><span id="goTxt" data-i="startPolish"></span></button>
+      <button class="btn btn-s" onclick="clearAll()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg><span data-i="clear"></span></button>
+      <button class="btn btn-s" onclick="loadSample()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 1h7l3 3v11H3V1z"/><path d="M9 1v3h3"/></svg><span data-i="sample"></span></button>
+    </div>
+    <div class="sts" id="sts"></div>
+  </div>
+
+  <!-- Output Card -->
+  <div class="card card-out">
+    <div class="card-t">
+      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 10l4 4 8-8"/></svg>
+      <span data-i="outputTitle"></span><span class="pf" id="pfB"></span>
+    </div>
+    <div class="tabs"><div class="tab on" onclick="swTab('r',this)" data-i="tabResult"></div><div class="tab" onclick="swTab('d',this)" data-i="tabDiff"></div><div class="tab" onclick="swTab('s',this)" data-i="tabSug"></div></div>
+    <div class="tp on" id="tp-r"><textarea class="ta out" id="letterOut" readonly placeholder=""></textarea></div>
+    <div class="tp" id="tp-d"><div id="diffV" style="min-height:260px;padding:14px;border:0.5px solid var(--bd);border-radius:var(--r2);background:var(--sfi);font-size:13px;line-height:2;"></div></div>
+    <div class="tp" id="tp-s"><div id="sugV" style="min-height:260px;padding:14px;border:0.5px solid var(--bd);border-radius:var(--r2);background:var(--sfi);font-size:13px;line-height:2;"></div></div>
+    <div class="btns">
+      <button class="btn btn-g btn-sm" onclick="copyOut()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button>
+      <button class="btn btn-s btn-sm" onclick="dlResult()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 12v1.5h10V12"/></svg><span data-i="download"></span></button>
+      <button class="btn btn-s btn-sm" onclick="useAsIn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M10 4l4 4-4 4"/></svg><span data-i="useAsInput"></span></button>
+    </div>
+  </div>
+</div></div>
+
+<!-- FABs -->
+<div class="fab fab-h" id="fabH" onclick="toggleHP()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span class="bdg off" id="hBdg"></span><span class="tip" data-i="tipHistory"></span></div>
+<div class="fab fab-s" id="fabS" onclick="toggleSP()"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span class="tip" id="fabSTip" data-i="tipSettings"></span></div>
+
+<!-- History Panel -->
+<div class="ov" id="hOv" onclick="if(event.target===this)toggleHP()"><div class="panel hist"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span data-i="historyTitle"></span> <span id="hCnt" style="font-size:12px;font-weight:400;color:var(--tx3);"></span></h2><button class="px" onclick="toggleHP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn btn-d btn-sm" onclick="clrH()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 4h10M6 4V3h4v1M5 4v8h6V4"/></svg><span data-i="clearAll"></span></button></div><div class="hl" id="hList"></div></div></div>
+
+<!-- Settings Panel -->
+<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div></div><div class="btns" style="margin-top:8px;"><button class="btn btn-s btn-sm" type="button" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div style="display:flex;align-items:center;gap:6px;"><input id="modelName" placeholder="gpt-4o" style="flex:1;"><div class="cs cs-nosync" id="modelCS" style="width:auto;flex-shrink:0;"><button class="cs-btn" id="loadModelsBtn" onclick="openModelPicker(this)" type="button" style="width:auto;white-space:nowrap;" title=""><span class="cs-txt" data-i="loadModels"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="modelDD"></div><input type="hidden" id="modelPick" value=""></div></div></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div>
+
+<!-- Detail Modal -->
+<div class="mo" id="dMo" onclick="if(event.target===this)closeMo()"><div class="mo-c"><h3 data-i="detailTitle"></h3><div class="dt" id="dCont"></div><div class="btns"><button class="btn btn-s btn-sm" onclick="closeMo()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg><span data-i="close"></span></button><button class="btn btn-g btn-sm" onclick="cpDetail()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button></div></div></div>
+<div class="toast" id="toast"></div>
+<div class="upd-ov" id="updOv"><div class="upd-card"><div class="upd-title" id="updOvTitle"></div><div class="upd-state" id="updOvState"></div><div class="upd-bar"><div class="upd-fill" id="updOvFill"></div></div><div class="upd-meta"><span id="updOvDetail"></span><span id="updOvPct"></span></div><div class="upd-acts" id="updOvActs"><button class="btn btn-s btn-sm" type="button" onclick="openUpdDownload()"><span id="updOvDlTxt"></span></button><button class="btn btn-s btn-sm" type="button" onclick="closeUpdOv()"><span id="updOvCloseTxt"></span></button></div></div></div>
+
+<!-- Onboarding Guide -->
+<div class="guide-ov" id="guideOv">
+  <div class="guide-card">
+    <!-- Step 1: Welcome -->
+    <div class="guide-step on" data-guide="1">
+      <div class="guide-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 4l10 8 10-8"/></svg>
+      </div>
+      <h3 data-i="guideW1Title"></h3>
+      <p data-i="guideW1Desc"></p>
+      <p class="guide-sub" data-i="guideW1Sub"></p>
+      <div class="pref-actions" style="justify-content:center;margin-top:16px;"><button class="btn btn-s btn-sm" type="button" onclick="guideOpenSettings()"><span data-i="guideSetupNow"></span></button></div>
+    </div>
+    <!-- Step 2: API Setup -->
+    <div class="guide-step" data-guide="2">
+      <div class="guide-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.32 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      </div>
+      <h3 data-i="guideW2Title"></h3>
+      <p data-i="guideW2Desc"></p>
+      <ul class="guide-list">
+        <li data-i="guideW2Step1"></li>
+        <li data-i="guideW2Step2"></li>
+        <li data-i="guideW2Step3"></li>
+      </ul>
+    </div>
+    <!-- Step 3: How to Use -->
+    <div class="guide-step" data-guide="3">
+      <div class="guide-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <h3 data-i="guideW3Title"></h3>
+      <p data-i="guideW3Desc"></p>
+      <ul class="guide-list">
+        <li data-i="guideW3Step1"></li>
+        <li data-i="guideW3Step2"></li>
+        <li data-i="guideW3Step3"></li>
+        <li data-i="guideW3Step4"></li>
+      </ul>
+    </div>
+    <!-- Dots -->
+    <div class="guide-dots">
+      <div class="guide-dot on" data-gdot="1"></div>
+      <div class="guide-dot" data-gdot="2"></div>
+      <div class="guide-dot" data-gdot="3"></div>
+    </div>
+    <!-- Navigation -->
+    <div class="guide-nav">
+      <button class="guide-skip" onclick="skipGuide()" data-i="guideSkip"></button>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button class="btn btn-s" id="guidePrev" onclick="guideNav(-1)" style="display:none;">
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 2L4 6l4 4"/></svg>
+          <span data-i="guidePrev"></span>
+        </button>
+        <button class="btn btn-p" id="guideNext" onclick="guideNav(1)">
+          <span id="guideNextTxt" data-i="guideNext"></span>
+          <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 2l4 4-4 4"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== i18n ===== */
+var T={
+'zh-TW':{
+hdrTitle:'商業信件潤飾工具',inputTitle:'原始信件',outputTitle:'潤飾結果',
+lblLang:'信件語言',lblTone:'潤飾風格',lblPurpose:'信件用途',lblMode:'潤飾模式',
+modeFullLetter:'完整信件',modeContentOnly:'僅潤飾內容',
+customToneLabel:'自訂風格描述',customToneHint:'描述您希望的語氣風格，AI 將據此調整信件。',
+customPurpLabel:'自訂信件用途',customPurpHint:'描述此信件的用途，AI 將據此調整結構與重點。',
+startPolish:'開始潤飾',polishing:'潤飾中…',clear:'清空',sample:'載入範例',
+tabResult:'潤飾結果',tabDiff:'差異比較',tabSug:'修改建議',
+copyResult:'複製結果',download:'下載文字檔',useAsInput:'以此再潤飾',
+tipSettings:'API 連線設定',tipHistory:'歷史紀錄',
+settingsTitle:'API 連線設定',quickPreset:'快速預設',apiEndpoint:'API 端點',
+modelName:'模型名稱',temperature:'溫度',apiFormat:'API 格式',
+fmtOpenAI:'OpenAI 相容格式',fmtAnthropic:'Anthropic 格式',fmtGemini:'Google Gemini 格式',
+customPrompt:'自訂系統提示詞（可選）',save:'儲存設定',testConn:'測試連線',testing:'測試中…',
+testOk:'連線成功',testFail:'連線失敗',testFill:'請先填寫 API 端點與 Key',
+historyTitle:'歷史紀錄',clearAll:'清空全部',noHistory:'尚無歷史紀錄',
+close:'關閉',original:'原始',polished:'潤飾',suggestions:'建議',detailTitle:'信件詳情',
+sending:'正在發送請求…',noInput:'請先輸入信件內容',noApi:'請先設定 API 端點與 Key',
+polishDone:'潤飾完成',noResult:'尚無結果',copied:'已複製',copyFail:'複製失敗',
+downloaded:'已下載',loadedAsIn:'已放入輸入區',emptyDiff:'無差異',noSug:'無額外建議',
+clearConfirm:'確定清空所有歷史紀錄？',cleared:'已清空',deleted:'已刪除',
+presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'自架',
+tonePro:'專業正式',toneFriendly:'親切友善',toneConcise:'簡潔明瞭',tonePersuasive:'具說服力',
+toneApologetic:'誠懇致歉',toneGrateful:'感恩感謝',toneAssertive:'堅定果斷',toneAuthoritative:'權威專業',toneCautious:'嚴謹審慎',toneEncouraging:'鼓勵激勵',toneCustom:'自訂風格…',
+purpGeneral:'一般商業溝通',purpProposal:'合作提案',purpFollowup:'跟進催辦',purpThankyou:'感謝回覆',
+purpComplaint:'投訴建議',purpIntro:'自我介紹',purpNegotiation:'價格談判',purpResignation:'離職通知',purpApology:'道歉致歉',purpAnnouncement:'公告通知',purpInvitation:'邀請合作',purpFeedback:'回饋評估',purpCustom:'自訂用途…',
+langZhTW:'繁體中文',langZhCN:'簡體中文',langEn:'English',langJa:'日本語',
+lblOutLang:'結果顯示語言',outLangAuto:'跟隨原始語言',
+lblSrcRegion:'原始信件語言地區',lblOutRegion:'結果語言地區',regionAuto:'不指定',
+letterPrefTitle:'原始信件選項喜好',letterPrefHint:'開啟後，每次啟動會套用已儲存的原始信件選項；關閉則沿用上次使用的設定。',letterPrefEnabled:'啟用固定喜好',letterPrefSave:'儲存目前選項為喜好',letterPrefReset:'還原預設選項',letterPrefSaved:'已儲存原始信件選項喜好',letterPrefResetDone:'已還原預設原始信件選項',guideSetupNow:'先選擇設定並保存',
+themeLight:'淺色模式',themeDark:'暗色模式',checking:'檢查中…',checkUpdate:'檢查更新',newVersion:'發現新版本',clickToDownload:'是否要立即下載並安裝更新？',downloadingUpdate:'正在下載更新…',upToDate:'目前已是最新版本',updateFail:'檢查更新失敗',updTitle:'正在更新',updPreparing:'準備中…',updDownloading:'下載新版中…',updExtracting:'解壓縮中…',updInstalling:'安裝中…',updRestarting:'即將重新啟動…',aiProvider:'AI 供應商',provLabel:'供應商',provName:'供應商名稱',provNew:'新增供應商',provDel:'刪除',provDefault:'AI 供應商',provAdded:'已新增供應商',provDeleted:'已刪除供應商',provEdit:'修改',provSave:'儲存',provCancel:'取消',provDetails:'連線設定',provCur:'目前使用',provNoModel:'尚未設定模型',provSaved:'已儲存供應商設定',apiKeyEye:'顯示或隱藏 API Key',provDeleteConfirm:'確定要刪除這個供應商嗎？刪除後無法復原。',provLastOne:'至少要保留一個供應商',needKey:'請先輸入 API Key 再載入模型',needUrl:'請先輸入 AI URL 再載入模型',loadModels:'載入模型',loadingModels:'正在載入模型清單…',modelsLoaded:'已載入模型清單，共 {n} 個模型',modelsFail:'無法載入模型清單，請直接輸入模型名稱',noModels:'此供應商沒有回傳可用的模型',updErrorTitle:'更新失敗',updClose:'關閉',updNoResponse:'主程式沒有回應更新要求。請關閉程式後改用手動下載更新。',updStalled:'更新流程中斷，請稍後再試或改用手動下載。',updHostOld:'目前版本的主程式不支援自動更新，將改為開啟瀏覽器下載。',updManualDl:'手動下載',
+placeholderIn:'在此貼上您的商業信件…',placeholderOut:'潤飾結果將顯示在此處…',
+placeholderCustomTone:'例如：語氣溫和但堅定，帶有同理心…',placeholderCustomPurp:'例如：邀請合作夥伴參加技術研討會…',
+placeholderPrompt:'例如：你是一位資深商務溝通顧問…',sugPlaceholder:'執行潤飾後，此處將顯示差異比較。',sugPlaceholder2:'執行潤飾後，此處將顯示修改建議。',guideW1Title:'歡迎使用商業信件潤飾工具',guideW1Desc:'本工具可協助您快速潤飾商業信件，提升專業度與溝通品質。',guideW1Sub:'支援 OpenAI、Anthropic、Gemini 等多家 API，無需安裝即可使用。',guideW2Title:'設定 API 連線',guideW2Desc:'使用前需設定 AI API 連線。點擊右下角齒輪按鈕可隨時修改。',guideW2Step1:'<b>選擇服務商</b> — 點擊「快速預設」選取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 從服務商官網取得您的專屬金鑰',guideW2Step3:'<b>測試連線</b> — 點擊「測試連線」確認設定正確',guideW3Title:'開始使用',guideW3Desc:'設定完成後，即可開始潤飾您的信件。',guideW3Step1:'<b>選擇設定</b> — 選擇信件語言、潤飾風格、用途與模式',guideW3Step2:'<b>貼上信件</b> — 將原始信件內容貼入下方文字框',guideW3Step3:'<b>點擊潤飾</b> — 按下「開始潤飾」按鈕',guideW3Step4:'<b>查看結果</b> — 潤飾結果將顯示在右側，可複製或下載',guideSkip:'跳過引導',guidePrev:'上一步',guideNext:'下一步',guideDone:'開始使用',guideReopen:'使用引導',checkUpdate:'檢查更新',checking:'檢查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'檢查更新失敗',clickToDownload:'按確定下載'
+},
+'zh-CN':{
+hdrTitle:'商业信件润饰工具',inputTitle:'原始信件',outputTitle:'润饰结果',
+lblLang:'信件语言',lblTone:'润饰风格',lblPurpose:'信件用途',lblMode:'润饰模式',
+modeFullLetter:'完整信件',modeContentOnly:'仅润饰内容',
+customToneLabel:'自订风格描述',customToneHint:'描述您希望的语气风格，AI 将据此调整信件。',
+customPurpLabel:'自订信件用途',customPurpHint:'描述此信件的用途，AI 将据此调整结构与重点。',
+startPolish:'开始润饰',polishing:'润饰中…',clear:'清空',sample:'载入范例',
+tabResult:'润饰结果',tabDiff:'差异比较',tabSug:'修改建议',
+copyResult:'复制结果',download:'下载文字档',useAsInput:'以此再润饰',
+tipSettings:'API 连线设定',tipHistory:'历史纪录',
+settingsTitle:'API 连线设定',quickPreset:'快速预设',apiEndpoint:'API 端点',
+modelName:'模型名称',temperature:'温度',apiFormat:'API 格式',
+fmtOpenAI:'OpenAI 兼容格式',fmtAnthropic:'Anthropic 格式',fmtGemini:'Google Gemini 格式',
+customPrompt:'自订系统提示词（可选）',save:'储存设定',testConn:'测试连线',testing:'测试中…',
+testOk:'连线成功',testFail:'连线失败',testFill:'请先填写 API 端点与 Key',
+historyTitle:'历史纪录',clearAll:'清空全部',noHistory:'尚无历史纪录',
+close:'关闭',original:'原始',polished:'润饰',suggestions:'建议',detailTitle:'信件详情',
+sending:'正在发送请求…',noInput:'请先输入信件内容',noApi:'请先设定 API 端点与 Key',
+polishDone:'润饰完成',noResult:'尚无结果',copied:'已复制',copyFail:'复制失败',
+downloaded:'已下载',loadedAsIn:'已放入输入区',emptyDiff:'无差异',noSug:'无额外建议',
+clearConfirm:'确定清空所有历史纪录？',cleared:'已清空',deleted:'已删除',
+presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'自架',
+tonePro:'专业正式',toneFriendly:'亲切友善',toneConcise:'简洁明了',tonePersuasive:'具说服力',
+toneApologetic:'诚恳致歉',toneGrateful:'感恩感谢',toneAssertive:'坚定果断',toneAuthoritative:'权威专业',toneCautious:'严谨审慎',toneEncouraging:'鼓励激励',toneCustom:'自订风格…',
+purpGeneral:'一般商业沟通',purpProposal:'合作提案',purpFollowup:'跟进催办',purpThankyou:'感谢回复',
+purpComplaint:'投诉建议',purpIntro:'自我介绍',purpNegotiation:'价格谈判',purpResignation:'离职通知',purpApology:'道歉致歉',purpAnnouncement:'公告通知',purpInvitation:'邀请合作',purpFeedback:'反馈评估',purpCustom:'自订用途…',
+langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本語',
+lblOutLang:'结果显示语言',outLangAuto:'跟随原始语言',
+lblSrcRegion:'原始信件语言地区',lblOutRegion:'结果语言地区',regionAuto:'不指定',
+letterPrefTitle:'原始信件选项偏好',letterPrefHint:'开启后，每次启动会套用已保存的原始信件选项；关闭则沿用上次使用的设置。',letterPrefEnabled:'启用固定偏好',letterPrefSave:'保存当前选项为偏好',letterPrefReset:'恢复默认选项',letterPrefSaved:'已保存原始信件选项偏好',letterPrefResetDone:'已恢复默认原始信件选项',guideSetupNow:'先选择设置并保存',
+themeLight:'浅色模式',themeDark:'暗色模式',checking:'检查中…',checkUpdate:'检查更新',newVersion:'发现新版本',clickToDownload:'是否要立即下载并安装更新？',downloadingUpdate:'正在下载更新…',upToDate:'当前已是最新版本',updateFail:'检查更新失败',updTitle:'正在更新',updPreparing:'准备中…',updDownloading:'下载新版中…',updExtracting:'解压缩中…',updInstalling:'安装中…',updRestarting:'即将重新启动…',aiProvider:'AI 供应商',provLabel:'供应商',provName:'供应商名称',provNew:'新增供应商',provDel:'删除',provDefault:'AI 供应商',provAdded:'已新增供应商',provDeleted:'已删除供应商',provEdit:'修改',provSave:'保存',provCancel:'取消',provDetails:'连接设置',provCur:'当前使用',provNoModel:'未设置模型',provSaved:'已保存供应商设置',apiKeyEye:'显示或隐藏 API Key',provDeleteConfirm:'确定要删除这个供应商吗？删除后无法恢复。',provLastOne:'至少要保留一个供应商',needKey:'请先输入 API Key 再载入模型',needUrl:'请先输入 AI URL 再载入模型',loadModels:'载入模型',loadingModels:'正在载入模型清单…',modelsLoaded:'已载入模型清单，共 {n} 个模型',modelsFail:'无法载入模型清单，请直接输入模型名称',noModels:'此供应商没有回传可用的模型',updErrorTitle:'更新失败',updClose:'关闭',updNoResponse:'主程序没有响应更新请求。请关闭程序后改用手动下载更新。',updStalled:'更新流程中断，请稍后再试或改用手动下载。',updHostOld:'当前版本的主程序不支持自动更新，将改为打开浏览器下载。',updManualDl:'手动下载',
+placeholderIn:'在此贴上您的商业信件…',placeholderOut:'润饰结果将显示在此处…',
+placeholderCustomTone:'例如：语气温和但坚定，带有同理心…',placeholderCustomPurp:'例如：邀请合作伙伴参加技术研讨会…',
+placeholderPrompt:'例如：你是一位资深商务沟通顾问…',sugPlaceholder:'执行润饰后，此处将显示差异比较。',sugPlaceholder2:'执行润饰后，此处将显示修改建议。',guideW1Title:'欢迎使用商业信件润饰工具',guideW1Desc:'本工具可协助您快速润饰商业信件，提升专业度与沟通质量。',guideW1Sub:'支挄 OpenAI、Anthropic、Gemini 等多家 API，无需安裝即可使用。',guideW2Title:'设置 API 连接',guideW2Desc:'使用前需设置 AI API 连接。点击右下角齿轮按钮可随时修改。',guideW2Step1:'<b>选择服务商</b> — 点击「快速预设」选取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 从服务商官网获取您的专属金钥',guideW2Step3:'<b>测试连接</b> — 点击「测试连接」确认设置正确',guideW3Title:'开始使用',guideW3Desc:'设置完成后，即可开始润饰您的信件。',guideW3Step1:'<b>选择设置</b> — 选择信件语言、润饰风格、用途与模式',guideW3Step2:'<b>贴上信件</b> — 将原始信件内容贴入下方文本框',guideW3Step3:'<b>点击润饰</b> — 按下「开始润饰」按钮',guideW3Step4:'<b>查看结果</b> — 润饰结果将显示在右侧，可复制或下载',guideSkip:'跳过引导',guidePrev:'上一步',guideNext:'下一步',guideDone:'开始使用',guideReopen:'使用引导',checkUpdate:'检查更新',checking:'检查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'检查更新失败',clickToDownload:'按确定下载'
+},
+'en':{
+hdrTitle:'Letter Polisher',inputTitle:'Original Letter',outputTitle:'Polished Result',
+lblLang:'Language',lblTone:'Polish Style',lblPurpose:'Letter Purpose',lblMode:'Polish Mode',
+modeFullLetter:'Full Letter',modeContentOnly:'Content Only',
+customToneLabel:'Custom Style Description',customToneHint:'Describe the desired tone — AI will adjust accordingly.',
+customPurpLabel:'Custom Purpose',customPurpHint:'Describe the purpose — AI will tailor structure and focus.',
+startPolish:'Polish',polishing:'Polishing…',clear:'Clear',sample:'Sample',
+tabResult:'Result',tabDiff:'Diff',tabSug:'Suggestions',
+copyResult:'Copy',download:'Download',useAsInput:'Use as Input',
+tipSettings:'API Settings',tipHistory:'History',
+settingsTitle:'API Settings',quickPreset:'Quick Presets',apiEndpoint:'API Endpoint',
+modelName:'Model',temperature:'Temperature',apiFormat:'API Format',
+fmtOpenAI:'OpenAI Compatible',fmtAnthropic:'Anthropic Format',fmtGemini:'Google Gemini',
+customPrompt:'Custom System Prompt (optional)',save:'Save',testConn:'Test Connection',testing:'Testing…',
+testOk:'Connected',testFail:'Failed',testFill:'Please enter API endpoint and key',
+historyTitle:'History',clearAll:'Clear All',noHistory:'No history yet',
+close:'Close',original:'Original',polished:'Polished',suggestions:'Suggestions',detailTitle:'Letter Details',
+sending:'Sending request…',noInput:'Please enter a letter',noApi:'Please configure API endpoint and key',
+polishDone:'Complete',noResult:'No result yet',copied:'Copied',copyFail:'Copy failed',
+downloaded:'Downloaded',loadedAsIn:'Loaded into input',emptyDiff:'No differences',noSug:'No suggestions',
+clearConfirm:'Clear all history?',cleared:'Cleared',deleted:'Deleted',
+presetOpenAI:'OpenAI',presetAnthropic:'Anthropic',presetGemini:'Gemini',presetGroq:'Groq',presetDeepSeek:'DeepSeek',presetCompat:'Self-hosted',
+tonePro:'Professional',toneFriendly:'Friendly',toneConcise:'Concise',tonePersuasive:'Persuasive',
+toneApologetic:'Apologetic',toneGrateful:'Grateful',toneAssertive:'Assertive',toneAuthoritative:'Authoritative',toneCautious:'Cautious',toneEncouraging:'Encouraging',toneCustom:'Custom…',
+purpGeneral:'General',purpProposal:'Proposal',purpFollowup:'Follow-up',purpThankyou:'Thank You',
+purpComplaint:'Complaint',purpIntro:'Introduction',purpNegotiation:'Negotiation',purpResignation:'Resignation',purpApology:'Apology',purpAnnouncement:'Announcement',purpInvitation:'Invitation',purpFeedback:'Feedback',purpCustom:'Custom…',
+langZhTW:'繁體中文',langZhCN:'简体中文',langEn:'English',langJa:'日本語',
+letterPrefTitle:'Original Letter Preferences',letterPrefHint:'When enabled, saved original-letter choices are applied at every launch. When disabled, the last-used settings are kept.',letterPrefEnabled:'Use fixed preferences',letterPrefSave:'Save current choices as preferences',letterPrefReset:'Restore default choices',letterPrefSaved:'Original letter preferences saved',letterPrefResetDone:'Original letter preferences restored to defaults',guideSetupNow:'Choose settings and save first',
+themeLight:'Light Mode',themeDark:'Dark Mode',checking:'Checking…',checkUpdate:'Check for Updates',newVersion:'New version available',clickToDownload:'Download and install the update now?',downloadingUpdate:'Downloading update…',upToDate:'You are using the latest version',updateFail:'Update check failed',updTitle:'Updating',updPreparing:'Preparing…',updDownloading:'Downloading new version…',updExtracting:'Extracting…',updInstalling:'Installing…',updRestarting:'Restarting shortly…',aiProvider:'AI Provider',provLabel:'Provider',provName:'Provider Name',provNew:'Add Provider',provDel:'Delete',provDefault:'AI Provider',provAdded:'Provider added',provDeleted:'Provider deleted',provEdit:'Edit',provSave:'Save',provCancel:'Cancel',provDetails:'Connection',provCur:'In use',provNoModel:'No model set',provSaved:'Provider settings saved',apiKeyEye:'Show or hide the API key',provDeleteConfirm:'Delete this provider? This cannot be undone.',provLastOne:'At least one provider must be kept',needKey:'Enter an API key before loading models',needUrl:'Enter the AI URL before loading models',loadModels:'Load Models',loadingModels:'Loading model list…',modelsLoaded:'Model list loaded: {n} models',modelsFail:'Could not load the model list; type the model name instead',noModels:'This provider returned no usable models',updErrorTitle:'Update failed',updClose:'Close',updNoResponse:'The application did not respond to the update request. Please close it and download the update manually.',updStalled:'The update process stopped responding. Please try again later or download manually.',updHostOld:'This version of the application does not support automatic updates; opening the download in your browser instead.',updManualDl:'Download manually',
+lblOutLang:'Output Language',outLangAuto:'Follow Original',
+lblSrcRegion:'Source Language Region',lblOutRegion:'Output Language Region',regionAuto:'Not specified',
+placeholderIn:'Paste your business letter here…',placeholderOut:'Polished result will appear here…',
+placeholderCustomTone:'e.g. Warm but firm, with empathy…',placeholderCustomPurp:'e.g. Invite partner to annual tech conference…',
+placeholderPrompt:'e.g. You are a senior business communication consultant…',sugPlaceholder:'Differences will appear here after polishing.',sugPlaceholder2:'Suggestions will appear here after polishing.',guideW1Title:'Welcome to Business Letter Polisher',guideW1Desc:'This tool helps you quickly polish business letters to improve professionalism and communication quality.',guideW1Sub:'Supports OpenAI, Anthropic, Gemini, and more. No installation required.',guideW2Title:'Set Up API Connection',guideW2Desc:'You need to configure an AI API connection before use. Click the gear button to modify anytime.',guideW2Step1:'<b>Choose Provider</b> — Click Quick Preset to select OpenAI, Anthropic, Gemini, etc.',guideW2Step2:'<b>Enter API Key</b> — Get your secret key from the provider\'s website',guideW2Step3:'<b>Test Connection</b> — Click Test Connection to verify settings',guideW3Title:'Start Using',guideW3Desc:'Once configured, you can start polishing your letters.',guideW3Step1:'<b>Select Settings</b> — Choose language, tone, purpose, and mode',guideW3Step2:'<b>Paste Letter</b> — Paste your original letter content into the text box',guideW3Step3:'<b>Click Polish</b> — Press the Start Polish button',guideW3Step4:'<b>View Results</b> — Results appear on the right, ready to copy or download',guideSkip:'Skip',guidePrev:'Back',guideNext:'Next',guideDone:'Get Started',guideReopen:'User Guide',checkUpdate:'Check for Update',checking:'Checking...',newVersion:'New version available',upToDate:'Up to date',updateFail:'Update check failed',clickToDownload:'Click OK to download',sugPlaceholder2:'Suggestions will appear here after polishing.'
+}
+};
+
+/* ===== Config ===== */
+var TL_KEY={professional:'tonePro',friendly:'toneFriendly',concise:'toneConcise',persuasive:'tonePersuasive',apologetic:'toneApologetic',grateful:'toneGrateful',assertive:'toneAssertive',authoritative:'toneAuthoritative',cautious:'toneCautious',encouraging:'toneEncouraging',custom:'toneCustom'};
+var PL_KEY={general:'purpGeneral',proposal:'purpProposal',followup:'purpFollowup',thankyou:'purpThankyou',complaint:'purpComplaint',introduction:'purpIntro',negotiation:'purpNegotiation',resignation:'purpResignation',apology:'purpApology',announcement:'purpAnnouncement',invitation:'purpInvitation',feedback:'purpFeedback','custom-purpose':'purpCustom'};
+var LANG_KEY={'zh-TW':'langZhTW','zh-CN':'langZhCN','en':'langEn','ja':'langJa'};
+var LETTER_LANGS=[
+  {v:'en',label:'English'},{v:'zh-TW',label:'繁體中文'},{v:'zh-CN',label:'簡體中文'},{v:'ja',label:'日本語'},
+  {v:'ko',label:'한국어'},{v:'de',label:'Deutsch'},{v:'es',label:'Español'},{v:'fr',label:'Français'},
+  {v:'it',label:'Italiano'},{v:'pt',label:'Português'},{v:'ru',label:'Русский'},{v:'ar',label:'العربية'},
+  {v:'hi',label:'हिन्दी'},{v:'bn',label:'বাংলা'},{v:'th',label:'ไทย'},{v:'vi',label:'Tiếng Việt'},
+  {v:'id',label:'Bahasa Indonesia'},{v:'ms',label:'Bahasa Melayu'},{v:'fil',label:'Filipino'},{v:'tr',label:'Türkçe'},
+  {v:'nl',label:'Nederlands'},{v:'sv',label:'Svenska'},{v:'da',label:'Dansk'},{v:'no',label:'Norsk'},
+  {v:'fi',label:'Suomi'},{v:'pl',label:'Polski'},{v:'cs',label:'Čeština'},{v:'el',label:'Ελληνικά'},
+  {v:'he',label:'עברית'},{v:'uk',label:'Українська'},{v:'ro',label:'Română'},{v:'hu',label:'Magyar'},
+  {v:'fa',label:'فارسی'},{v:'ur',label:'اردو'}
+];
+/* Explicit language names for the AI prompt (never send i18n keys to the model) */
+var LANG_NAMES={
+  'en':'English','zh-TW':'Traditional Chinese (繁體中文)','zh-CN':'Simplified Chinese (简体中文)',
+  'ja':'Japanese (日本語)','ko':'Korean (한국어)','de':'German (Deutsch)','es':'Spanish (Español)',
+  'fr':'French (Français)','it':'Italian (Italiano)','pt':'Portuguese (Português)','ru':'Russian (Русский)',
+  'ar':'Arabic (العربية)','hi':'Hindi (हिन्दी)','bn':'Bengali (বাংলা)','th':'Thai (ไทย)',
+  'vi':'Vietnamese (Tiếng Việt)','id':'Indonesian (Bahasa Indonesia)','ms':'Malay (Bahasa Melayu)','fil':'Filipino',
+  'tr':'Turkish (Türkçe)','nl':'Dutch (Nederlands)','sv':'Swedish (Svenska)','da':'Danish (Dansk)','no':'Norwegian (Norsk)',
+  'fi':'Finnish (Suomi)','pl':'Polish (Polski)','cs':'Czech (Čeština)','el':'Greek (Ελληνικά)',
+  'he':'Hebrew (עברית)','uk':'Ukrainian (Українська)','ro':'Romanian (Română)','hu':'Hungarian (Magyar)',
+  'fa':'Persian (فارسی)','ur':'Urdu (اردو)'
+};
+/* Regional variants per language: label shown in UI, en sent to the AI */
+var LANG_REGIONS={
+  'zh-TW':[{v:'TW',label:'台灣 Taiwan',en:'Taiwan'},{v:'HK',label:'香港 Hong Kong',en:'Hong Kong'},{v:'MO',label:'澳門 Macau',en:'Macau'}],
+  'zh-CN':[{v:'CN',label:'中国大陆 Mainland China',en:'Mainland China'},{v:'SG',label:'新加坡 Singapore',en:'Singapore'},{v:'MY',label:'马来西亚 Malaysia',en:'Malaysia'}],
+  'en':[{v:'US',label:'United States',en:'the United States (American English)'},{v:'GB',label:'United Kingdom',en:'the United Kingdom (British English)'},{v:'AU',label:'Australia',en:'Australia (Australian English)'},{v:'CA',label:'Canada',en:'Canada (Canadian English)'},{v:'IE',label:'Ireland',en:'Ireland'},{v:'NZ',label:'New Zealand',en:'New Zealand'},{v:'SG',label:'Singapore',en:'Singapore'},{v:'IN',label:'India',en:'India (Indian English)'},{v:'HK',label:'Hong Kong',en:'Hong Kong'},{v:'ZA',label:'South Africa',en:'South Africa'}],
+  'ja':[{v:'JP',label:'日本 Japan',en:'Japan'}],
+  'ko':[{v:'KR',label:'대한민국 South Korea',en:'South Korea'}],
+  'de':[{v:'DE',label:'Deutschland',en:'Germany'},{v:'AT',label:'Österreich',en:'Austria'},{v:'CH',label:'Schweiz',en:'Switzerland'}],
+  'es':[{v:'ES',label:'España',en:'Spain (European Spanish)'},{v:'MX',label:'México',en:'Mexico'},{v:'AR',label:'Argentina',en:'Argentina'},{v:'CO',label:'Colombia',en:'Colombia'},{v:'CL',label:'Chile',en:'Chile'},{v:'US',label:'US Hispanic',en:'the United States (US Hispanic market)'}],
+  'fr':[{v:'FR',label:'France',en:'France'},{v:'CA',label:'Canada / Québec',en:'Canada (Quebec French)'},{v:'BE',label:'Belgique',en:'Belgium'},{v:'CH',label:'Suisse',en:'Switzerland'}],
+  'it':[{v:'IT',label:'Italia',en:'Italy'},{v:'CH',label:'Svizzera',en:'Switzerland'}],
+  'pt':[{v:'PT',label:'Portugal',en:'Portugal (European Portuguese)'},{v:'BR',label:'Brasil',en:'Brazil (Brazilian Portuguese)'}],
+  'ru':[{v:'RU',label:'Россия Russia',en:'Russia'}],
+  'ar':[{v:'MSA',label:'Modern Standard Arabic',en:'Modern Standard Arabic'},{v:'SA',label:'السعودية Saudi Arabia',en:'Saudi Arabia'},{v:'AE',label:'الإمارات UAE',en:'the United Arab Emirates'},{v:'EG',label:'مصر Egypt',en:'Egypt'},{v:'MA',label:'المغرب Morocco',en:'Morocco'}],
+  'hi':[{v:'IN',label:'भारत India',en:'India'}],
+  'bn':[{v:'BD',label:'বাংলাদেশ Bangladesh',en:'Bangladesh'},{v:'IN',label:'ভারত India (West Bengal)',en:'India (West Bengal)'}],
+  'th':[{v:'TH',label:'ไทย Thailand',en:'Thailand'}],
+  'vi':[{v:'VN',label:'Việt Nam',en:'Vietnam'}],
+  'id':[{v:'ID',label:'Indonesia',en:'Indonesia'}],
+  'ms':[{v:'MY',label:'Malaysia',en:'Malaysia'},{v:'SG',label:'Singapura',en:'Singapore'},{v:'BN',label:'Brunei',en:'Brunei'}],
+  'fil':[{v:'PH',label:'Philippines',en:'the Philippines'}],
+  'tr':[{v:'TR',label:'Türkiye',en:'Turkey'}],
+  'nl':[{v:'NL',label:'Nederland',en:'the Netherlands'},{v:'BE',label:'België / Vlaanderen',en:'Belgium (Flemish)'}],
+  'sv':[{v:'SE',label:'Sverige',en:'Sweden'},{v:'FI',label:'Finland',en:'Finland (Finland Swedish)'}],
+  'da':[{v:'DK',label:'Danmark',en:'Denmark'}],
+  'no':[{v:'NO',label:'Norge',en:'Norway'}],
+  'fi':[{v:'FI',label:'Suomi',en:'Finland'}],
+  'pl':[{v:'PL',label:'Polska',en:'Poland'}],
+  'cs':[{v:'CZ',label:'Česko',en:'Czechia'}],
+  'el':[{v:'GR',label:'Ελλάδα Greece',en:'Greece'},{v:'CY',label:'Κύπρος Cyprus',en:'Cyprus'}],
+  'he':[{v:'IL',label:'ישראל Israel',en:'Israel'}],
+  'uk':[{v:'UA',label:'Україна Ukraine',en:'Ukraine'}],
+  'ro':[{v:'RO',label:'România',en:'Romania'},{v:'MD',label:'Moldova',en:'Moldova'}],
+  'hu':[{v:'HU',label:'Magyarország',en:'Hungary'}],
+  'fa':[{v:'IR',label:'ایران Iran',en:'Iran'},{v:'AF',label:'افغانستان Afghanistan (Dari)',en:'Afghanistan (Dari)'}],
+  'ur':[{v:'PK',label:'پاکستان Pakistan',en:'Pakistan'},{v:'IN',label:'بھارت India',en:'India'}]
+};
+function langName(code){return LANG_NAMES[code]||code;}
+function regionInfo(langCode,regionVal){
+  if(!regionVal||regionVal==='auto')return null;
+  var list=LANG_REGIONS[langCode]||[];
+  for(var i=0;i<list.length;i++)if(list[i].v===regionVal)return list[i];
+  return null;
+}
+function populateRegionDD(ddId,hiddenId,langCode,want){
+  var dd=$(ddId),h=$(hiddenId);
+  if(!dd||!h)return;
+  var cur=want||h.value||'auto';
+  dd.querySelectorAll('.cs-opt').forEach(function(o){if(o.getAttribute('data-val')!=='auto')o.remove();});
+  (LANG_REGIONS[langCode]||[]).forEach(function(r){
+    var o=document.createElement('div');
+    o.className='cs-opt';
+    o.setAttribute('data-val',r.v);
+    o.setAttribute('onclick','csPick(this)');
+    o.innerHTML='<span>'+r.label+'</span><span class="cs-chk">\u2713</span>';
+    dd.appendChild(o);
+  });
+  h.value=dd.querySelector('.cs-opt[data-val="'+cur+'"]')?cur:'auto';
+}
+function outLangCode(){var o=v('outLang');return(!o||o==='auto')?v('letterLang'):o;}
+function refreshRegionDDs(want){
+  var w=want||{src:v('srcRegion'),out:v('outRegion')};
+  csSyncAll(); /* normalise letterLang/outLang first (hidden may hold a stale value) */
+  populateRegionDD('srcRegionDD','srcRegion',v('letterLang'),w.src);
+  populateRegionDD('outRegionDD','outRegion',outLangCode(),w.out);
+  LO.srcRegion=v('srcRegion');LO.outRegion=v('outRegion');
+  csSyncAll();
+}
+function populateLangDropdowns(){
+  // letterLang dropdown (source language)
+  var ll=$('letterLangDD');
+  if(ll&&!ll.getAttribute('data-pop')){
+    LETTER_LANGS.forEach(function(l){
+      var exists=ll.querySelector('.cs-opt[data-val="'+l.v+'"]');
+      if(exists)return;
+      var o=document.createElement('div');
+      o.className='cs-opt';o.setAttribute('data-val',l.v);
+      o.setAttribute('onclick','csPick(this)');
+      o.innerHTML='<span>'+l.label+'</span><span class="cs-chk">\u2713</span>';
+      ll.appendChild(o);
+    });
+    ll.setAttribute('data-pop','1');
+  }
+  // outLang dropdown (output language)
+  var ol=$('outLangDD');
+  if(ol&&!ol.getAttribute('data-pop')){
+    LETTER_LANGS.forEach(function(l){
+      var exists=ol.querySelector('.cs-opt[data-val="'+l.v+'"]');
+      if(exists)return;
+      var o=document.createElement('div');
+      o.className='cs-opt';o.setAttribute('data-val',l.v);
+      o.setAttribute('onclick','csPick(this)');
+      o.innerHTML='<span>'+l.label+'</span><span class="cs-chk">\u2713</span>';
+      ol.appendChild(o);
+    });
+    ol.setAttribute('data-pop','1');
+  }
+}
+
+var locale='en',DF={apiUrl:'',apiKey:'',modelName:'gpt-4o',temperature:0.7,apiFormat:'openai',customSystemPrompt:'',customTone:'',customPurpose:''},cfg=Object.assign({},DF),lastRes=null,H=[],tt=null;
+var LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};
+var PR={openai:{u:'https://api.openai.com/v1/chat/completions',m:'gpt-4o',f:'openai',k:'presetOpenAI'},anthropic:{u:'https://api.anthropic.com/v1/messages',m:'claude-sonnet-4-20250514',f:'anthropic',k:'presetAnthropic'},gemini:{u:'https://generativelanguage.googleapis.com/v1beta/models/GEMINI_MODEL:generateContent',m:'gemini-2.0-flash',f:'gemini',k:'presetGemini'},groq:{u:'https://api.groq.com/openai/v1/chat/completions',m:'llama-3.3-70b-versatile',f:'openai',k:'presetGroq'},deepseek:{u:'https://api.deepseek.com/chat/completions',m:'deepseek-chat',f:'openai',k:'presetDeepSeek'},'openai-compat':{u:'http://localhost:11434/v1/chat/completions',m:'llama3',f:'openai',k:'presetCompat'}};
+
+function t(k){return(T[locale]&&T[locale][k])||T.en[k]||k;}
+function detectLang(){var l=(navigator.language||navigator.userLanguage||'').toLowerCase();if(l==='zh-tw'||l==='zh-hant'||l==='zh-hk'||l==='zh-mo')return'zh-TW';if(l.indexOf('zh')===0)return'zh-CN';return'en';}
+
+/* ===== Custom Select ===== */
+function csToggle(btn){
+  /* Close the others first: an open menu is parked in <body> (see csPlaceMenu),
+     so the button's real sibling only comes back once csCloseAll() has run. */
+  var wasOpen=btn.classList.contains('open');
+  csCloseAll();
+  if(wasOpen)return;
+  var dd=btn.nextElementSibling;
+  if(!dd||!dd.classList.contains('cs-dd'))return;
+  if(btn.closest('.panel-body')){csPlaceMenu(btn,dd);csSettleFix(btn,dd,btn.closest('.cs')||dd.parentElement);}
+  dd.classList.add('open');btn.classList.add('open');
+}
+/* A position:fixed child is positioned against its nearest ancestor that has a
+   transform / filter / backdrop-filter (the settings panel has backdrop-filter),
+   not against the viewport. Return that ancestor's viewport offset so menu
+   coordinates can be converted. */
+function fixedCBOrigin(el){
+  var n=el.parentElement;
+  while(n&&n!==document.documentElement){
+    var s=window.getComputedStyle(n),t=s.transform,f=s.filter,bf=s.backdropFilter||s.webkitBackdropFilter,wc=s.willChange||'',ct=s.contain||'';
+    if((t&&t!=='none')||(f&&f!=='none')||(bf&&bf!=='none')||(s.perspective&&s.perspective!=='none')||wc.indexOf('transform')>=0||ct.indexOf('paint')>=0||ct.indexOf('layout')>=0||ct.indexOf('strict')>=0||ct.indexOf('content')>=0){
+      var r=n.getBoundingClientRect();
+      return {x:r.left,y:r.top};
+    }
+    n=n.parentElement;
+  }
+  return {x:0,y:0};
+}
+/* An open menu is fixed to the viewport, so scrolling or resizing would leave it
+   detached from its button - keep it glued instead of closing it (closing a menu
+   moments after the click is what made it flicker and vanish). */
+var csRaf=0;
+function csReposition(){
+  if(csRaf)return;
+  csRaf=(window.requestAnimationFrame||function(f){return setTimeout(f,16);})(function(){
+    csRaf=0;
+    var dd=document.querySelector('.cs-dd.open');
+    if(!dd)return;
+    var cs=dd.__cs,btn=cs&&cs.querySelector('.cs-btn');
+    if(!btn){csCloseAll();return;}
+    var r=btn.getBoundingClientRect();
+    if(r.bottom<0||r.top>window.innerHeight){csCloseAll();return;}
+    csPlaceMenu(btn,dd);
+  });
+}
+document.addEventListener('scroll',csReposition,true);
+window.addEventListener('resize',csReposition);
+/* Put an open menu back inside its .cs wrapper (as it is while closed). */
+function csRestore(dd){
+  dd.classList.remove('open');dd.classList.remove('cs-dd-pop');
+  dd.style.position='';dd.style.left='';dd.style.top='';dd.style.width='';
+  dd.style.bottom='';dd.style.minWidth='';dd.style.zIndex='';dd.style.maxHeight='';
+  dd.style.transform='';
+  var cs=dd.__cs;
+  if(cs&&dd.parentElement!==cs){
+    /* the dropdown may have been re-rendered while the menu was parked in <body> */
+    if(!cs.isConnected){if(dd.parentElement===document.body)dd.remove();return;}
+    var b=cs.querySelector('.cs-btn');
+    if(b&&b.parentElement===cs)cs.insertBefore(dd,b.nextSibling);else cs.appendChild(dd);
+  }
+}
+/* Place a menu under (or above, when there is no room below) its button.
+   An open menu is moved to <body> and positioned against the viewport: inside the
+   settings panel it would otherwise be laid out against the panel (the panel has
+   backdrop-filter, so it is the containing block of position:fixed children) and
+   clipped away by the panel's overflow:hidden. The menu always stays glued to the
+   button - it shrinks or right-aligns instead of being shifted sideways - and is
+   clamped only as a last resort. */
+/* The settings panel slides in for .28s (transform:translateX(500px) -> 0) and
+   every control inside travels with it. A menu opened during the slide is placed
+   from the button's *moving* rectangle and keeps that offset once the panel has
+   arrived - the classic "opens, jumps, cannot be seen". Re-place it the moment the
+   slide / fade settles, and once more defensively after a short delay. */
+function csSettleFix(btn,dd,cs){
+  var delays=[120,300,520,760],i=0;
+  function off(){cs.removeEventListener('animationend',verify);cs.removeEventListener('transitionend',verify);}
+  function verify(){
+    if(!dd||!dd.classList.contains('open')||!document.body.contains(dd)){off();return;}
+    var a=dd.getBoundingClientRect(),b=btn.getBoundingClientRect();
+    if(Math.abs(a.left-b.left)>1.5||Math.abs(a.top-b.top)>1.5)csPlaceMenu(btn,dd);
+    if(i<delays.length)setTimeout(verify,delays[i++]);else off();
+  }
+  cs.addEventListener('animationend',verify);
+  cs.addEventListener('transitionend',verify);
+  verify();
+}
+function csPlaceMenu(btn,dd){
+  var cs=dd.__cs||dd.parentElement;
+  if(cs&&cs.classList&&cs.classList.contains('cs'))dd.__cs=cs;else cs=dd.__cs;
+  if(dd.parentElement!==document.body)document.body.appendChild(dd);
+  dd.classList.add('cs-dd-pop');
+  /* Freeze every transition while we place and measure the menu: a transition
+     reports its start value to the first synchronous getBoundingClientRect(), so
+     measuring mid-flight is what made the menu land in the wrong place. */
+  dd.classList.add('cs-dd-fx');
+  dd.style.position='fixed';dd.style.bottom='auto';dd.style.zIndex='1200';
+  dd.style.transform='none';
+  /* min-width:100% would resolve against the whole viewport now. */
+  dd.style.minWidth='0';
+  var pad=8,r=btn.getBoundingClientRect();
+  /* aim for 200px, but a narrow button in a cramped corner gets exactly the room
+     that is left, so the menu stays flush with the button instead of jumping. */
+  var room=window.innerWidth-pad-r.left;
+  var want=Math.max(Math.round(r.width),Math.min(200,room));
+  var w=want,left=Math.round(r.left);
+  if(room<want){
+    if(room>=180)w=Math.round(room);
+    else{left=Math.round(r.right)-want;}     /* narrow button: align right edges */
+    if(left<pad){left=pad;w=Math.min(w,window.innerWidth-2*pad);}
+  }
+  if(left+w>window.innerWidth-pad)left=Math.max(pad,window.innerWidth-pad-w);
+  if(left<pad)left=pad;
+  dd.style.width=Math.round(w)+'px';
+  var h=dd.offsetHeight||0,below=window.innerHeight-pad-r.bottom,above=r.top-pad;
+  var top=(h>below&&above>below)?Math.round(r.top)-5-h:Math.round(r.bottom)+5;
+  if(top+h>window.innerHeight-pad)top=window.innerHeight-pad-h;
+  if(top<pad)top=pad;
+  dd.style.left=left+'px';
+  dd.style.top=top+'px';
+  /* Last-resort correction against the box that was really rendered. With the
+     transitions frozen this reads the settled geometry; a large delta means
+     something else moved us, so the inline left/top are kept in that case. */
+  var a=dd.getBoundingClientRect(),dx=a.left-left,dy=a.top-top;
+  if(Math.abs(dx)>0.5&&Math.abs(dx)<=24)dd.style.left=(left-dx)+'px';
+  if(Math.abs(dy)>0.5&&Math.abs(dy)<=24)dd.style.top=(top-dy)+'px';
+  dd.style.transform='';
+  void dd.offsetWidth;                /* commit the placement ... */
+  dd.classList.remove('cs-dd-fx');    /* ... before the fade-in is allowed back */
+}
+function csLabel(opt){
+  var k=opt.getAttribute('data-i');
+  if(k){var s=t(k);if(s&&s!==k)return s;}
+  var sp=opt.querySelector('span:not(.cs-chk)');
+  if(sp)return sp.textContent;
+  return opt.textContent.replace('\u2713','').trim();
+}
+function csPick(opt){
+  var openDD=opt.closest('.cs-dd');   /* an open menu is parked in <body> */
+  var cs=opt.closest('.cs')||(openDD&&openDD.__cs),h=cs.querySelector('input[type="hidden"]'),btn=cs.querySelector('.cs-btn');
+  cs.querySelectorAll('.cs-opt').forEach(function(o){o.classList.remove('sel');});
+  opt.classList.add('sel');h.value=opt.dataset.val;
+  btn.querySelector('.cs-txt').textContent=csLabel(opt);
+  var dd=openDD||cs.querySelector('.cs-dd');
+  csRestore(dd);btn.classList.remove('open');
+  var id=h.id;if(id==='tone'||id==='purpose'||id==='letterLang'||id==='polishMode'||id==='outLang'||id==='srcRegion'||id==='outRegion'){csLetterOptPick(id);}else if(id==='provider')onProviderPick(opt.dataset.val);else if(id==='modelPick')onModelPick(opt.dataset.val);
+}
+function csLangPick(opt){csPick(opt);locale=opt.dataset.val;document.getElementById('langVal').value=locale;localStorage.setItem('bp_lang',locale);applyI18n();}
+function csLetterOptPick(id){
+  var val=v(id);
+  if(id==='letterLang'){LO.letterLang=val;refreshRegionDDs({src:'auto',out:(v('outLang')==='auto'?'auto':v('outRegion'))});}
+  else if(id==='tone'){LO.tone=val;onToneCh();}
+  else if(id==='purpose'){LO.purpose=val;onPurpCh();}
+  else if(id==='polishMode')LO.polishMode=val;
+  else if(id==='outLang'){LO.outLang=val;refreshRegionDDs({src:v('srcRegion'),out:'auto'});}
+  else if(id==='srcRegion')LO.srcRegion=val;
+  else if(id==='outRegion')LO.outRegion=val;
+  saveLetterOpts();
+}
+function csCloseAll(){
+  document.querySelectorAll('.cs-dd.open,.cs-dd.cs-dd-pop').forEach(function(d){csRestore(d);});
+  document.querySelectorAll('.cs-btn.open').forEach(function(b){b.classList.remove('open');});
+}
+function csSyncAll(){
+  document.querySelectorAll('.cs').forEach(function(cs){
+    if(cs.classList.contains('cs-nosync'))return;var h=cs.querySelector('input[type="hidden"]');if(!h)return;
+    var val=h.value,txt=cs.querySelector('.cs-txt'),found=false;
+    cs.querySelectorAll('.cs-opt').forEach(function(o){
+      o.classList.remove('sel');
+      if(o.dataset.val===val){o.classList.add('sel');txt.textContent=csLabel(o);found=true;}
+    });
+    if(!found){var first=cs.querySelector('.cs-opt');if(first){first.classList.add('sel');txt.textContent=csLabel(first);h.value=first.dataset.val;}}
+  });
+}
+document.addEventListener('click',function(e){if(!e.target.closest('.cs')&&!e.target.closest('.cs-dd'))csCloseAll();});
+
+/* ===== i18n ===== */
+function applyI18n(){
+  document.querySelectorAll('[data-i]').forEach(function(el){if(!el.classList.contains('cs-opt'))el.textContent=t(el.getAttribute('data-i'));});
+  document.querySelectorAll('[data-i-title]').forEach(function(el){el.title=t(el.getAttribute('data-i-title'));});
+  document.querySelectorAll('.cs-opt[data-i]').forEach(function(el){
+    var chk=el.querySelector('.cs-chk'),lbl=t(el.getAttribute('data-i'))||el.textContent;
+    el.textContent='';el.appendChild(document.createTextNode(lbl));
+    if(chk)el.appendChild(chk);
+  });
+  csSyncAll();
+  document.getElementById('themeBtn').title=t(document.documentElement.getAttribute('data-theme')==='dark'?'themeLight':'themeDark');
+  $('letterIn').placeholder=t('placeholderIn');$('letterOut').placeholder=t('placeholderOut');
+  $('diffV').innerHTML='<span style="color:var(--tx3)">'+esc(t('sugPlaceholder'))+'</span>';
+  $('sugV').innerHTML='<span style="color:var(--tx3)">'+esc(t('sugPlaceholder2'))+'</span>';
+  $('customToneVal').placeholder=t('placeholderCustomTone');
+  $('customPurpVal').placeholder=t('placeholderCustomPurp');
+  $('sysPrompt').placeholder=t('placeholderPrompt');
+  renderPresetChips();renderH();
+  if(typeof applyGuideHTML==='function')applyGuideHTML();
+}
+
+/* ===== Theme ===== */
+function toggleTheme(){
+  var h=document.documentElement,cur=h.getAttribute('data-theme'),n=cur==='dark'?'light':'dark';
+  h.setAttribute('data-theme',n);localStorage.setItem('bp_theme',n);
+  document.getElementById('themeBtn').title=t(n==='dark'?'themeLight':'themeDark');updateThemeIcon();
+}
+function loadTheme(){var s=localStorage.getItem('bp_theme');if(s)document.documentElement.setAttribute('data-theme',s);updateThemeIcon();}
+function updateThemeIcon(){
+  var d=document.documentElement.getAttribute('data-theme'),ic=document.getElementById('themeIc');
+  ic.innerHTML=d==='dark'?'<circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/>':'<path d="M17 10.5A7.5 7.5 0 019.5 3 7 7 0 1017 10.5z"/>';
+}
+
+/* ===== AI Providers ===== */
+var providers=[],activeProvId='';
+function newProvId(){return 'p'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function activeProv(){for(var i=0;i<providers.length;i++)if(providers[i].id===activeProvId)return providers[i];return providers[0]||null;}
+function saveProviders(){try{localStorage.setItem('bp_providers',JSON.stringify(providers));localStorage.setItem('bp_active_provider',activeProvId);}catch(e){}}
+function providerNameFor(url,fmt){if(url){for(var k in PR)if(PR[k].u===url)return t(PR[k].k);}return fmt==='anthropic'?'Anthropic':fmt==='gemini'?'Gemini':t('provDefault');}
+function loadProviders(){
+  var s=localStorage.getItem('bp_providers');
+  if(s)try{var a=JSON.parse(s);if(a&&a.length)providers=a;}catch(e){}
+  activeProvId=localStorage.getItem('bp_active_provider')||'';
+  if(!providers.length){
+    var lg={};try{lg=JSON.parse(localStorage.getItem('bp_cfg')||'{}')||{};}catch(e){}
+    var url=lg.apiUrl||cfg.apiUrl||'',key=lg.apiKey||cfg.apiKey||'',fmt=lg.apiFormat||cfg.apiFormat||'openai',mdl=lg.modelName||cfg.modelName||'';
+    if(url||key)providers.push({id:newProvId(),name:providerNameFor(url,fmt),url:url,key:key,format:fmt,model:mdl,models:[]});
+  }
+  if(!providers.length)providers.push({id:newProvId(),name:t('provDefault'),url:'',key:'',format:'openai',model:'',models:[]});
+  providers.forEach(function(p){if(!p.id)p.id=newProvId();if(!p.format)p.format='openai';if(!p.name)p.name=t('provDefault');if(!(p.models instanceof Array))p.models=[];});
+  var hit=false;for(var i=0;i<providers.length;i++)if(providers[i].id===activeProvId)hit=true;
+  if(!hit)activeProvId=providers[0].id;
+  saveProviders();
+}
+function persistActiveProvider(){
+  var p=activeProv();if(!p||!$('apiUrl')||!$('modelName'))return;
+  if($('provName'))p.name=v('provName');
+  p.url=v('apiUrl');p.key=v('apiKey');p.format=v('apiFormat');p.model=v('modelName');
+  saveProviders();
+}
+function fillProviderFields(){
+  var p=activeProv();if(!p)return;
+  sV('provName',p.name||'');sV('apiUrl',p.url||'');sV('apiKey',p.key||'');sV('apiFormat',p.format||'openai');sV('modelName',p.model||'');
+  csSyncAll();refreshProvCur();
+}
+function applyActiveProvider(){
+  var p=activeProv();if(!p)return;
+  cfg.apiUrl=p.url||'';cfg.apiKey=p.key||'';cfg.modelName=p.model||'';cfg.apiFormat=p.format||'openai';
+  try{localStorage.setItem('bp_cfg',JSON.stringify(cfg));}catch(e){}
+}
+function refreshProviderDD(){
+  var dd=$('provDD');if(!dd)return;
+  dd.innerHTML=providers.map(function(p){return '<div class="cs-opt'+(p.id===activeProvId?' sel':'')+'" data-val="'+p.id+'" onclick="csPick(this)"><span>'+esc(p.name||'')+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+  var cs=$('provCS');if(cs){var tx=cs.querySelector('.cs-txt');if(tx)tx.textContent=(activeProv()||{}).name||'';}
+  var h=$('provider');if(h)h.value=activeProvId;
+}
+function onProviderPick(id){
+  if(!id||id===activeProvId)return;
+  persistActiveProvider();
+  activeProvId=id;saveProviders();
+  provEditNewId=null;setProvEdit(false);
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+}
+function initProviders(){loadProviders();refreshProviderDD();fillProviderFields();refreshModelDD();applyActiveProvider();provEditNewId=null;setProvEdit(false);refreshProvCur();}
+function newProvider(){
+  persistActiveProvider();
+  var p={id:newProvId(),name:t('provDefault')+' '+(providers.length+1),url:'',key:'',format:'openai',model:'',models:[]};
+  providers.push(p);activeProvId=p.id;saveProviders();
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  provEditNewId=p.id;setProvEdit(true);refreshProvCur();
+  toast(t('provAdded'));
+  var el=$('provName');if(el){el.focus();el.select();}
+}
+function deleteProvider(){
+  if(providers.length<=1){toast(t('provLastOne'));return;}
+  if(!window.confirm(t('provDeleteConfirm')))return;
+  providers=providers.filter(function(p){return p.id!==activeProvId;});
+  activeProvId=providers[0].id;saveProviders();
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  provEditNewId=null;setProvEdit(false);refreshProvCur();
+  toast(t('provDeleted'));
+}
+/* ---- the connection block is hidden until you add or edit a provider ---- */
+var provEditNewId=null;
+function provEditOpen(){var b=$('provEditBox');return !!b&&b.classList.contains('open');}
+function setProvEdit(on){
+  var b=$('provEditBox');if(!b)return;
+  var btn=$('provEditBtn');if(btn)btn.classList.toggle('on',!!on);
+  if(on)b.classList.add('open');else b.classList.remove('open');
+}
+function refreshProvCur(){
+  var el=$('provCur');if(!el)return;
+  var p=activeProv()||{};
+  el.innerHTML='<span>'+esc(t('provCur'))+'</span><b>'+esc(p.name||t('provDefault'))+'</b>'+
+    '<span class="prov-sep">\u00b7</span><span>'+esc(t('modelName'))+'</span>'+
+    (p.model?'<code>'+esc(p.model)+'</code>':'<span class="prov-off">'+esc(t('provNoModel'))+'</span>');
+}
+function editProvider(){
+  if(provEditOpen()){cancelProviderEdit();return;}   /* 修改 toggles the block */
+  provEditNewId=null;
+  fillProviderFields();setProvEdit(true);refreshProvCur();
+  var el=$('provName');if(el){el.focus();el.select();}
+}
+function saveProviderEdit(){
+  persistActiveProvider();applyActiveProvider();refreshProviderDD();refreshModelDD();refreshProvCur();
+  provEditNewId=null;setProvEdit(false);toast(t('provSaved'));
+}
+function cancelProviderEdit(){
+  /* cancelling a provider that was just added and left empty takes it away again */
+  var p=activeProv();
+  if(provEditNewId&&p&&p.id===provEditNewId&&!(p.url||p.key||p.model)&&providers.length>1){
+    providers=providers.filter(function(x){return x.id!==p.id;});
+    activeProvId=providers[0].id;saveProviders();
+  }
+  provEditNewId=null;
+  fillProviderFields();refreshProviderDD();refreshModelDD();applyActiveProvider();
+  setProvEdit(false);refreshProvCur();
+}
+function modelsUrlFor(url,fmt){
+  var u=(url||'').trim().replace(/\/+$/,'');if(!u)return '';
+  if(fmt==='gemini'){var m=u.match(/^(.*\/models)\/[^\/:]+(?::[A-Za-z]+)?$/);if(m)return m[1];if(/\/models$/.test(u))return u;return u.replace(/\/v1beta\/.*$/,'/v1beta/models');}
+  if(fmt==='anthropic'){if(/\/messages$/.test(u))return u.replace(/\/messages$/,'/models');if(/\/models$/.test(u))return u;}
+  if(/\/chat\/completions$/.test(u))return u.replace(/\/chat\/completions$/,'/models');
+  if(/\/completions$/.test(u))return u.replace(/\/completions$/,'/models');
+  if(/\/models$/.test(u))return u;
+  return u+'/models';
+}
+function parseModelList(d,fmt){
+  var out=[],seen={};function add(x){x=String(x||'').replace(/^models\//,'');if(!x||seen[x])return;seen[x]=1;out.push(x);}
+  if(fmt==='gemini'){((d&&d.models)||[]).forEach(function(m){if(m.supportedGenerationMethods&&m.supportedGenerationMethods.indexOf('generateContent')<0)return;add(m.name);});}
+  else{((d&&(d.data||d.models))||[]).forEach(function(m){add(m.id||m.name);});}
+  out.sort();return out;
+}
+function refreshModelDD(){
+  var dd=$('modelDD');if(!dd)return;
+  var list=(activeProv()||{}).models||[];
+  dd.innerHTML=list.map(function(m){return '<div class="cs-opt" data-val="'+esc(m)+'" onclick="csPick(this)"><span>'+esc(m)+'</span><span class="cs-chk">\u2713</span></div>';}).join('');
+}
+function onModelPick(val){
+  if(!val)return;
+  var inp=$('modelName');if(inp)inp.value=val;
+  var p=activeProv();if(p){p.model=val;saveProviders();}
+  applyActiveProvider();
+}
+async function fetchModelList(){
+  var p=activeProv();if(!p)return null;
+  persistActiveProvider();
+  if(!String(p.url||'').trim()){showTR(t('needUrl'),'err');return null;}
+  if(!String(p.key||'').trim()){showTR(t('needKey'),'err');return null;}
+  var url=modelsUrlFor(p.url,p.format),btn=$('loadModelsBtn');
+  if(btn){btn.disabled=true;var lb=btn.querySelector('.cs-txt');if(lb)lb.textContent=t('loadingModels');}
+  showTR(t('loadingModels'),'info');
+  try{
+    var res;
+    if(p.format==='anthropic')res=await fetch(url,{headers:{'x-api-key':p.key,'anthropic-version':'2023-06-01'}});
+    else if(p.format==='gemini')res=await fetch(url+(url.indexOf('?')>=0?'&':'?')+'key='+encodeURIComponent(p.key));
+    else res=await fetch(url,{headers:{'Authorization':'Bearer '+p.key}});
+    if(!res.ok){var b=await res.text();throw new Error(res.status+': '+String(b).substring(0,160));}
+    var list=parseModelList(await res.json(),p.format);
+    if(!list.length){showTR(t('noModels'),'err');return null;}
+    p.models=list;saveProviders();refreshModelDD();
+    showTR(t('modelsLoaded').replace('{n}',list.length),'ok');
+    return list;
+  }catch(e){showTR(t('modelsFail')+' ('+e.message+')','err');return null;}
+  finally{if(btn){btn.disabled=false;var lb2=btn.querySelector('.cs-txt');if(lb2)lb2.textContent=t('loadModels');}}
+}
+async function openModelPicker(btn){
+  if(btn.classList.contains('open')){csCloseAll();return;}   /* second click closes it */
+  var p=activeProv();if(!p)return;
+  if(!(p.models&&p.models.length)){var list=await fetchModelList();if(!list)return;}
+  refreshModelDD();
+  var dd=$('modelDD');if(!dd||!dd.children.length)return;
+  csCloseAll();
+  csPlaceMenu(btn,dd);
+  dd.classList.add('open');btn.classList.add('open');
+}
+
+/* ===== Presets ===== */
+function renderPresetChips(){var el=$('presetChips'),keys=['openai','anthropic','gemini','groq','deepseek','openai-compat'];el.innerHTML=keys.map(function(k){return'<span class="chip" onclick="applyPreset(\''+k+'\',this)">'+t(PR[k].k)+'</span>';}).join('');}
+
+/* ===== Settings ===== */
+function loadCfg(){var s=localStorage.getItem('bp_cfg');if(s)try{cfg=Object.assign({},cfg,JSON.parse(s));}catch(e){}}
+function toggleApiKeyVisibility(){var inp=document.getElementById('apiKey');var svg=document.getElementById('apiKeyEyeIcon');if(inp.type==='password'){inp.type='text';svg.innerHTML='<path d="M17.94 17.94A10.07 10.07 0 0110 20c-5 0-9-7-9-7a18.45 18.45 0 015.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0110 4c5 0 9 7 9 7a18.5 18.5 0 01-2.16 3.19"/><path d="M1 1l18 18" stroke-linecap="round"/>';}else{inp.type='password';svg.innerHTML='<path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/>';}}
+function loadLetterOpts(){var s=localStorage.getItem('bp_letterOpts');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
+function saveLetterOpts(){localStorage.setItem('bp_letterOpts',JSON.stringify(LO));}
+function fillLetterOpts(){sV('letterLang',LO.letterLang);sV('tone',LO.tone);sV('purpose',LO.purpose);sV('polishMode',LO.polishMode);sV('outLang',LO.outLang);sV('srcRegion',LO.srcRegion||'auto');sV('outRegion',LO.outRegion||'auto');refreshRegionDDs({src:LO.srcRegion||'auto',out:LO.outRegion||'auto'});onToneCh();onPurpCh();}
+function loadLetterPrefMode(){var el=$('letterPrefEnabled');if(el)el.checked=localStorage.getItem('bp_letterPrefEnabled')==='1';}
+function saveLetterPrefMode(){var el=$('letterPrefEnabled');localStorage.setItem('bp_letterPrefEnabled',el&&el.checked?'1':'0');if(el&&el.checked)saveCurrentLetterPrefs();}
+function saveCurrentLetterPrefs(){LO={letterLang:v('letterLang'),tone:v('tone'),purpose:v('purpose'),polishMode:v('polishMode'),outLang:v('outLang'),srcRegion:v('srcRegion'),outRegion:v('outRegion')};localStorage.setItem('bp_letterPrefs',JSON.stringify(LO));localStorage.setItem('bp_letterPrefEnabled','1');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=true;saveLetterOpts();toast(t('letterPrefSaved'));}
+function restoreDefaultLetterPrefs(){LO={letterLang:'auto',tone:'professional',purpose:'general',polishMode:'full',outLang:'auto',srcRegion:'auto',outRegion:'auto'};localStorage.removeItem('bp_letterPrefs');localStorage.setItem('bp_letterPrefEnabled','0');if($('letterPrefEnabled'))$('letterPrefEnabled').checked=false;fillLetterOpts();saveLetterOpts();toast(t('letterPrefResetDone'));}
+function applySavedLetterPrefs(){if(localStorage.getItem('bp_letterPrefEnabled')!=='1')return;var s=localStorage.getItem('bp_letterPrefs');if(s)try{LO=Object.assign({},LO,JSON.parse(s));}catch(e){}}
+function saveCfg(){cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');persistActiveProvider();applyActiveProvider();refreshProviderDD();localStorage.setItem('bp_cfg',JSON.stringify(cfg));toast(t('save')+' ✓');}
+function autoSave(){cfg.temperature=parseFloat(v('temperature'))||0.7;cfg.customSystemPrompt=v('sysPrompt');cfg.customTone=v('customToneVal');cfg.customPurpose=v('customPurpVal');persistActiveProvider();applyActiveProvider();}
+function fillF(){sV('apiUrl',cfg.apiUrl);sV('apiKey',cfg.apiKey);sV('modelName',cfg.modelName);sV('temperature',cfg.temperature);sV('apiFormat',cfg.apiFormat);sV('sysPrompt',cfg.customSystemPrompt);sV('customToneVal',cfg.customTone||'');sV('customPurpVal',cfg.customPurpose||'');csSyncAll();}
+function v(id){return document.getElementById(id).value.trim();}
+function sV(id,val){document.getElementById(id).value=val;}
+function $(id){return document.getElementById(id);}
+function applyPreset(k,el){var p=PR[k];sV('apiUrl',p.u);sV('modelName',p.m);sV('apiFormat',p.f);if(!v('provName'))sV('provName',t(p.k));var ap=activeProv();if(ap)ap.models=[];csSyncAll();refreshModelDD();persistActiveProvider();applyActiveProvider();refreshProviderDD();document.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});if(el)el.classList.add('on');}
+function onToneCh(){v('tone')==='custom'?$('custTone').classList.add('show'):$('custTone').classList.remove('show');}
+function onPurpCh(){v('purpose')==='custom-purpose'?$('custPurp').classList.add('show'):$('custPurp').classList.remove('show');}
+function updCnt(){$('charCnt').textContent=$('letterIn').value.length;}
+
+/* ===== Panels ===== */
+function toggleSP(){var o=$('sOv'),b=$('fabS');o.classList.contains('open')?(o.classList.remove('open'),b.classList.remove('on')):(o.classList.add('open'),b.classList.add('on'));}
+function toggleHP(){var o=$('hOv'),b=$('fabH');o.classList.contains('open')?(o.classList.remove('open'),b.classList.remove('on')):(o.classList.add('open'),b.classList.add('on'));}
+
+/* ===== Tabs ===== */
+function swTab(n,el){document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('on');});document.querySelectorAll('.tp').forEach(function(x){x.classList.remove('on');});el.classList.add('on');$('tp-'+n).classList.add('on');}
+function resetTabs(){var tabs=document.querySelectorAll('.tab'),ps=document.querySelectorAll('.tp');tabs.forEach(function(x){x.classList.remove('on');});ps.forEach(function(x){x.classList.remove('on');});if(tabs[0])tabs[0].classList.add('on');if(ps[0])ps[0].classList.add('on');}
+
+/* ===== Polish ===== */
+async function go(){
+  var input=$('letterIn').value.trim();
+  if(!input){showSts(t('noInput'),'err');return;}
+  autoSave();
+  if(!cfg.apiUrl||!cfg.apiKey){showSts(t('noApi'),'err');return;}
+  var btn=$('goBtn'),txt=$('goTxt');
+  btn.disabled=true;txt.innerHTML='<span class="sp"></span> '+t('polishing');
+  showSts(t('sending'),'info');
+  var lang=v('letterLang'),outLang=v('outLang'),tone=v('tone'),purp=v('purpose');
+  var tK=TL_KEY[tone]||'tonePro';if(tone==='custom'){var ct=v('customToneVal');tK=ct?'custom: '+ct:'Custom';}
+  var pK=PL_KEY[purp]||'purpGeneral';if(purp==='custom-purpose'){var cp=v('customPurpVal');pK=cp?'custom: '+cp:'Custom';}
+  var srcCode=lang,outCode=(!outLang||outLang==='auto')?lang:outLang;
+  var srcName=(srcCode&&srcCode!=='auto')?langName(srcCode):'',outName=(outCode&&outCode!=='auto')?langName(outCode):'';
+  var srcR=regionInfo(srcCode,v('srcRegion')),outR=regionInfo(outCode,v('outRegion'));
+  var tI=tone==='custom'?(v('customToneVal')||'Adjust tone as appropriate.'):'Style: '+t(tK);
+  var pI=purp==='custom-purpose'?(v('customPurpVal')||'Determine appropriate purpose.'):'Purpose: '+t(pK);
+  var pm=v('polishMode');
+  var modeRule=pm==='content'?'Only polish and refine the provided text as-is. Do NOT add greetings, closings, signatures, subject lines, or any content not in the original. Do NOT restructure into a letter format. Return ONLY the polished version of the provided text.':'Output a complete polished letter including appropriate greeting and closing.';
+  /* Language block: always appended, even when a custom system prompt is set,
+     so the chosen output language/region can never be silently dropped. */
+  var langLines=[];
+  langLines.push('[LANGUAGE REQUIREMENTS]');
+  langLines.push(srcName?('- The ORIGINAL letter is written in '+srcName+(srcR?', following the language conventions of '+srcR.en:'')+'.'):'- Detect the language of the original letter automatically.');
+  if(outName){
+    langLines.push('- You MUST write the ENTIRE output in '+outName+(outR?', using the wording, spelling, punctuation and business-writing conventions of '+outR.en:'')+'.');
+    if(srcName&&outName!==srcName)langLines.push('- This is a TRANSLATION task in addition to polishing: the output language ('+outName+') differs from the original language ('+srcName+'). Do NOT keep the original language.');
+    if(outCode==='zh-CN')langLines.push('- Use Simplified Chinese characters (\u7b80\u4f53\u5b57) only. Do NOT output any Traditional Chinese characters, and use Mainland-style vocabulary.');
+    if(outCode==='zh-TW')langLines.push('- Use Traditional Chinese characters (\u7e41\u9ad4\u5b57) only. Do NOT output any Simplified Chinese characters.');
+    langLines.push('- The "--- Suggestions ---" section must also be written in '+outName+'.');
+  }else{
+    langLines.push('- Write the output in the same language as the original letter.');
+  }
+  var langBlock=langLines.join('\n');
+  var basePrompt=cfg.customSystemPrompt||('You are a senior business communication consultant. Polish the letter professionally.\nRules: preserve intent, improve clarity, maintain business etiquette, fix grammar, '+modeRule+'\n'+tI+'\n'+pI);
+  var sysPrompt=basePrompt+'\n\n'+langBlock+'\n\nAppend "--- Suggestions ---" section (2-5 points) at the end.';
+
+  var st=Date.now();
+  try{var r;if(cfg.apiFormat==='anthropic')r=await callAnthropic(input,sysPrompt);else if(cfg.apiFormat==='gemini')r=await callGemini(input,sysPrompt);else r=await callOpenAI(input,sysPrompt);
+  var el2=((Date.now()-st)/1000).toFixed(1);var pt=r.split('--- Suggestions ---');var polished=pt[0].trim();var sug=pt.length>1?pt[1].trim():'';
+  $('letterOut').value=polished;$('diffV').innerHTML=diffHTML(input,polished);
+  $('sugV').innerHTML=sug?sug.replace(/\n/g,'<br>'):'<span style="color:var(--tx3)">'+esc(t('noSug'))+'</span>';
+  lastRes={original:input,polished:polished,suggestions:sug};
+  var pb=$('pfB');pb.textContent=el2+'s';pb.className='pf show '+(el2<3?'fast':el2<10?'med':'slow');
+  showSts(t('polishDone')+' ('+el2+'s)','ok');addH(input,polished,sug,t(tK),t(pK));
+  }catch(err){showSts('Error: '+err.message,'err');}
+  finally{btn.disabled=false;txt.textContent=t('startPolish');}
+}
+async function callOpenAI(t2,sp){var r=await fetch(cfg.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.apiKey},body:JSON.stringify({model:cfg.modelName,temperature:cfg.temperature,messages:[{role:'system',content:sp},{role:'user',content:t2}]})});if(!r.ok){var b=await r.text();throw new Error(r.status+': '+b.substring(0,200));}var d=await r.json();if(d.choices&&d.choices[0]&&d.choices[0].message)return d.choices[0].message.content||'';throw new Error('Unexpected response');}
+async function callAnthropic(t2,sp){var r=await fetch(cfg.apiUrl,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:cfg.modelName,max_tokens:4096,temperature:cfg.temperature,system:sp,messages:[{role:'user',content:t2}]})});if(!r.ok){var b=await r.text();throw new Error(r.status+': '+b.substring(0,200));}var d=await r.json();if(d.content&&d.content[0])return d.content[0].text||'';throw new Error('Unexpected response');}
+async function callGemini(t2,sp){var url=cfg.apiUrl.replace('GEMINI_MODEL',cfg.modelName);var r=await fetch(url+'?key='+cfg.apiKey,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:sp+'\n\n---\n\n'+t2}]}],generationConfig:{temperature:cfg.temperature}})});if(!r.ok){var b=await r.text();throw new Error(r.status+': '+b.substring(0,200));}var d=await r.json();if(d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts)return d.candidates[0].content.parts[0].text||'';throw new Error('Unexpected response');}
+function showSts(m,tp){var el=$('sts');el.innerHTML='';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=function(){el.classList.remove('show');};el.appendChild(msg);el.appendChild(close);el.className='sts show '+tp;}
+
+/* ===== Test ===== */
+async function testConn(){
+  autoSave();if(!cfg.apiUrl||!cfg.apiKey){showTR(t('testFill'),'err');return;}
+  var btn=$('testBtn'),ot=btn.textContent;btn.disabled=true;btn.innerHTML='<span class="sp" style="border-color:rgba(255,255,255,.15);border-top-color:var(--ac)"></span> '+t('testing');
+  showTR(t('testing'),'info');
+  try{var r;if(cfg.apiFormat==='anthropic')r=await callAnthropic('Hello.','Reply OK');else if(cfg.apiFormat==='gemini')r=await callGemini('Hello.','Reply OK');else r=await callOpenAI('Hello.','Reply OK');showTR(t('testOk')+': '+r.substring(0,60),'ok');}
+  catch(e){showTR(t('testFail')+': '+e.message,'err');}
+  finally{btn.disabled=false;btn.textContent=ot;}
+}
+function showTR(m,tp){var el=$('testR');el.innerHTML='';var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=function(){el.style.display='none';};row.appendChild(msg);row.appendChild(close);el.appendChild(row);el.style.display='block';el.style.background=tp==='ok'?'rgba(48,209,88,.08)':tp==='info'?'var(--acg)':'rgba(255,69,58,.08)';el.style.color=tp==='ok'?'var(--ok)':tp==='info'?'var(--ac)':'var(--er)';el.style.border='0.5px solid '+(tp==='ok'?'rgba(48,209,88,.12)':tp==='info'?'rgba(var(--ac-rg),.12)':'rgba(255,69,58,.12)');el.style.borderRadius='var(--r3)';el.style.padding='8px 10px';}
+
+/* ===== Diff ===== */
+function diffHTML(a,b){var al=a.split('\n'),bl=b.split('\n'),h='',mx=Math.max(al.length,bl.length);for(var i=0;i<mx;i++){var o=al[i]||'',n=bl[i]||'';if(o===n)h+='<div style="padding:1px 6px;color:var(--tx3)">'+esc(o)+'</div>';else{if(o)h+='<div class="df-o">- '+esc(o)+'</div>';if(n)h+='<div class="df-n">+ '+esc(n)+'</div>';}}return h||'<span style="color:var(--tx3)">'+esc(t('emptyDiff'))+'</span>';}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+/* ===== History ===== */
+function loadH(){var s=localStorage.getItem('bp_h');if(s)try{H=JSON.parse(s);}catch(e){}renderH();}
+function addH(o,p,s,tone,purp){H.unshift({id:Date.now(),date:new Date().toLocaleString(),original:o,polished:p,suggestions:s,tone:tone,purpose:purp});if(H.length>50)H=H.slice(0,50);localStorage.setItem('bp_h',JSON.stringify(H));renderH();}
+function renderH(){var el=$('hList'),ct=$('hCnt'),bd=$('hBdg');ct.textContent=H.length?'('+H.length+')':'';bd.textContent=H.length;H.length?bd.classList.remove('off'):bd.classList.add('off');if(!H.length){el.innerHTML='<div style="text-align:center;color:var(--tx3);padding:20px;font-size:13px;">'+t('noHistory')+'</div>';return;}el.innerHTML=H.map(function(h){return '<div class="hi" onclick="showDetail('+h.id+')"><div class="hm"><span>'+esc(h.date)+'</span><span style="cursor:pointer;color:var(--er);opacity:.5" onclick="event.stopPropagation();delH('+h.id+')">✕</span></div><div class="hp">'+esc(h.original.substring(0,80))+'…</div><div class="ht"><span class="tg">'+esc(h.tone)+'</span><span class="tg">'+esc(h.purpose)+'</span></div></div>';}).join('');}
+function showDetail(id){var f=null;for(var i=0;i<H.length;i++)if(H[i].id===id){f=H[i];break;}if(!f)return;$('dCont').innerHTML='<strong>【'+t('original')+'】</strong>\n'+esc(f.original)+'\n\n<strong>【'+t('polished')+'】</strong>\n'+esc(f.polished)+'\n\n<strong>【'+t('suggestions')+'】</strong>\n'+esc(f.suggestions||'—');$('dMo').classList.add('show');window._dp=f.polished;}
+function delH(id){H=H.filter(function(x){return x.id!==id;});localStorage.setItem('bp_h',JSON.stringify(H));renderH();toast(t('deleted'));}
+function clrH(){if(!confirm(t('clearConfirm')))return;H=[];localStorage.removeItem('bp_h');renderH();toast(t('cleared'));}
+
+/* ===== Modal ===== */
+function closeMo(){$('dMo').classList.remove('show');}
+function cpDetail(){cpTxt(window._dp||'');}
+
+/* ===== Clipboard ===== */
+function copyOut(){var tx=$('letterOut').value;if(!tx){toast(t('noResult'));return;}cpTxt(tx);}
+function cpTxt(tx){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(tx).then(function(){toast(t('copied'));}).catch(function(){fbCp(tx);});}else fbCp(tx);}
+function fbCp(tx){var a=document.createElement('textarea');a.value=tx;a.style.cssText='position:fixed;left:-9999px';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(t('copied'));}catch(e){toast(t('copyFail'));}document.body.removeChild(a);}
+function dlResult(){var tx=$('letterOut').value;if(!tx){toast(t('noResult'));return;}var b=new Blob(['\uFEFF'+tx],{type:'text/plain;charset=utf-8'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='polished_'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revokeObjectURL(a.href);toast(t('downloaded'));}
+
+/* ===== Actions ===== */
+function useAsIn(){var tx=$('letterOut').value;if(!tx)return;$('letterIn').value=tx;updCnt();window.scrollTo({top:0,behavior:'smooth'});toast(t('loadedAsIn'));}
+function clearAll(){$('letterIn').value='';$('letterOut').value='';updCnt();$('diffV').innerHTML='<span style="color:var(--tx3)">'+esc(t('sugPlaceholder'))+'</span>';$('sugV').innerHTML='<span style="color:var(--tx3)">'+esc(t('sugPlaceholder2'))+'</span>';$('sts').classList.remove('show');$('pfB').classList.remove('show');resetTabs();}
+function loadSample(){
+  var lang=v('letterLang');
+  if(lang==='auto')lang=locale;
+  var samples={
+    'ko':'왕 매니저님께,\n\n지난주 귀사의 디지털 전환 프로젝트 협력 가능성을 논의할 수 있도록 시간을 내주셔서 감사합니다. 내부 검토 결과, 저희는 이번 협력에 큰 관심이 있으며 양사의 역량이 좋은 시너지를 만들 수 있다고 생각합니다.\n\n이번 주 금요일까지 세부 제안서와 견적서를 전달드리겠습니다. 궁금한 점이 있으시면 언제든지 연락해 주세요.\n\n감사합니다.\n이샤오밍\n영업 매니저\nXX Technology','de':'Sehr geehrter Herr Wang,\n\nvielen Dank, dass Sie sich letzte Woche Zeit genommen haben, um mit unserem Team über eine mögliche Zusammenarbeit bei Ihrem digitalen Transformationsprojekt zu sprechen. Nach unserer internen Abstimmung sind wir sehr an einer Zusammenarbeit interessiert.\n\nBis Freitag senden wir Ihnen einen detaillierten Vorschlag einschließlich unseres Angebots. Für Rückfragen stehe ich Ihnen jederzeit gerne zur Verfügung.\n\nMit freundlichen Grüßen\nXiaoming Li\nVertriebsleiter\nXX Technology','es':'Estimado Sr. Wang:\n\nGracias por reunirse con nuestro equipo la semana pasada para analizar una posible colaboración en el proyecto de transformación digital de su empresa. Tras nuestra revisión interna, estamos muy interesados en seguir avanzando.\n\nAntes de este viernes le enviaremos una propuesta detallada junto con el presupuesto. No dude en ponerse en contacto conmigo si tiene alguna pregunta.\n\nAtentamente,\nXiaoming Li\nGerente de Ventas\nXX Technology','fr':'Monsieur Wang,\n\nNous vous remercions d’avoir pris le temps de rencontrer notre équipe la semaine dernière afin d’échanger sur une éventuelle collaboration concernant votre projet de transformation numérique. Après examen en interne, nous souhaitons vivement poursuivre cette collaboration.\n\nNous vous transmettrons une proposition détaillée ainsi que notre devis d’ici vendredi. Je reste à votre disposition pour toute question.\n\nCordialement,\nXiaoming Li\nResponsable commercial\nXX Technology','it':'Gentile Sig. Wang,\n\nLa ringraziamo per aver incontrato il nostro team la scorsa settimana per discutere una possibile collaborazione al progetto di trasformazione digitale della Sua azienda. Dopo il nostro confronto interno, siamo molto interessati a procedere.\n\nEntro venerdì Le invieremo una proposta dettagliata con il relativo preventivo. Rimango a disposizione per qualsiasi domanda.\n\nCordiali saluti,\nXiaoming Li\nResponsabile vendite\nXX Technology','pt':'Prezado Sr. Wang,\n\nAgradecemos por ter se reunido com nossa equipe na semana passada para discutir uma possível colaboração no projeto de transformação digital de sua empresa. Após nossa avaliação interna, temos grande interesse em avançar.\n\nEnviaremos uma proposta detalhada e o orçamento até sexta-feira. Fico à disposição para quaisquer dúvidas.\n\nAtenciosamente,\nXiaoming Li\nGerente de Vendas\nXX Technology','ru':'Уважаемый господин Ван,\n\nБлагодарим Вас за встречу с нашей командой на прошлой неделе и обсуждение возможного сотрудничества по проекту цифровой трансформации Вашей компании. После внутреннего обсуждения мы заинтересованы в продолжении сотрудничества.\n\nДо пятницы мы направим Вам подробное предложение и смету. Если у Вас возникнут вопросы, пожалуйста, свяжитесь со мной.\n\nС уважением,\nСяомин Ли\nМенеджер по продажам\nXX Technology','ar':'السيد وانغ المحترم،\n\nنشكر لكم تخصيص وقت للاجتماع مع فريقنا الأسبوع الماضي لمناقشة إمكانية التعاون في مشروع التحول الرقمي لشركتكم. وبعد المراجعة الداخلية، يسرنا أن نعرب عن اهتمامنا الكبير بالمضي قدماً في هذا التعاون.\n\nسنرسل إليكم مقترحاً تفصيلياً وعرض السعر بحلول يوم الجمعة. ويسعدني الرد على أي استفسارات لديكم.\n\nمع خالص التحية،\nشياو مينغ لي\nمدير المبيعات\nXX Technology','hi':'प्रिय श्री वांग,\n\nपिछले सप्ताह आपकी कंपनी की डिजिटल परिवर्तन परियोजना पर संभावित सहयोग पर चर्चा करने के लिए हमारी टीम से मिलने हेतु समय देने के लिए धन्यवाद। आंतरिक समीक्षा के बाद हम इस सहयोग को आगे बढ़ाने में बहुत रुचि रखते हैं।\n\nहम शुक्रवार तक विस्तृत प्रस्ताव और मूल्य-उद्धरण भेज देंगे। यदि आपके कोई प्रश्न हों तो कृपया मुझसे संपर्क करें।\n\nसादर,\nशियाओमिंग ली\nबिक्री प्रबंधक\nXX Technology','bn':'প্রিয় মি. ওয়াং,\n\nগত সপ্তাহে আপনার প্রতিষ্ঠানের ডিজিটাল রূপান্তর প্রকল্পে সম্ভাব্য সহযোগিতা নিয়ে আমাদের দলের সঙ্গে আলোচনার জন্য সময় দেওয়ায় ধন্যবাদ। অভ্যন্তরীণ পর্যালোচনার পর আমরা এই সহযোগিতা এগিয়ে নিতে অত্যন্ত আগ্রহী।\n\nশুক্রবারের মধ্যে আমরা বিস্তারিত প্রস্তাব ও মূল্যতালিকা পাঠাব। কোনো প্রশ্ন থাকলে অনুগ্রহ করে আমার সঙ্গে যোগাযোগ করুন।\n\nশুভেচ্ছান্তে,\nশিয়াওমিং লি\nবিক্রয় ব্যবস্থাপক\nXX Technology','th':'เรียน คุณหวัง\n\nขอขอบคุณที่สละเวลาพบกับทีมงานของเราเมื่อสัปดาห์ที่ผ่านมาเพื่อหารือเกี่ยวกับความเป็นไปได้ในการร่วมมือในโครงการทรานส์ฟอร์มดิจิทัลของบริษัทท่าน หลังจากหารือภายในแล้ว เรายินดีอย่างยิ่งที่จะเดินหน้าความร่วมมือนี้\n\nเราจะส่งข้อเสนอโดยละเอียดพร้อมใบเสนอราคาให้ท่านภายในวันศุกร์ หากมีคำถาม โปรดติดต่อผมได้ทุกเมื่อ\n\nขอแสดงความนับถือ\nXiaoming Li\nผู้จัดการฝ่ายขาย\nXX Technology','vi':'Kính gửi ông Wang,\n\nCảm ơn ông đã dành thời gian gặp đội ngũ của chúng tôi vào tuần trước để trao đổi về khả năng hợp tác trong dự án chuyển đổi số của quý công ty. Sau khi thảo luận nội bộ, chúng tôi rất mong muốn tiếp tục thúc đẩy cơ hội hợp tác này.\n\nChúng tôi sẽ gửi đề xuất chi tiết kèm báo giá trước thứ Sáu. Nếu có bất kỳ câu hỏi nào, xin vui lòng liên hệ với tôi.\n\nTrân trọng,\nXiaoming Li\nTrưởng phòng Kinh doanh\nXX Technology','id':'Yth. Bapak Wang,\n\nTerima kasih telah meluangkan waktu bertemu dengan tim kami minggu lalu untuk membahas kemungkinan kerja sama dalam proyek transformasi digital perusahaan Anda. Setelah pembahasan internal, kami sangat tertarik untuk melanjutkan kerja sama ini.\n\nKami akan mengirimkan proposal terperinci beserta penawaran harga selambat-lambatnya hari Jumat. Silakan hubungi saya jika ada pertanyaan.\n\nHormat kami,\nXiaoming Li\nManajer Penjualan\nXX Technology','ms':'Tuan Wang yang dihormati,\n\nTerima kasih kerana meluangkan masa untuk bertemu dengan pas kami minggu lalu bagi membincangkan kemungkinan kerjasama dalam projek transformasi digital syarikat tuan. Selepas perbincangan dalaman, kami amat berminat untuk meneruskan kerjasama ini.\n\nKami akan menghantar cadangan terperinci berserta sebut harga selewat-lewatnya pada hari Jumaat. Sila hubungi saya jika tuan mempunyai sebarang pertanyaan.\n\nSalam hormat,\nXiaoming Li\nPengurus Jualan\nXX Technology','fil':'Mahal na G. Wang,\n\nMaraming salamat sa paglalaan ng oras noong nakaraang linggo upang makipagpulong sa aming team tungkol sa posibleng pakikipagtulungan sa digital transformation project ng inyong kumpanya. Matapos ang aming panloob na talakayan, lubos kaming interesado na ipagpatuloy ang pakikipagtulungan.\n\nIpapadala namin ang detalyadong panukala at quotation bago mag-Biyernes. Mangyaring makipag-ugnayan sa akin kung may anumang tanong.\n\nLubos na gumagalang,\nXiaoming Li\nSales Manager\nXX Technology','tr':'Sayın Wang,\n\nGeçen hafta şirketinizin dijital dönüşüm projesindeki olası iş birliğini görüşmek üzere ekibimize zaman ayırdığınız için teşekkür ederiz. İç değerlendirmemizin ardından bu iş birliğini ilerletmek konusunda oldukça istekliyiz.\n\nCuma gününe kadar ayrıntılı teklifimizi ve fiyatlandırmayı ileteceğiz. Herhangi bir sorunuz olursa lütfen benimle iletişime geçin.\n\nSaygılarımla,\nXiaoming Li\nSatış Müdürü\nXX Technology','nl':'Geachte heer Wang,\n\nHartelijk dank dat u vorige week tijd heeft vrijgemaakt om met ons team de mogelijke samenwerking rond het digitale-transformatieproject van uw bedrijf te bespreken. Na intern overleg zijn wij zeer geïnteresseerd om deze samenwerking voort te zetten.\n\nUiterlijk vrijdag sturen wij u een gedetailleerd voorstel en een offerte. Neem gerust contact met mij op als u vragen heeft.\n\nMet vriendelijke groet,\nXiaoming Li\nSalesmanager\nXX Technology','sv':'Bästa herr Wang,\n\nTack för att du tog dig tid att träffa vårt team förra veckan för att diskutera ett möjligt samarbete kring ert digitala transformationsprojekt. Efter vår interna genomgång är vi mycket intresserade av att gå vidare.\n\nVi skickar ett detaljerat förslag och en offert senast på fredag. Kontakta mig gärna om du har några frågor.\n\nMed vänliga hälsningar,\nXiaoming Li\nFörsäljningschef\nXX Technology','da':'Kære hr. Wang,\n\nTak fordi De tog Dem tid til at mødes med vores team i sidste uge for at drøfte et muligt samarbejde om virksomhedens digitale transformationsprojekt. Efter vores interne gennemgang er vi meget interesserede i at gå videre med samarbejdet.\n\nVi sender et detaljeret forslag og et tilbud senest fredag. De er meget velkommen til at kontakte mig, hvis De har spørgsmål.\n\nMed venlig hilsen\nXiaoming Li\nSalgschef\nXX Technology','no':'Kjære herr Wang,\n\nTakk for at du tok deg tid til å møte teamet vårt forrige uke for å diskutere et mulig samarbeid om selskapets digitale transformasjonsprosjekt. Etter vår interne gjennomgang er vi svært interessert i å gå videre.\n\nVi sender et detaljert forslag og et pristilbud innen fredag. Ta gjerne kontakt med meg dersom du har spørsmål.\n\nMed vennlig hilsen\nXiaoming Li\nSalgssjef\nXX Technology','fi':'Hyvä herra Wang,\n\nKiitos, että tapasitte tiimimme viime viikolla keskustellaksenne mahdollisesta yhteistyöstä yrityksenne digitaalisen muutoksen hankkeessa. Sisäisen arviointimme jälkeen olemme erittäin kiinnostuneita jatkamaan yhteistyötä.\n\nLähetämme yksityiskohtaisen ehdotuksen ja tarjouksen perjantaihin mennessä. Ottakaa minuun yhteyttä, jos teillä on kysyttävää.\n\nYstävällisin terveisin\nXiaoming Li\nMyyntipäällikkö\nXX Technology','pl':'Szanowny Panie Wang,\n\nDziękujemy za spotkanie z naszym zespołem w ubiegłym tygodniu i rozmowę o możliwej współpracy przy projekcie transformacji cyfrowej Państwa firmy. Po wewnętrznej analizie jesteśmy bardzo zainteresowani dalszą współpracą.\n\nDo piątku prześlemy szczegółową propozycję wraz z wyceną. W razie pytań proszę o kontakt.\n\nZ poważaniem,\nXiaoming Li\nKierownik sprzedaży\nXX Technology','cs':'Vážený pane Wangu,\n\nděkujeme, že jste si minulý týden našel čas na schůzku s naším týmem a projednání možné spolupráce na projektu digitální transformace Vaší společnosti. Po interním posouzení máme velký zájem v této spolupráci pokračovat.\n\nDo pátku Vám zašleme podrobný návrh a cenovou nabídku. V případě dotazů mě neváhejte kontaktovat.\n\nS pozdravem\nXiaoming Li\nObchodní manažer\nXX Technology','el':'Αξιότιμε κύριε Wang,\n\nΣας ευχαριστούμε που διαθέσατε χρόνο την περασμένη εβδομάδα για να συναντηθείτε με την ομάδα μας και να συζητήσουμε πιθανή συνεργασία στο έργο ψηφιακού μετασχηματισμού της εταιρείας σας. Μετά την εσωτερική μας αξιολόγηση, ενδιαφερόμαστε ιδιαίτερα να προχωρήσουμε.\n\nΘα σας αποστείλουμε αναλυτική πρόταση και προσφορά έως την Παρασκευή. Για οποιαδήποτε ερώτηση, παρακαλώ επικοινωνήστε μαζί μου.\n\nΜε εκτίμηση,\nXiaoming Li\nΔιευθυντής Πωλήσεων\nXX Technology','he':'מר ואנג הנכבד,\n\nתודה שהקדשת מזמנך בשבוע שעבר לפגישה עם הצוות שלנו ולדיון בשיתוף פעולה אפשרי בפרויקט הטרנספורמציה הדיגיטלית של חברתכם. לאחר בחינה פנימית, אנו מעוניינים מאוד להתקדם בשיתוף הפעולה.\n\nנשלח אליך הצעה מפורטת והצעת מחיר עד יום שישי. בכל שאלה, אנא צור איתי קשר.\n\nבברכה,\nXiaoming Li\nמנהל מכירות\nXX Technology','uk':'Шановний пане Ван,\n\nДякуємо, що минулого тижня знайшли час для зустрічі з нашою командою та обговорення можливої співпраці у проєкті цифрової трансформації Вашої компанії. Після внутрішнього розгляду ми дуже зацікавлені у подальшій співпраці.\n\nДо п’ятниці ми надішлемо детальну пропозицію та кошторис. Якщо у Вас виникнуть запитання, будь ласка, зв’яжіться зі мною.\n\nЗ повагою,\nXiaoming Li\nМенеджер з продажу\nXX Technology','ro':'Stimate domnule Wang,\n\nVă mulțumim că v-ați făcut timp să vă întâlniți cu echipa noastră săptămâna trecută pentru a discuta o posibilă colaborare la proiectul de transformare digitală al companiei dumneavoastră. În urma analizei interne, suntem foarte interesați să continuăm colaborarea.\n\nVă vom trimite o propunere detaliată și oferta de preț până vineri. Pentru orice întrebare, vă rog să mă contactați.\n\nCu stimă,\nXiaoming Li\nManager Vânzări\nXX Technology','hu':'Tisztelt Wang Úr!\n\nKöszönjük, hogy a múlt héten időt szakított a csapatunkkal való találkozóra és a vállalata digitális átalakulási projektjével kapcsolatos lehetséges együttműködés megbeszélésére. Belső egyeztetésünk után nagyon érdekeltek vagyunk az együttműködés folytatásában.\n\nPéntekig elküldjük részletes javaslatunkat és árajánlatunkat. Kérdés esetén kérem, forduljon hozzám bizalommal.\n\nÜdvözlettel,\nXiaoming Li\nÉrtékesítési vezető\nXX Technology','fa':'جناب آقای وانگ،\n\nاز اینکه هفته گذشته برای دیدار با تیم ما و گفت‌وگو درباره امکان همکاری در پروژه تحول دیجیتال شرکت شما وقت گذاشتید، سپاسگزاریم. پس از بررسی داخلی، علاقه‌مندیم این همکاری را ادامه دهیم.\n\nتا روز جمعه پیشنهاد تفصیلی و قیمت را برای شما ارسال خواهیم کرد. در صورت داشتن هرگونه پرسش، لطفاً با من تماس بگیرید.\n\nبا احترام،\nXiaoming Li\nمدیر فروش\nXX Technology','ur':'محترم جناب وانگ،\n\nگزشتہ ہفتے ہماری ٹیم سے ملاقات کے لیے وقت نکالنے اور آپ کی کمپنی کے ڈیجیٹل ٹرانسفارمیشن منصوبے میں ممکنہ تعاون پر گفتگو کرنے کا شکریہ۔ داخلی جائزے کے بعد ہم اس تعاون کو آگے بڑھانے میں بہت دلچسپی رکھتے ہیں۔\n\nہم جمعہ تک تفصیلی تجویز اور قیمت کی پیشکش ارسال کریں گے۔ اگر آپ کا کوئی سوال ہو تو براہ کرم مجھ سے رابطہ کریں۔\n\nمخلص،\nXiaoming Li\nسیلز مینیجر\nXX Technology',
+    'zh-TW':'王經理您好：\n\n感謝您上週撥冗與我們團隊進行會議，討論關於貴公司數位轉型專案的合作可能性。\n\n經過內部討論後，我們對於這個合作方向感到相當有興趣。我們認為我們的技術能力與貴公司的產業經驗可以產生很好的協同效應。\n\n關於合作方式，我們有以下初步想法：\n1. 第一階段：需求訪談與系統規劃（預計2週）\n2. 第二階段：原型開發與測試（預計6週）\n3. 第三階段：正式上線與後續維護\n\n預算方面，我們會在本週五前提供一份詳細的報價單給您參考。\n\n如果有任何問題，歡迎隨時與我聯繫。\n\n順頌商祺\n李小明\n業務經理\nXX 科技有限公司','zh-CN':'王经理您好：\n\n感谢您上周拨冗与我们团队进行会议，讨论贵公司数字化转型项目的合作可能性。\n\n经过内部讨论后，我们对这一合作方向非常感兴趣。我们相信，我们的技术能力与贵公司的行业经验能够产生良好的协同效应。\n\n关于合作方式，我们有以下初步想法：\n1. 第一阶段：需求访谈与系统规划（预计2周）\n2. 第二阶段：原型开发与测试（预计6周）\n3. 第三阶段：正式上线与后续维护\n\n预算方面，我们将在本周五前提供一份详细报价单供您参考。\n\n如有任何问题，欢迎随时与我联系。\n\n顺颂商祺\n李小明\n业务经理\nXX科技有限公司','en':'Dear Manager Wang,\n\nThank you for taking the time to meet with our team last week to discuss potential collaboration on your company’s digital transformation project.\n\nFollowing our internal discussion, we are very interested in moving forward. We believe our technical capabilities and your company’s industry expertise can create strong synergies.\n\nOur preliminary proposal is as follows:\n1. Phase 1: Requirements interviews and system planning (approximately 2 weeks)\n2. Phase 2: Prototype development and testing (approximately 6 weeks)\n3. Phase 3: Production launch and ongoing maintenance\n\nRegarding the budget, we will provide a detailed quotation for your review by this Friday.\n\nPlease feel free to contact me if you have any questions.\n\nBest regards,\nXiaoming Li\nSales Manager\nXX Technology Co., Ltd.','ja':'王部長\n\n先週はご多忙のところ、弊社チームとのミーティングにお時間をいただき、貴社のデジタルトランスフォーメーションプロジェクトに関する協業の可能性についてご相談させていただき、誠にありがとうございました。\n\n社内で検討した結果、弊社としても本件の協業に大変関心を持っております。弊社の技術力と貴社の業界経験を組み合わせることで、大きな相乗効果が期待できると考えております。\n\n現時点では、以下の進め方を想定しております。\n1. 第1段階：要件ヒアリングおよびシステム計画（約2週間）\n2. 第2段階：プロトタイプ開発およびテスト（約6週間）\n3. 第3段階：本番導入および継続的な保守\n\n費用につきましては、今週金曜日までに詳細なお見積書をお送りいたします。\n\nご不明な点がございましたら、どうぞお気軽にご連絡ください。\n\n何卒よろしくお願い申し上げます。\n李小明\n営業部長\nXXテクノロジー株式会社'};$('letterIn').value=samples[lang]||samples.en;updCnt();}
+
+/* ===== Onboarding Guide ===== */
+var guideStep=1,guideTotal=3;
+function openGuide(){guideStep=1;updGuideUI();$('guideOv').classList.add('open');}
+function guideOpenSettings(){$('guideOv').classList.remove('open');if(!$('sOv').classList.contains('open'))toggleSP();}
+function closeGuide(){$('guideOv').classList.remove('open');localStorage.setItem('bp_guide_done','1');}
+function skipGuide(){closeGuide();}
+function guideNav(d){
+  var ns=guideStep+d;
+  if(ns>guideTotal){closeGuide();return;}
+  if(ns<1)return;
+  guideStep=ns;updGuideUI();
+}
+function updGuideUI(){
+  document.querySelectorAll('.guide-step').forEach(function(el){el.classList.toggle('on',parseInt(el.getAttribute('data-guide'))===guideStep);});
+  document.querySelectorAll('.guide-dot').forEach(function(el){el.classList.toggle('on',parseInt(el.getAttribute('data-gdot'))===guideStep);});
+  $('guidePrev').style.display=guideStep===1?'none':'';
+  var isLast=guideStep===guideTotal;
+  document.getElementById('guideNextTxt').textContent=isLast?t('guideDone'):t('guideNext');
+}
+
+/* ===== Toast ===== */
+function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if(tt)clearTimeout(tt);tt=setTimeout(function(){el.classList.remove('show');},2200);}
+
+/* ===== Keyboard ===== */
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
+
+/* ===== Online Update ===== */
+var APP_VERSION='2026.10.01.5';
+var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
+var availableUpdate=null;
+function isNewerVersion(version){
+  var remote=version.split('.').map(Number),local=APP_VERSION.split('.').map(Number);
+  for(var i=0;i<Math.max(remote.length,local.length);i++){
+    var r=remote[i]||0,l=local[i]||0;
+    if(r>l)return true;if(r<l)return false;
+  }
+  return false;
+}
+function renderUpdateButton(){
+  var btn=$('updBtn'),txt=$('updTxt');if(!btn||!txt)return;
+  btn.disabled=false;
+  txt.textContent=availableUpdate?(locale==='zh-TW'?'下載並更新':locale==='zh-CN'?'下载并更新':'Download and Update'):t('checkUpdate');
+  var badge=btn.querySelector('.update-new-badge');
+  if(availableUpdate&&!badge){badge=document.createElement('span');badge.className='update-new-badge';badge.textContent='NEW';badge.style.cssText='margin-left:7px;padding:1px 5px;border-radius:8px;background:#e5484d;color:#fff;font-size:9px;font-weight:700;line-height:14px;';btn.appendChild(badge);}
+  if(!availableUpdate&&badge)badge.remove();
+}
+/* Watchdog: if the host never reports progress the dialog would sit on
+   "Preparing…" forever, so surface a real error instead of hanging. */
+var updWatchdog=null,updLastState='';
+function clearUpdWatchdog(){if(updWatchdog){clearTimeout(updWatchdog);updWatchdog=null;}}
+function armUpdWatchdog(ms,message){
+  clearUpdWatchdog();
+  updWatchdog=setTimeout(function(){
+    updWatchdog=null;
+    showUpdOv('error',0,message);
+  },ms);
+}
+function startAvailableUpdate(){
+  if(!availableUpdate||!availableUpdate.download_url)return;
+  var notes='';if(availableUpdate.release_notes)notes=availableUpdate.release_notes[locale]||availableUpdate.release_notes.en||'';
+  var msg=t('newVersion')+': '+availableUpdate.version;if(notes)msg+='\n\n'+notes;msg+='\n\n'+t('clickToDownload');
+  if(!confirm(msg))return;
+  var hasBridge=!!(window.chrome&&window.chrome.webview&&window.chrome.webview.postMessage);
+  /* An older host exe has no update handler at all: posting a message there is
+     silently dropped, so download in the browser instead of hanging. */
+  if(hasBridge&&window.hostUpdateSupported!==true){
+    toast(t('updHostOld'));
+    window.open(availableUpdate.download_url,'_blank');
+    return;
+  }
+  if(hasBridge){
+    updLastState='preparing';
+    showUpdOv('preparing',-1,'');
+    armUpdWatchdog(20000,t('updNoResponse'));
+    try{
+      window.chrome.webview.postMessage(JSON.stringify({type:'installUpdate',url:availableUpdate.download_url,version:availableUpdate.version}));
+    }catch(e){
+      clearUpdWatchdog();
+      showUpdOv('error',0,String(e&&e.message||e));
+    }
+  }
+  else window.open(availableUpdate.download_url,'_blank');
+}
+function checkForUpdate(background){
+  if(availableUpdate&&!background){startAvailableUpdate();return;}
+  var btn=$('updBtn'),txt=$('updTxt');
+  if(!background&&btn){btn.disabled=true;if(txt)txt.textContent=t('checking');}
+  fetch(UPDATE_URL+'?_t='+Date.now()).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();}).then(function(d){
+    availableUpdate=d.version&&isNewerVersion(d.version)?d:null;renderUpdateButton();
+    if(!background){if(availableUpdate)startAvailableUpdate();else toast(t('upToDate'));}
+  }).catch(function(e){
+    renderUpdateButton();if(!background)toast(t('updateFail'));
+  });
+}
+/* ===== Update Progress UI ===== */
+var UPD_STATE_KEY={preparing:'updPreparing',downloading:'updDownloading',extracting:'updExtracting',installing:'updInstalling',restarting:'updRestarting'};
+function closeUpdOv(){clearUpdWatchdog();var ov=$('updOv');if(ov)ov.classList.remove('open');}
+/* Escape hatch when the in-app update cannot proceed. */
+function openUpdDownload(){
+  var url=(availableUpdate&&availableUpdate.download_url)||'https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest';
+  window.open(url,'_blank');
+}
+function showUpdOv(state,percent,detail){
+  var ov=$('updOv');if(!ov)return;
+  ov.classList.add('open');
+  var isErr=state==='error';
+  $('updOvTitle').textContent=isErr?t('updErrorTitle'):t('updTitle');
+  $('updOvState').textContent=isErr?(detail||t('updateFail')):t(UPD_STATE_KEY[state]||'updPreparing');
+  var fill=$('updOvFill'),pctEl=$('updOvPct'),detEl=$('updOvDetail');
+  if(isErr){fill.classList.remove('indet');fill.style.width='100%';fill.style.background='var(--er)';pctEl.textContent='';detEl.textContent='';}
+  else{
+    fill.style.background='';
+    if(typeof percent==='number'&&percent>=0){fill.classList.remove('indet');fill.style.width=Math.min(100,percent)+'%';pctEl.textContent=Math.min(100,percent)+'%';}
+    else{fill.classList.add('indet');fill.style.width='';pctEl.textContent='';}
+    detEl.textContent=detail||'';
+  }
+  var acts=$('updOvActs');$('updOvCloseTxt').textContent=t('updClose');
+  var dl=$('updOvDlTxt');if(dl)dl.textContent=t('updManualDl');
+  if(isErr)acts.classList.add('show');else acts.classList.remove('show');
+}
+/* Called from the WebView2 host during download/extract/install. */
+window.hostUpdateProgress=function(state,percent,detail){
+  try{
+    updLastState=state;
+    if(state==='error')clearUpdWatchdog();
+    else if(state==='restarting')armUpdWatchdog(120000,t('updNoResponse'));
+    /* Any progress report proves the host is alive; give the next stage a fresh
+       window rather than letting the initial 20s deadline fire mid-download. */
+    else armUpdWatchdog(180000,t('updStalled'));
+    showUpdOv(state,typeof percent==='number'?percent:-1,detail||'');
+  }catch(e){}
+};
+
+/* ===== Init ===== */
+function applyGuideHTML(){
+  var keys=['guideW2Step1','guideW2Step2','guideW2Step3','guideW3Step1','guideW3Step2','guideW3Step3','guideW3Step4'];
+  var lis=document.querySelectorAll('.guide-list li[data-i]');
+  lis.forEach(function(li){
+    var k=li.getAttribute('data-i');var v=t(k);
+    if(v&&v.indexOf('<')>=0)li.innerHTML=v;
+  });
+}
+window.addEventListener('DOMContentLoaded',function(){
+  loadLetterOpts();applySavedLetterPrefs();
+  var saved=localStorage.getItem('bp_lang');locale=saved||detectLang();if(!T[locale])locale='en';
+  document.getElementById('langVal').value=locale;
+  populateLangDropdowns();
+  loadTheme();loadCfg();initProviders();fillF();fillLetterOpts();loadLetterPrefMode();updCnt();loadH();applyI18n();applyGuideHTML();
+  if(!localStorage.getItem('bp_guide_done'))openGuide();
+  setTimeout(function(){checkForUpdate(true);},800);
+});
+</script>
+
+<script>
+(function(){
+  window.addEventListener('load',function(){
+    var raf=window.requestAnimationFrame;window.requestAnimationFrame=function(cb){cb();return 0;};
+    try{
+      var a=document.querySelector('.cs-opt[data-val="custom"]');
+      if(a)csPick(a);
+      var b=document.querySelector('.cs-opt[data-val="custom-purpose"]');
+      if(b)csPick(b);
+    }catch(e){document.title='inject err '+e;}
+    try{
+      var t=document.getElementById('customToneVal');
+      if(t)t.value='語氣專業但不失親切，避免過度客套';
+      var p=document.getElementById('customPurpVal');
+      if(p)p.value='向既有客戶說明本次報價調整的原因';
+    }catch(e){}
+    try{
+      var ein=document.getElementById('letterIn');
+      if(ein&&!ein.value)ein.value='Hi John,\n\nI want to talk about the new price for the next order. '+
+        'Our cost went up a lot this year so we have to change it.\n\nPlease let me know what you think.\n\nThanks,\nMike';
+      if(window.updCount)updCount();
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
