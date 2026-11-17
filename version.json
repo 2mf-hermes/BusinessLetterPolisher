@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.8",
+  "version": "2026.10.01.9",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復：快速設定套用、修改建議回答語言、潤飾結果前綴與說明文字。改善：快速設定套用後的提示。",
-    "zh-CN": "修复：快速设置应用、修改建议回答语言、潤饰结果前缀与说明文字。改善：快速设置应用后的提示。",
-    "en": "Fixed: applying quick presets, the language of the suggestion notes, and extra wording around the polished result. Improved: feedback after a preset is applied."
+    "zh-TW": "修復：開啟時介面文字未顯示、設定面板無法開啟、紀錄面板無法開啟、頂部工具列按鈜無法點擊、設定與紀錄按鈜事件失效。改善：頂部工具列按鈜加上文字標籤。",
+    "zh-CN": "修复：开启时界面文字未显示、设置面板无法打开、记录面板无法打开、顶部工具列按钮无法点击、设置与记录按钮事件失效。改善：顶部工具列按钮加上文字标签。",
+    "en": "Fixed: interface text not showing on launch, Settings panel not opening, History panel not opening, top toolbar buttons not clickable, and Settings/History button handlers not firing. Improved: top toolbar buttons now carry text labels."
   }
 }
