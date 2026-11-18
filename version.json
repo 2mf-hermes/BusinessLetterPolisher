@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.13",
+  "version": "2026.10.01.14",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 修復\n\n- 下拉選單滾動時清單向上飄移\n- 供應商新增、刪除、修改按鈕位置\n",
-    "zh-CN": "## 修复\n\n- 下拉菜单滚动时清单向上漂移\n- 供应商新增、删除、修改按钮位置\n",
-    "en": "## Fixes\n\n- Dropdown list drifting upward while scrolling\n- Provider add, delete and edit button placement\n"
+    "zh-TW": "## 修復\n\n- 工具列按鈕語言切換\n- 信件語言與結果語言清單語言切換\n- 地區選單顯示語言\n",
+    "zh-CN": "## 修复\n\n- 工具栏按钮语言切换\n- 信件语言与结果语言列表语言切换\n- 地区菜单显示语言\n",
+    "en": "## Fixed\n\n- Toolbar button language switching\n- Letter language and result language list language switching\n- Region menu display language\n"
   }
 }

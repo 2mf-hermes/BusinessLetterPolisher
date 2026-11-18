@@ -608,11 +608,11 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
   <span class="h-spacer"></span>
   <div class="h-ctrls">
   
-    <button id="topHistoryBtn" class="cs-btn" onclick="$('hOv').classList.add('show')" title="紀錄" style="padding:5px 10px;display:flex;align-items:center;gap:5px;">
+    <button id="topHistoryBtn" class="cs-btn" onclick="$('hOv').classList.add('show')" data-i-title="history" title="紀錄" style="padding:5px 10px;display:flex;align-items:center;gap:5px;">
       <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M10 6v4.5l3 2"/></svg>
-      <span style="font-size:12px;">紀錄</span>
+      <span data-i="history" style="font-size:12px;">紀錄</span>
     </button>
-    <button class="cs-btn" id="themeBtn" onclick="toggleTheme()" title="切換主題" style="padding:5px 10px;display:flex;align-items:center;gap:5px;">
+    <button class="cs-btn" id="themeBtn" onclick="toggleTheme()" data-i-title="themeToggle" title="切換主題" style="padding:5px 10px;display:flex;align-items:center;gap:5px;">
       <svg id="themeIc" viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="10" cy="10" r="4"/><path d="M10 2v2M10 16v2M2 10h2M18 10h2M4.93 4.93l1.41 1.41M13.66 13.66l1.41 1.41M4.93 15.07l1.41-1.41M13.66 6.34l1.41-1.41"/></svg>
       <span id="themeTxt" style="font-size:12px;">深色</span>
     </button>
@@ -628,9 +628,9 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
       </div>
       <input type="hidden" id="langVal">
     </div>
-    <button id="topSettingsBtn" class="cs-btn" onclick="$('sOv').classList.add('show')" title="設定" style="padding:5px 10px;display:flex;align-items:center;gap:5px;">
+    <button id="topSettingsBtn" class="cs-btn" onclick="$('sOv').classList.add('show')" data-i-title="settings" title="設定" style="padding:5px 10px;display:flex;align-items:center;gap:5px;">
       <svg viewBox="0 0 20 20" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="2.6"/><path d="M16.1 12.2a1.4 1.4 0 0 0 .28 1.55l.05.05a1.7 1.7 0 1 1-2.4 2.4l-.05-.05a1.4 1.4 0 0 0-1.55-.28 1.4 1.4 0 0 0-.85 1.28V17a1.7 1.7 0 1 1-3.4 0v-.07a1.4 1.4 0 0 0-.92-1.28 1.4 1.4 0 0 0-1.55.28l-.05.05a1.7 1.7 0 1 1-2.4-2.4l.05-.05a1.4 1.4 0 0 0 .28-1.55 1.4 1.4 0 0 0-1.28-.85H3a1.7 1.7 0 1 1 0-3.4h.07a1.4 1.4 0 0 0 1.28-.92 1.4 1.4 0 0 0-.28-1.55l-.05-.05a1.7 1.7 0 1 1 2.4-2.4l.05.05a1.4 1.4 0 0 0 1.55.28h.07a1.4 1.4 0 0 0 .85-1.28V3a1.7 1.7 0 1 1 3.4 0v.07a1.4 1.4 0 0 0 .85 1.28 1.4 1.4 0 0 0 1.55-.28l.05-.05a1.7 1.7 0 1 1 2.4 2.4l-.05.05a1.4 1.4 0 0 0-.28 1.55v.07a1.4 1.4 0 0 0 1.28.85H17a1.7 1.7 0 1 1 0 3.4h-.07a1.4 1.4 0 0 0-1.28.85z"/></svg>
-      <span style="font-size:12px;">設定</span>
+      <span data-i="settings" style="font-size:12px;">設定</span>
     </button>
   </div>
 </header>
@@ -885,7 +885,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 <script>
 /* ===== i18n ===== */
 var T={
-'zh-TW':{
+'zh-TW':{themeLightShort:'淺色',themeDarkShort:'深色',history:'紀錄',settings:'設定',themeToggle:'切換主題',
 hdrTitle:'商業信件潤飾工具',inputTitle:'原始信件',outputTitle:'潤飾結果',
 lblLang:'信件語言',lblTone:'潤飾風格',lblPurpose:'信件用途',lblMode:'潤飾模式',
 modeFullLetter:'完整信件',modeContentOnly:'僅潤飾內容',
@@ -920,7 +920,7 @@ placeholderIn:'在此貼上您的商業信件…',placeholderOut:'潤飾結果�
 placeholderCustomTone:'例如：語氣溫和但堅定，帶有同理心…',placeholderCustomPurp:'例如：邀請合作夥伴參加技術研討會…',
 placeholderPrompt:'例如：你是一位資深商務溝通顧問…',sugPlaceholder:'執行潤飾後，此處將顯示差異比較。',sugPlaceholder2:'執行潤飾後，此處將顯示修改建議。',guideW1Title:'歡迎使用商業信件潤飾工具',guideW1Desc:'本工具可協助您快速潤飾商業信件，提升專業度與溝通品質。',guideW1Sub:'支援 OpenAI、Anthropic、Gemini 等多家 API，無需安裝即可使用。',guideW2Title:'設定 API 連線',guideW2Desc:'使用前需設定 AI API 連線。點擊右下角齒輪按鈕可隨時修改。',guideW2Step1:'<b>選擇服務商</b> — 點擊「快速預設」選取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 從服務商官網取得您的專屬金鑰',guideW2Step3:'<b>測試連線</b> — 點擊「測試連線」確認設定正確',guideW3Title:'開始使用',guideW3Desc:'設定完成後，即可開始潤飾您的信件。',guideW3Step1:'<b>選擇設定</b> — 選擇信件語言、潤飾風格、用途與模式',guideW3Step2:'<b>貼上信件</b> — 將原始信件內容貼入下方文字框',guideW3Step3:'<b>點擊潤飾</b> — 按下「開始潤飾」按鈕',guideW3Step4:'<b>查看結果</b> — 潤飾結果將顯示在右側，可複製或下載',guideSkip:'跳過引導',guidePrev:'上一步',guideNext:'下一步',guideDone:'開始使用',guideReopen:'使用引導',checkUpdate:'檢查更新',checking:'檢查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'檢查更新失敗',clickToDownload:'按確定下載'
 },
-'zh-CN':{
+'zh-CN':{themeLightShort:'浅色',themeDarkShort:'深色',history:'记录',settings:'设置',themeToggle:'切换主题',presetApplied:'预设已应用',
 hdrTitle:'商业信件润饰工具',inputTitle:'原始信件',outputTitle:'润饰结果',
 lblLang:'信件语言',lblTone:'润饰风格',lblPurpose:'信件用途',lblMode:'润饰模式',
 modeFullLetter:'完整信件',modeContentOnly:'仅润饰内容',
@@ -955,7 +955,7 @@ placeholderIn:'在此贴上您的商业信件…',placeholderOut:'润饰结果�
 placeholderCustomTone:'例如：语气温和但坚定，带有同理心…',placeholderCustomPurp:'例如：邀请合作伙伴参加技术研讨会…',
 placeholderPrompt:'例如：你是一位资深商务沟通顾问…',sugPlaceholder:'执行润饰后，此处将显示差异比较。',sugPlaceholder2:'执行润饰后，此处将显示修改建议。',guideW1Title:'欢迎使用商业信件润饰工具',guideW1Desc:'本工具可协助您快速润饰商业信件，提升专业度与沟通质量。',guideW1Sub:'支挄 OpenAI、Anthropic、Gemini 等多家 API，无需安裝即可使用。',guideW2Title:'设置 API 连接',guideW2Desc:'使用前需设置 AI API 连接。点击右下角齿轮按钮可随时修改。',guideW2Step1:'<b>选择服务商</b> — 点击「快速预设」选取 OpenAI、Anthropic、Gemini 等',guideW2Step2:'<b>填入 API Key</b> — 从服务商官网获取您的专属金钥',guideW2Step3:'<b>测试连接</b> — 点击「测试连接」确认设置正确',guideW3Title:'开始使用',guideW3Desc:'设置完成后，即可开始润饰您的信件。',guideW3Step1:'<b>选择设置</b> — 选择信件语言、润饰风格、用途与模式',guideW3Step2:'<b>贴上信件</b> — 将原始信件内容贴入下方文本框',guideW3Step3:'<b>点击润饰</b> — 按下「开始润饰」按钮',guideW3Step4:'<b>查看结果</b> — 润饰结果将显示在右侧，可复制或下载',guideSkip:'跳过引导',guidePrev:'上一步',guideNext:'下一步',guideDone:'开始使用',guideReopen:'使用引导',checkUpdate:'检查更新',checking:'检查中…',newVersion:'有新版本可用',upToDate:'已是最新版本',updateFail:'检查更新失败',clickToDownload:'按确定下载'
 },
-'en':{
+'en':{themeLightShort:'Light',themeDarkShort:'Dark',history:'History',settings:'Settings',themeToggle:'Toggle theme',
 hdrTitle:'Letter Polisher',inputTitle:'Original Letter',outputTitle:'Polished Result',
 lblLang:'Language',lblTone:'Polish Style',lblPurpose:'Letter Purpose',lblMode:'Polish Mode',
 modeFullLetter:'Full Letter',modeContentOnly:'Content Only',
@@ -1063,6 +1063,90 @@ function regionInfo(langCode,regionVal){
   for(var i=0;i<list.length;i++)if(list[i].v===regionVal)return list[i];
   return null;
 }
+/* 地區清單的顯示文字依介面語言而定：台灣 Taiwan / Taiwan、美國 / United States。
+   英文介面直接用屬於該語言的本地名稱（LANG_REGIONS[lang].label），
+   中文介面則用這張對照表補上中文譯名，避免出現只有西方地名的混合顯示。 */
+var REGION_NAME_CN={
+  'United States':'美國',
+  'United Kingdom':'英國',
+  'Australia':'澳洲',
+  'Canada':'加拿大',
+  'Ireland':'愛爾蘭',
+  'New Zealand':'紐西蘭',
+  'Singapore':'新加坡',
+  'India':'印度',
+  'Hong Kong':'香港',
+  'South Africa':'南非',
+  'Japan':'日本',
+  'South Korea':'韓國',
+  'Germany':'德國',
+  'Austria':'奧地利',
+  'Switzerland':'瑞士',
+  'Spain':'西班牙',
+  'Mexico':'墨西哥',
+  'Argentina':'阿根廷',
+  'Colombia':'哥倫比亞',
+  'Chile':'智利',
+  'France':'法國',
+  'Belgium':'比利時',
+  'Italy':'意大利',
+  'Portugal':'葡萄牙',
+  'Brazil':'巴西',
+  'Russia':'俄羅斯',
+  'Saudi Arabia':'沙烏地阿拉伯',
+  'Egypt':'埃及',
+  'Morocco':'摩洛哥',
+  'Bangladesh':'孟加拉',
+  'Thailand':'泰國',
+  'Vietnam':'越南',
+  'Indonesia':'印度尼西亞',
+  'Malaysia':'馬來西亞',
+  'Brunei':'汶萊',
+  'Philippines':'菲律賓',
+  'Turkey':'土耳其',
+  'Netherlands':'荷蘭',
+  'Sweden':'瑞典',
+  'Finland':'芬蘭',
+  'Denmark':'丹麥',
+  'Norway':'挪威',
+  'Poland':'波蘭',
+  'Czechia':'捷克',
+  'Greece':'希臘',
+  'Cyprus':'賽普勒斯',
+  'Israel':'以色列',
+  'Ukraine':'烏克蘭',
+  'Romania':'羅馬尼亞',
+  'Moldova':'摩爾多瓦',
+  'Hungary':'匈牙利',
+  'Iran':'伊朗',
+  'Afghanistan':'阿富汗',
+  'Pakistan':'巴基斯坦',
+  'Mainland China':'中國大陸',
+  'Taiwan':'台灣',
+  'Macau':'澳門'
+};
+function regionLabelOf(r,langCode){
+  var ui=locale||'zh-TW';
+  var raw=(r&&r.label)||'';
+  /* 去掉 label 裡夾帶的英文尾巴，例如 '台灣 Taiwan' -> '台灣' */
+  var cnOnly=raw.replace(/\s+[A-Za-z][A-Za-z .()\/'-]*$/,'').trim();
+  var enName=(r&&r.en)||raw;
+  if(ui==='en'){
+    /* 英文介面：展現純英文地名 */
+    if(/^[\x00-\x7F\s.()\/'-]+$/.test(raw))return raw.trim();
+    var m=raw.match(/([A-Za-z][A-Za-z .()\/'-]*)$/);
+    if(m&&m[1].trim())return m[1].trim();
+    return enName;
+  }
+  /* 中文介面：若本身就是中文地名則直接用，否則查表 */
+  if(/^[\u4e00-\u9fff]/.test(cnOnly))return cnOnly+' '+((m=m||raw.match(/([A-Za-z][A-Za-z .()\/'-]*)$/))&&m[1].trim()?m[1].trim():'');
+  var key=raw.trim();
+  if(REGION_NAME_CN[key])return REGION_NAME_CN[key]+' '+key;
+  /* 尝試去掉括號後再查 */
+  var base=key.replace(/\s*\(.*\)\s*$/,'').trim();
+  if(REGION_NAME_CN[base])return REGION_NAME_CN[base]+' '+base;
+  return raw;
+}
 function populateRegionDD(ddId,hiddenId,langCode,want){
   var dd=$(ddId),h=$(hiddenId);
   if(!dd||!h)return;
@@ -1073,7 +1157,7 @@ function populateRegionDD(ddId,hiddenId,langCode,want){
     o.className='cs-opt';
     o.setAttribute('data-val',r.v);
     o.setAttribute('onclick','csPick(this)');
-    o.innerHTML='<span>'+esc(r.label)+'</span><span class="cs-chk">\u2713</span>';
+    o.innerHTML='<span>'+esc(regionLabelOf(r,langCode))+'</span><span class="cs-chk">\u2713</span>';
     dd.appendChild(o);
   });
   h.value=dd.querySelector('.cs-opt[data-val="'+cur+'"]')?cur:'auto';
@@ -1087,35 +1171,72 @@ function refreshRegionDDs(want){
   LO.srcRegion=v('srcRegion');LO.outRegion=v('outRegion');
   csSyncAll();
 }
+var LANG_LABELS={
+  'en':{tw:'English',cn:'英语',en:'English'},
+  'zh-TW':{tw:'繁體中文',cn:'繁体中文',en:'Traditional Chinese'},
+  'zh-CN':{tw:'簡體中文',cn:'简体中文',en:'Simplified Chinese'},
+  'ja':{tw:'日本語',cn:'日语',en:'Japanese'},
+  'ko':{tw:'한국어',cn:'韩语',en:'Korean'},
+  'de':{tw:'Deutsch',cn:'德语',en:'German'},
+  'es':{tw:'Español',cn:'西班牙语',en:'Spanish'},
+  'fr':{tw:'Français',cn:'法语',en:'French'},
+  'it':{tw:'Italiano',cn:'意大利语',en:'Italian'},
+  'pt':{tw:'Português',cn:'葡萄牙语',en:'Portuguese'},
+  'ru':{tw:'Русский',cn:'俄语',en:'Russian'},
+  'ar':{tw:'العربية',cn:'阿拉伯语',en:'Arabic'},
+  'hi':{tw:'हिन्दी',cn:'印地语',en:'Hindi'},
+  'bn':{tw:'বাংলা',cn:'孟加拉语',en:'Bengali'},
+  'th':{tw:'ไทย',cn:'泰语',en:'Thai'},
+  'vi':{tw:'Tiếng Việt',cn:'越南语',en:'Vietnamese'},
+  'id':{tw:'Bahasa Indonesia',cn:'印度尼西亚语',en:'Indonesian'},
+  'ms':{tw:'Bahasa Melayu',cn:'马来语',en:'Malay'},
+  'fil':{tw:'Filipino',cn:'菲律宾语',en:'Filipino'},
+  'tr':{tw:'Türkçe',cn:'土耳其语',en:'Turkish'},
+  'nl':{tw:'Nederlands',cn:'荷兰语',en:'Dutch'},
+  'sv':{tw:'Svenska',cn:'瑞典语',en:'Swedish'},
+  'da':{tw:'Dansk',cn:'丹麦语',en:'Danish'},
+  'no':{tw:'Norsk',cn:'挪威语',en:'Norwegian'},
+  'fi':{tw:'Suomi',cn:'芬兰语',en:'Finnish'},
+  'pl':{tw:'Polski',cn:'波兰语',en:'Polish'},
+  'cs':{tw:'Čeština',cn:'捷克语',en:'Czech'},
+  'el':{tw:'Ελληνικά',cn:'希腊语',en:'Greek'},
+  'he':{tw:'עברית',cn:'希伯来语',en:'Hebrew'},
+  'uk':{tw:'Українська',cn:'乌克兰语',en:'Ukrainian'},
+  'ro':{tw:'Română',cn:'罗马尼亚语',en:'Romanian'},
+  'hu':{tw:'Magyar',cn:'匈牙利语',en:'Hungarian'},
+  'fa':{tw:'فارسی',cn:'波斯语',en:'Persian'},
+  'ur':{tw:'اردو',cn:'乌尔都语',en:'Urdu'}
+};
+function langLabelOf(v){
+  var ui=locale||'zh-TW';
+  var e=LANG_LABELS[v];
+  if(!e)return v;
+  if(ui==='en')return e.en;
+  if(ui==='zh-CN')return e.cn;
+  return e.tw;
+}
 function populateLangDropdowns(){
-  // letterLang dropdown (source language)
-  var ll=$('letterLangDD');
-  if(ll&&!ll.getAttribute('data-pop')){
+  var build=function(ddId){
+    var dd=$(ddId);
+    if(!dd)return;
+    /* 先移除所有非 auto 項目，再依目前介面語言重建，讓切換語言時語言名稱跟著變 */
+    var cur=dd.querySelector('.cs-opt.sel');
+    var curVal=cur?cur.getAttribute('data-val'):null;
+    dd.querySelectorAll('.cs-opt').forEach(function(o){if(o.getAttribute('data-val')!=='auto')o.remove();});
     LETTER_LANGS.forEach(function(l){
-      var exists=ll.querySelector('.cs-opt[data-val="'+l.v+'"]');
-      if(exists)return;
       var o=document.createElement('div');
-      o.className='cs-opt';o.setAttribute('data-val',l.v);
+      o.className='cs-opt';
+      o.setAttribute('data-val',l.v);
       o.setAttribute('onclick','csPick(this)');
-      o.innerHTML='<span>'+esc(l.label)+'</span><span class="cs-chk">\u2713</span>';
-      ll.appendChild(o);
+      var lbl=langLabelOf(l.v);
+      o.innerHTML='<span>'+esc(lbl)+'</span><span class="cs-chk">\u2713</span>';
+      if(curVal&&curVal===l.v)o.classList.add('sel');
+      dd.appendChild(o);
     });
-    ll.setAttribute('data-pop','1');
-  }
-  // outLang dropdown (output language)
-  var ol=$('outLangDD');
-  if(ol&&!ol.getAttribute('data-pop')){
-    LETTER_LANGS.forEach(function(l){
-      var exists=ol.querySelector('.cs-opt[data-val="'+l.v+'"]');
-      if(exists)return;
-      var o=document.createElement('div');
-      o.className='cs-opt';o.setAttribute('data-val',l.v);
-      o.setAttribute('onclick','csPick(this)');
-      o.innerHTML='<span>'+esc(l.label)+'</span><span class="cs-chk">\u2713</span>';
-      ol.appendChild(o);
-    });
-    ol.setAttribute('data-pop','1');
-  }
+    dd.setAttribute('data-pop','1');
+  };
+  build('letterLangDD');
+  build('outLangDD');
 }
 
 var locale='en',DF={apiUrl:'',apiKey:'',modelName:'gpt-4o',temperature:0.7,apiFormat:'openai',customSystemPrompt:'',customTone:'',customPurpose:''},cfg=Object.assign({},DF),lastRes=null,H=[],tt=null;
@@ -1425,10 +1546,10 @@ function applyI18n(){
     });
   });
   step(csSyncAll);
-  step(function(){
-    var tb=document.getElementById('themeBtn');
-    if(tb)tb.title=t(document.documentElement.getAttribute('data-theme')==='dark'?'themeLight':'themeDark');
-  });
+  step(function(){syncThemeTxt();});
+  step(function(){refreshRegionDDs();});
+  step(function(){populateLangDropdowns();csSyncAll();});
+  /* title 由 syncThemeTxt 統一負責，避免長短版互相覆寫 */
   step(function(){
     var a=$('letterIn'),b=$('letterOut');
     if(a)a.placeholder=t('placeholderIn');
@@ -1447,10 +1568,20 @@ function applyI18n(){
 }
 
 /* ===== Theme ===== */
+/* 主題按鈕文字須隨語言與目前主題一起更新：深色模式下顯示「淺色」，淺色模式下顯示「深色」 */
+function syncThemeTxt(){
+  var e=document.getElementById('themeTxt');
+  if(!e)return;
+  var dark=document.documentElement.getAttribute('data-theme')==='dark';
+  /* 按鈕顯示的是「點下去會變成什麼」：目前深色就顯示「淺色」，目前淺色就顯示「深色」 */
+  e.textContent=t(dark?'themeLightShort':'themeDarkShort');
+  var tb=document.getElementById('themeBtn');
+  if(tb)tb.title=t(dark?'themeLightShort':'themeDarkShort');
+}
 function toggleTheme(){
   var h=document.documentElement,cur=h.getAttribute('data-theme'),n=cur==='dark'?'light':'dark';
   h.setAttribute('data-theme',n);localStorage.setItem('bp_theme',n);
-  document.getElementById('themeBtn').title=t(n==='dark'?'themeLight':'themeDark');updateThemeIcon();
+  updateThemeIcon();syncThemeTxt();
 }
 function loadTheme(){var s=localStorage.getItem('bp_theme');if(s)document.documentElement.setAttribute('data-theme',s);updateThemeIcon();}
 function updateThemeIcon(){
@@ -1891,7 +2022,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.13';
+var APP_VERSION='2026.10.01.14';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){
