@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.14",
+  "version": "2026.10.01.15",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 修復\n\n- 工具列按鈕語言切換\n- 信件語言與結果語言清單語言切換\n- 地區選單顯示語言\n",
-    "zh-CN": "## 修复\n\n- 工具栏按钮语言切换\n- 信件语言与结果语言列表语言切换\n- 地区菜单显示语言\n",
-    "en": "## Fixed\n\n- Toolbar button language switching\n- Letter language and result language list language switching\n- Region menu display language\n"
+    "zh-TW": "## 新增\n\n- README 三語版，并依最新版機能與介面重寫內容\n- 介面預覽圖依語言分道（繁中／簡中／英文）",
+    "zh-CN": "## 新增\n\n- README 三语版，并依最新版功能与界面重写内容\n- 界面预览图依语言分档（繁中／简中／英文）",
+    "en": "## Added\n\n- Three-language README, rewritten to match the current feature set and UI\n- Interface preview images per language (Traditional Chinese / Simplified Chinese / English)"
   }
 }
