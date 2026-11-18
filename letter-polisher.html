@@ -110,7 +110,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .cs-dd-up{top:auto;bottom:calc(100% + 5px);}
 @keyframes csFadeIn{from{opacity:0;}to{opacity:1;}}
 .cs-dd-pop{max-height:min(64vh,360px);overflow-y:auto;overscroll-behavior:contain;}
-.prov-actions{margin-top:8px;margin-bottom:2px;display:flex;gap:6px;flex-wrap:wrap;}
+.prov-actions{margin-top:6px;margin-bottom:8px;display:flex;gap:6px;flex-wrap:wrap;}
 .prov-actions .btn{white-space:nowrap;}
 .prov-actions .btn:disabled,.prov-actions .btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed;pointer-events:none;}
 
@@ -812,7 +812,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 <div class="ov" id="hOv" onclick="if(event.target===this)toggleHP()"><div class="panel hist"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span data-i="historyTitle"></span> <span id="hCnt" style="font-size:12px;font-weight:400;color:var(--tx3);"></span></h2><button class="px" onclick="toggleHP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn btn-d btn-sm" onclick="clrH()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 4h10M6 4V3h4v1M5 4v8h6V4"/></svg><span data-i="clearAll"></span></button></div><div class="hl" id="hList"></div></div></div>
 
 <!-- Settings Panel -->
-<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div><div class="btns prov-actions" id="provActions"><button class="btn btn-s btn-sm" type="button" id="provAddBtn" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" id="provDelBtn" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div></div></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div class="model-row"><input id="modelName" placeholder="gpt-4o" class="model-inp"><div class="cs cs-model" id="modelCS"><button class="cs-btn model-load" id="loadModelsBtn" onclick="openModelPicker(this)" type="button" data-i-title="loadModels"><span class="model-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7M5 6.5L8 9.5l3-3M2.8 11.5v1.2a.8.8 0 00.8.8h8.8a.8.8 0 00.8-.8v-1.2"/></svg></span><span class="cs-txt" data-i="loadModels"></span></button><div class="cs-dd model-dd" id="modelDD"></div></div></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div></div>
+<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="btns prov-actions prov-actions-in" id="provActions"><button class="btn btn-s btn-sm" type="button" id="provAddBtn" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" id="provDelBtn" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div class="model-row"><input id="modelName" placeholder="gpt-4o" class="model-inp"><div class="cs cs-model" id="modelCS"><button class="cs-btn model-load" id="loadModelsBtn" onclick="openModelPicker(this)" type="button" data-i-title="loadModels"><span class="model-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7M5 6.5L8 9.5l3-3M2.8 11.5v1.2a.8.8 0 00.8.8h8.8a.8.8 0 00.8-.8v-1.2"/></svg></span><span class="cs-txt" data-i="loadModels"></span></button><div class="cs-dd model-dd" id="modelDD"></div></div></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div></div>
 
 <!-- Detail Modal -->
 <div class="mo" id="dMo" onclick="if(event.target===this)closeMo()"><div class="mo-c"><h3 data-i="detailTitle"></h3><div class="dt" id="dCont"></div><div class="btns"><button class="btn btn-s btn-sm" onclick="closeMo()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg><span data-i="close"></span></button><button class="btn btn-g btn-sm" onclick="cpDetail()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button></div></div></div>
@@ -1134,7 +1134,14 @@ function csToggle(btn){
   if(wasOpen)return;
   var dd=btn.nextElementSibling;
   if(!dd||!dd.classList.contains('cs-dd'))return;
-  if(btn.closest('.panel-body')){csPlaceMenu(btn,dd);csSettleFix(btn,dd,btn.closest('.cs')||dd.parentElement);}
+  /* Every menu is placed in a fixed-position layer with measured geometry. This
+     used to run only for menus that happened to sit inside .panel-body, so the
+     dropdowns living directly in a .card never got positioned at all - they just
+     faded in at their static spot and slid around with their container, which is
+     what looked like the list drifting upward and only settling on a second click. */
+  dd.__csSide=null;
+  csPlaceMenu(btn,dd);
+  csSettleFix(btn,dd,btn.closest('.cs')||dd.parentElement);
   dd.classList.add('open');btn.classList.add('open');
 }
 /* A position:fixed child is positioned against its nearest ancestor that has a
@@ -1181,11 +1188,12 @@ function csReposition(){
 /* 滾動期間的輕量定位：只改 inline left/top，不動 DOM、不量容器高度，
    因此不會觸發重排也不會被滾動事件反強後回轉。 */
 function csSlideTo(btn,dd){
-  var pad=8,r=btn.getBoundingClientRect();
+  var pad=8,r=btn.getBoundingClientRect(),gap=5;
   var h=dd.offsetHeight||0;
-  var below=window.innerHeight-pad-r.bottom,above=r.top-pad;
-  var putAbove=(h>below&&above>below);
-  var top=putAbove?Math.round(r.top)-5-h:Math.round(r.bottom)+5;
+  /* Never re-decide the side from a scroll delta - scrolling only moves the menu,
+     it must not make it flip to the other side of the button mid-gesture. */
+  var side=csChooseSide(btn,dd,h);
+  var top=side==='up'?(Math.round(r.top)-gap-h):(Math.round(r.bottom)+gap);
   if(top+h>window.innerHeight-pad)top=window.innerHeight-pad-h;
   if(top<pad)top=pad;
   dd.style.top=top+'px';
@@ -1219,6 +1227,7 @@ document.addEventListener('mouseup', function(e){
 
 function csRestore(dd){
   dd.classList.remove('open');dd.classList.remove('cs-dd-pop');
+  dd.__csSide=null;                 /* 下次開啟重新依當時的空間決定方向 */
   dd.style.position='';dd.style.left='';dd.style.top='';dd.style.width='';
   dd.style.bottom='';dd.style.minWidth='';dd.style.zIndex='';dd.style.maxHeight='';
   dd.style.transform='';
@@ -1248,14 +1257,41 @@ function csSettleFix(btn,dd,cs){
   function verify(){
     if(!dd||!dd.classList.contains('open')||!document.body.contains(dd)){off();return;}
     var a=dd.getBoundingClientRect(),b=btn.getBoundingClientRect();
-    if(Math.abs(a.left-b.left)>1.5||Math.abs(a.top-b.top)>1.5)csPlaceMenu(btn,dd);
+    /* Re-placing on a vertical delta used to re-run the whole measurement (and so
+       the side decision) several times per open, which is how an open menu could
+       end up on a different side than where it started. Only a horizontal
+       misalignment means the placement itself was wrong. */
+    if(Math.abs(a.left-b.left)>1.5)csPlaceMenu(btn,dd);
     if(i<delays.length)setTimeout(verify,delays[i++]);else off();
   }
   cs.addEventListener('animationend',verify);
   cs.addEventListener('transitionend',verify);
   verify();
 }
-function csPlaceMenu(btn,dd){
+function csChooseSide(btn,dd,h){
+  /* Pick the side once, from the room the viewport offers around the button, then
+     remember it for the whole open session. A scroll may only slide the menu, it
+     must never flip it to the other side - that flip is the "jumps upward" report. */
+  var pad=8,gap=5,r=btn.getBoundingClientRect();
+  var belowRoom=window.innerHeight-pad-r.bottom-gap;
+  var aboveRoom=r.top-pad-gap;
+  var side=dd.__csSide;
+  if(!side){
+    if(h<=belowRoom)side='down';
+    else if(h<=aboveRoom)side='up';
+    else side=(aboveRoom>belowRoom)?'up':'down';
+    dd.__csSide=side;
+  }
+  /* Only rescue the menu when its own side has genuinely run out of room (this is
+     what happens when the panel behind it is scrolled near an edge). */
+  if(side==='down'&&dd.offsetHeight>belowRoom&&aboveRoom>belowRoom)side='up';
+  else if(side==='up'&&dd.offsetHeight>aboveRoom&&belowRoom>aboveRoom)side='down';
+  dd.__csSide=side;
+  return side;
+}
+
+function csPlaceMenu(btn,dd,opt){
+  opt=opt||{};
   var cs=dd.__cs||dd.parentElement;
   if(cs&&cs.classList&&cs.classList.contains('cs'))dd.__cs=cs;else cs=dd.__cs;
   if(dd.parentElement!==document.body)document.body.appendChild(dd);
@@ -1268,6 +1304,14 @@ function csPlaceMenu(btn,dd){
   dd.style.transform='none';
   /* min-width:100% would resolve against the whole viewport now. */
   dd.style.minWidth='0';
+  /* Measure with the scroll container and the height cap switched off. While
+     overflow-y:auto is live on a box that has not been laid out at a fixed
+     size yet, offsetHeight reads back short - the menu then believed it was
+     taller than the room below and flipped upwards. That flip is exactly the
+     "drifts up on the first scroll" symptom. Restore the scroll box after the
+     size is known. */
+  var prevOverflow=dd.style.overflowY,prevMax=dd.style.maxHeight;
+  dd.style.overflowY='visible';dd.style.maxHeight='none';
   var pad=8,r=btn.getBoundingClientRect();
   /* aim for 200px, but a narrow button in a cramped corner gets exactly the room
      that is left, so the menu stays flush with the button instead of jumping. */
@@ -1282,8 +1326,20 @@ function csPlaceMenu(btn,dd){
   if(left+w>window.innerWidth-pad)left=Math.max(pad,window.innerWidth-pad-w);
   if(left<pad)left=pad;
   dd.style.width=Math.round(w)+'px';
-  var h=dd.offsetHeight||0,below=window.innerHeight-pad-r.bottom,above=r.top-pad;
-  var top=(h>below&&above>below)?Math.round(r.top)-5-h:Math.round(r.bottom)+5;
+  var h=dd.offsetHeight||0;
+  var gap=5;
+  var side=csChooseSide(btn,dd,h);
+  var belowRoom=window.innerHeight-pad-r.bottom-gap;
+  var aboveRoom=r.top-pad-gap;
+  var avail=side==='up'?aboveRoom:belowRoom;
+  if(h>avail){
+    if(avail>96){dd.style.maxHeight=Math.round(avail)+'px';dd.style.overflowY='auto';h=avail;}
+    else{dd.style.overflowY=prevOverflow||'auto';if(prevMax)dd.style.maxHeight=prevMax;}
+  }else{
+    dd.style.overflowY=prevOverflow||'auto';
+    if(prevMax)dd.style.maxHeight=prevMax;
+  }
+  var top=side==='up'?(Math.round(r.top)-gap-h):(Math.round(r.bottom)+gap);
   if(top+h>window.innerHeight-pad)top=window.innerHeight-pad-h;
   if(top<pad)top=pad;
   dd.style.left=left+'px';
@@ -1835,7 +1891,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.10.01.12';
+var APP_VERSION='2026.10.01.13';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){

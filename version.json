@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.12",
+  "version": "2026.10.01.13",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "修復\n- 下拉選單滾動時清單向上飄移與滾動不順\n- 暗色模式切換按鈕名稱\n- 工具列設定按鈕圖示\n- AI 供應商新增、刪除、修改按鈕位置",
-    "zh-CN": "修复\n- 下拉选单滚动时清单向上飘移与滚动不顺\n- 深色模式切换按钮名称\n- 工具列设置按钮图示\n- AI 供应商新增、删除、修改按钮位置",
-    "en": "Fixes\n- Dropdown list drifting up and scrolling being choppy\n- Dark mode toggle button label\n- Toolbar settings button icon\n- AI provider add, delete and edit button position"
+    "zh-TW": "## 修復\n\n- 下拉選單滾動時清單向上飄移\n- 供應商新增、刪除、修改按鈕位置\n",
+    "zh-CN": "## 修复\n\n- 下拉菜单滚动时清单向上漂移\n- 供应商新增、删除、修改按钮位置\n",
+    "en": "## Fixes\n\n- Dropdown list drifting upward while scrolling\n- Provider add, delete and edit button placement\n"
   }
 }
