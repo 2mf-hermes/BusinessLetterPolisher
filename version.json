@@ -1,42 +1,12 @@
 {
-  "version": "2026.10.01.11",
+  "version": "2026.10.01.12",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": [
-      "修復：",
-      "- AI 供應商修改期間按鈕鎖定",
-      "- 載入模型按鈕與模型清單分離",
-      "- 切換供應商模型清單沿用",
-      "- 下拉選單滾動與拖曳隱藏",
-      "- 設定按鈕齒輪圖示",
-      "",
-      "改善：",
-      "- 工具列排列順序調整為紀錄、暗色模式、語言選擇、設定"
-    ],
-    "zh-CN": [
-      "修复：",
-      "- AI 供应商修改期间按钮锁定",
-      "- 加载模型按钮与模型清单分离",
-      "- 切换供应商模型清单沿用",
-      "- 下拉选单滚动与拖曳隐藏",
-      "- 设置按钮齿轮图示",
-      "",
-      "改善：",
-      "- 工具列排列顺序调整为记录、暗色模式、语言选择、设置"
-    ],
-    "en": [
-      "Fixed:",
-      "- Provider buttons locked while editing",
-      "- Load-models button separated from model list",
-      "- Model list carried over when switching provider",
-      "- Dropdown closing on scroll and scrollbar drag",
-      "- Gear icon for the settings button",
-      "",
-      "Improved:",
-      "- Toolbar order: history, dark mode, language, settings"
-    ]
+    "zh-TW": "修復\n- 下拉選單滾動時清單向上飄移與滾動不順\n- 暗色模式切換按鈕名稱\n- 工具列設定按鈕圖示\n- AI 供應商新增、刪除、修改按鈕位置",
+    "zh-CN": "修复\n- 下拉选单滚动时清单向上飘移与滚动不顺\n- 深色模式切换按钮名称\n- 工具列设置按钮图示\n- AI 供应商新增、删除、修改按钮位置",
+    "en": "Fixes\n- Dropdown list drifting up and scrolling being choppy\n- Dark mode toggle button label\n- Toolbar settings button icon\n- AI provider add, delete and edit button position"
   }
 }
