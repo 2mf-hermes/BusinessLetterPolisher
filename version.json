@@ -1,5 +1,5 @@
 {
-  "version": "2026.10.01.10",
+  "version": "2026.10.01.11",
   "release_date": "2026-10-01",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
@@ -7,39 +7,36 @@
   "release_notes": {
     "zh-TW": [
       "修復：",
-      "- 開啟時界面文字缺漏",
-      "- 頁首標題未顯示",
-      "- 設定面板在小視窗下裁切",
-      "- 歷史面板在小視窗下裁切",
+      "- AI 供應商修改期間按鈕鎖定",
+      "- 載入模型按鈕與模型清單分離",
+      "- 切換供應商模型清單沿用",
+      "- 下拉選單滾動與拖曳隱藏",
+      "- 設定按鈕齒輪圖示",
       "",
       "改善：",
-      "- 內容超出視窗時自動調整大小",
-      "- 面板內容自動滾動",
-      "- 初始化流程將各步驟独立保護"
+      "- 工具列排列順序調整為紀錄、暗色模式、語言選擇、設定"
     ],
     "zh-CN": [
       "修复：",
-      "- 开启时界面文字缺漏",
-      "- 页首标题未显示",
-      "- 设置面板在小视窗下裁切",
-      "- 历史面板在小视窗下裁切",
+      "- AI 供应商修改期间按钮锁定",
+      "- 加载模型按钮与模型清单分离",
+      "- 切换供应商模型清单沿用",
+      "- 下拉选单滚动与拖曳隐藏",
+      "- 设置按钮齿轮图示",
       "",
       "改善：",
-      "- 内容超出视窗时自动调整大小",
-      "- 面板内容自动滚动",
-      "- 初始化流程将各步骤独立保护"
+      "- 工具列排列顺序调整为记录、暗色模式、语言选择、设置"
     ],
     "en": [
       "Fixed:",
-      "- Missing interface text on startup",
-      "- Header title not displayed",
-      "- Settings panel clipped in small windows",
-      "- History panel clipped in small windows",
+      "- Provider buttons locked while editing",
+      "- Load-models button separated from model list",
+      "- Model list carried over when switching provider",
+      "- Dropdown closing on scroll and scrollbar drag",
+      "- Gear icon for the settings button",
       "",
       "Improved:",
-      "- Content auto-resizes when exceeding the window",
-      "- Panel content scrolls automatically",
-      "- Init flow guards each step independently"
+      "- Toolbar order: history, dark mode, language, settings"
     ]
   }
 }
