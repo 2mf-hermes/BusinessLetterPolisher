@@ -1,12 +1,12 @@
 {
-  "version": "2026.11.20.3",
-  "release_date": "2026-11-20",
+  "version": "2026.11.21",
+  "release_date": "2026-11-21",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 修復\n\n- 錯誤提示位置：提示改為顯示在對應操作物件下方\n- 供應商編輯狀態下 AI 供應商清單仍可選取\n- 程式重複開啟：執行中無法再開啟第二個視窗\n\n## 改善\n\n- 載入模型按鈕同時顯示圖示與文字\n- API URL 與 API Key 輸入框改為各佔一列\n- AI 供應商欄位順序：名稱、格式、URL、API Key、模型名稱、溫度",
-    "zh-CN": "## 修复\n\n- 错误提示位置：提示改为显示在对应操作对象下方\n- 供应商编辑状态下 AI 供应商清单仍可选取\n- 程序重复开启：运行中无法再开启第二个窗口\n\n## 改进\n\n- 加载模型按钮同时显示图标与文字\n- API URL 与 API Key 输入框改为各占一行\n- AI 供应商字段顺序：名称、格式、URL、API Key、模型名称、温度",
-    "en": "## Fixed\n\n- Error message position: messages now appear below the object that triggered them\n- AI provider list remained selectable while editing a provider\n- Duplicate launch: no second window can open while the app is running\n\n## Improved\n\n- Load Models button now shows both an icon and a text label\n- API URL and API Key fields moved to separate rows\n- AI provider field order: name, format, URL, API Key, model name, temperature"
+    "zh-TW": "## 修復\n\n- 引導內容標記\n- 三語介面與動態提示\n- 範本語言選擇\n- 設定取消還原\n- 零溫度設定\n\n## 改善\n\n- 快速設定預設模型\n- 設定欄位與窄視窗排列\n- 鍵盤操作與文字對比\n- 模型請求與回應處理\n- 切換介面語言保留結果",
+    "zh-CN": "## 修复\n\n- 引导内容标记\n- 三语界面与动态提示\n- 范本语言选择\n- 设置取消还原\n- 零温度设置\n\n## 改进\n\n- 快速设置默认模型\n- 设置字段与窄窗口排列\n- 键盘操作与文字对比\n- 模型请求与响应处理\n- 切换界面语言保留结果",
+    "en": "## Fixed\n\n- Guide formatting\n- Interface translations and dynamic hints\n- Sample language selection\n- Cancelled provider edits\n- Zero temperature setting\n\n## Improved\n\n- Quick setup model defaults\n- Settings fields and narrow window layout\n- Keyboard navigation and text contrast\n- Model requests and response handling\n- Result preservation when switching interface language"
   }
 }
