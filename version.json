@@ -1,12 +1,12 @@
 {
-  "version": "2026.11.21.1",
+  "version": "2026.11.21.2",
   "release_date": "2026-11-21",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
-  "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
+  "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/tag/2026.11.21.2",
   "release_notes": {
-    "zh-TW": "新增：主流模型快速預設。修復：下拉選單單選、語言選單留白。改善：檢查更新圖示、信件喜好與目前供應商排列。",
-    "zh-CN": "新增：主流模型快速预设。修复：下拉菜单单选、语言菜单留白。改善：检查更新图标、信件偏好与当前供应商排列。",
-    "en": "Added: mainstream model presets. Fixed: single-select menus and language selector spacing. Improved: update icon, letter preferences and current provider layout."
+    "zh-TW": "新增：輸出格式驗證與一次自動修正。修復：重複請求、截斷回應、面板鍵盤操作。改善：置中提示框、簡約介面及共用請求流程。",
+    "zh-CN": "新增：输出格式验证与一次自动修正。修复：重复请求、截断回复、面板键盘操作。改善：居中提示框、简约界面及共用请求流程。",
+    "en": "Added: output format validation with one automatic correction. Fixed: duplicate requests, truncated responses and panel keyboard controls. Improved: centered dialogs, minimal interface and shared request handling."
   }
 }

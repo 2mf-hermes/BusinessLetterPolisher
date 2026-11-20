@@ -1,23 +1,27 @@
 # Business Letter Polisher design system
 
-## Purpose and atmosphere
-A focused desktop writing workspace with balanced density. Settings follow the task sequence: provider name, API format, URL, key, model, temperature. Preserve the toolbar order: history, theme, language, settings.
+## Purpose
+A focused desktop letter editor. Apple-inspired restraint, with Windows UI conventions: Segoe UI, clear blue actions, action then Cancel in confirmation footers, Escape and keyboard focus. Preserve toolbar order: history, theme, language, settings.
 
-## Color and typography
-Use the existing dark canvas (#0C1117), light canvas (#F2F2F7), and a single functional blue accent. Secondary text in light mode is #5C6069, tertiary text #737985. Avoid decorative gradients and glowing actions. Use the installed sans-serif UI font stack with Chinese fallbacks; use monospace only for URLs and API values. Settings group titles are 13px, with hierarchy conveyed by weight. Labels have 1.5 line height; hints have 1.7 line height.
+## Palette and typography
+Light canvas #F3F4F6, white work surfaces, ink #202329, secondary #565D68 and blue #0067C0. Dark canvas #17191D, surfaces #22252B and #282B32, secondary text #B0B5BF. Use Segoe UI Variable Text / Segoe UI / Microsoft JhengHei. Body 13–14px, dialog heading 18px semibold. Use solid surfaces, subtle borders, minimal shadow; no decorative gradients or glowing controls.
 
-## Components and spacing
-Place labels above inputs and errors below the control that triggered them. Use 16px field spacing, 22px section spacing, and at least 38px settings control height. Presets are native buttons. Maintain a visible 2px focus outline with 3px offset. Keep model input, list toggle and reload action separate. API keys stay masked by default.
+## Layout and components
+Use 14px dialog corners, 10px group corners and 7–8px controls. Keep labels above inputs, errors immediately below the triggering control. Preserve name → API format → URL → key → model → temperature. Model input, toggle and reload remain separate. Provider presets populate a draft; Save commits and Cancel restores it.
 
-## Responsive behavior
-At 640px and below, wrap the toolbar without changing action order. At 480px and below, move the model reload button below the input. Settings content scrolls vertically and reserves a stable scrollbar gutter. Avoid horizontal overflow.
+## Dialogs and keyboard
+Confirmation, detail, guide and update dialogs sit at the viewport center, with 24px exterior clearance (16px on narrow windows), bounded height and internal scroll. Confirmation messages use textContent. Queue concurrent confirmations. Initial confirmation focus is Cancel; trap Tab, make the background inert and restore focus on close. Active update progress cannot be dismissed with Escape; errors can. Custom select portals remain operable above their parent panel. Close the top layer before underlying panels.
 
-## Interaction and motion
-Provider presets populate a draft. Save commits it; Cancel restores the previous provider and model list. Preserve generated results across interface language changes. Use short CSS state transitions and honor prefers-reduced-motion. This utility needs no hero imagery or perpetual animation.
+## Responsive and motion
+Wrap the toolbar below 640px without changing order. Stack model reload under the input below 480px. No horizontal overflow. Keep stable panel scrollbars and 36–38px targets. State transitions are short and respect reduced motion.
 
-## Localization and content
-All labels, hints, placeholders, accessible names, language names and regional names follow the interface locale (zh-TW, zh-CN, en). Samples follow that locale independently of the selected source-letter language. Model IDs and user-entered provider names remain literal. Guide formatting escapes text before permitting only bold emphasis.
+## Output boundary
+All three transports share request deadlines, captured configuration, text extraction, and a result validator. Require a JSON object with exactly polished and suggestions (2–5 single-line strings). The polished field cannot contain known preambles, explanation headings, analysis tags or code fences. Retry once with the original letter and a corrective contract. A failed or stale response never replaces displayed results or adds history. Structure is enforceable; arbitrary model semantics, fact accuracy and every language convention are not fully machine-verifiable.
+
+## Localization
+UI labels, notices, accessible names and examples follow zh-TW / zh-CN / en interface locale. Letter language and region independently control source conventions and suggestion language; result language and region control polished content. Preserve generated results on interface language changes.
 
 ## References
+- https://developer.apple.com/design/human-interface-guidelines/alerts
+- https://learn.microsoft.com/en-us/windows/apps/design/controls/dialogs-and-flyouts/dialogs
 - https://fluent2.microsoft.design/accessibility
-- https://fluent2.microsoft.design/
