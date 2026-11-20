@@ -1,12 +1,12 @@
 {
-  "version": "2026.10.01.15",
-  "release_date": "2026-10-01",
+  "version": "2026.11.20.1",
+  "release_date": "2026-11-20",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 新增\n\n- README 三語版，并依最新版機能與介面重寫內容\n- 介面預覽圖依語言分道（繁中／簡中／英文）",
-    "zh-CN": "## 新增\n\n- README 三语版，并依最新版功能与界面重写内容\n- 界面预览图依语言分档（繁中／简中／英文）",
-    "en": "## Added\n\n- Three-language README, rewritten to match the current feature set and UI\n- Interface preview images per language (Traditional Chinese / Simplified Chinese / English)"
+    "zh-TW": "## 修復\n\n- 模型清單重新載入\n- 切換供應商後沿用前一家模型清單\n- 重新開啟後供應商選錯\n- 模型按鈕圖示與多語文字\n\n## 改善\n\n- README 三語敘述",
+    "zh-CN": "## 修复\n\n- 模型清单重新加载\n- 切换供应商后沿用前一家模型清单\n- 重新打开后供应商选错\n- 模型按钮图标与多语文字\n\n## 改进\n\n- README 三语叙述",
+    "en": "## Fixed\n\n- Reloading the model list\n- Model list carried over from the previous provider\n- Wrong provider selected after restarting\n- Model button icon and localized label\n\n## Improved\n\n- Wording in the three-language README files"
   }
 }
