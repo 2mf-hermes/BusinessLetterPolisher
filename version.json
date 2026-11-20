@@ -1,12 +1,12 @@
 {
-  "version": "2026.11.20.1",
+  "version": "2026.11.20.2",
   "release_date": "2026-11-20",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 修復\n\n- 模型清單重新載入\n- 切換供應商後沿用前一家模型清單\n- 重新開啟後供應商選錯\n- 模型按鈕圖示與多語文字\n\n## 改善\n\n- README 三語敘述",
-    "zh-CN": "## 修复\n\n- 模型清单重新加载\n- 切换供应商后沿用前一家模型清单\n- 重新打开后供应商选错\n- 模型按钮图标与多语文字\n\n## 改进\n\n- README 三语叙述",
-    "en": "## Fixed\n\n- Reloading the model list\n- Model list carried over from the previous provider\n- Wrong provider selected after restarting\n- Model button icon and localized label\n\n## Improved\n\n- Wording in the three-language README files"
+    "zh-TW": "## 修復\n\n- 載入模型按鈕過寬壓縮模型名稱輸入框\n- 載入模型清單後無法手動輸入模型名稱\n\n## 改善\n\n- 模型名稱輸入框與模型清單取得完整可用寬度",
+    "zh-CN": "## 修复\n\n- 加载模型按钮过宽压缩模型名称输入框\n- 加载模型清单后无法手动输入模型名称\n\n## 改进\n\n- 模型名称输入框与模型清单取得完整可用宽度",
+    "en": "## Fixed\n\n- Over-wide Load Models button squeezing the model name field\n- Model name field not editable after loading the model list\n\n## Improved\n\n- Model name field and model list now use the full available width"
   }
 }
