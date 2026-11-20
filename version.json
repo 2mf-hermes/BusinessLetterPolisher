@@ -1,12 +1,12 @@
 {
-  "version": "2026.11.21",
+  "version": "2026.11.21.1",
   "release_date": "2026-11-21",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 修復\n\n- 引導內容標記\n- 三語介面與動態提示\n- 範本語言選擇\n- 設定取消還原\n- 零溫度設定\n\n## 改善\n\n- 快速設定預設模型\n- 設定欄位與窄視窗排列\n- 鍵盤操作與文字對比\n- 模型請求與回應處理\n- 切換介面語言保留結果",
-    "zh-CN": "## 修复\n\n- 引导内容标记\n- 三语界面与动态提示\n- 范本语言选择\n- 设置取消还原\n- 零温度设置\n\n## 改进\n\n- 快速设置默认模型\n- 设置字段与窄窗口排列\n- 键盘操作与文字对比\n- 模型请求与响应处理\n- 切换界面语言保留结果",
-    "en": "## Fixed\n\n- Guide formatting\n- Interface translations and dynamic hints\n- Sample language selection\n- Cancelled provider edits\n- Zero temperature setting\n\n## Improved\n\n- Quick setup model defaults\n- Settings fields and narrow window layout\n- Keyboard navigation and text contrast\n- Model requests and response handling\n- Result preservation when switching interface language"
+    "zh-TW": "新增：主流模型快速預設。修復：下拉選單單選、語言選單留白。改善：檢查更新圖示、信件喜好與目前供應商排列。",
+    "zh-CN": "新增：主流模型快速预设。修复：下拉菜单单选、语言菜单留白。改善：检查更新图标、信件偏好与当前供应商排列。",
+    "en": "Added: mainstream model presets. Fixed: single-select menus and language selector spacing. Improved: update icon, letter preferences and current provider layout."
   }
 }

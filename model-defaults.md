@@ -13,3 +13,17 @@ Checked 2026-11-21 (Asia/Taipei). Defaults target current general text model fam
 Google's API Studio documentation redirected to an empty response during the check. The official Google Cloud model page confirms the exact ID and GA status; live API entitlement was not tested. Other defaults were checked against their respective official model listings. No paid API credentials were used.
 
 Reasoning GPT requests omit arbitrary temperature. Claude 5 requests omit temperature and collect text blocks from the response. Older/custom model formats retain their existing sampling setting. Requests were checked with mocked responses, not paid live completions.
+
+## Additional presets (2026.11.21.1)
+
+| Provider | API model ID | Official reference |
+| --- | --- | --- |
+| Qwen | `qwen4-max` | https://www.alibabacloud.com/help/en/model-studio/models |
+| Kimi | `kimi-k3.1-pro` | https://platform.kimi.ai/docs/get-your-api-key |
+| Grok | `grok-4.7` | https://docs.x.ai/developers/models/grok-4.7 |
+| Mistral | `mistral-large-4` | https://docs.mistral.ai/models/mistral-large-4 |
+| OpenRouter | `openai/gpt-6.2-sol` | https://openrouter.ai/api/v1/models |
+
+Preset order: DeepSeek, OpenAI, Anthropic, Google, Qwen, Kimi, Grok, Mistral, Groq, OpenRouter, local/custom. The order is a curated popularity reference: OpenRouter usage through November 19, 2026 ranks DeepSeek, GPT and Claude highly, while its trending list includes Qwen4 Max, GPT-6.2 Sol and Gemini. It is not a numeric global market-share ranking; families absent from the top table are placed by mainstream coverage, with aggregators and local setup last. Source: https://openrouter.ai/rankings . Presets remain static until an application update; no private traffic is collected.
+
+API IDs and endpoints were checked against public documentation. Entitlement, browser CORS and paid live completions were not tested. Saved providers are not migrated. All 11 visible preset buttons use the same ordered data source.
