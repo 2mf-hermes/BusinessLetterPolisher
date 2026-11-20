@@ -1,12 +1,12 @@
 {
-  "version": "2026.11.20.2",
+  "version": "2026.11.20.3",
   "release_date": "2026-11-20",
   "min_app_version": "2026.08.27",
   "download_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest/download/BusinessLetterPolisher.zip",
   "release_notes_url": "https://github.com/2mf-hermes/BusinessLetterPolisher/releases/latest",
   "release_notes": {
-    "zh-TW": "## 修復\n\n- 載入模型按鈕過寬壓縮模型名稱輸入框\n- 載入模型清單後無法手動輸入模型名稱\n\n## 改善\n\n- 模型名稱輸入框與模型清單取得完整可用寬度",
-    "zh-CN": "## 修复\n\n- 加载模型按钮过宽压缩模型名称输入框\n- 加载模型清单后无法手动输入模型名称\n\n## 改进\n\n- 模型名称输入框与模型清单取得完整可用宽度",
-    "en": "## Fixed\n\n- Over-wide Load Models button squeezing the model name field\n- Model name field not editable after loading the model list\n\n## Improved\n\n- Model name field and model list now use the full available width"
+    "zh-TW": "## 修復\n\n- 錯誤提示位置：提示改為顯示在對應操作物件下方\n- 供應商編輯狀態下 AI 供應商清單仍可選取\n- 程式重複開啟：執行中無法再開啟第二個視窗\n\n## 改善\n\n- 載入模型按鈕同時顯示圖示與文字\n- API URL 與 API Key 輸入框改為各佔一列\n- AI 供應商欄位順序：名稱、格式、URL、API Key、模型名稱、溫度",
+    "zh-CN": "## 修复\n\n- 错误提示位置：提示改为显示在对应操作对象下方\n- 供应商编辑状态下 AI 供应商清单仍可选取\n- 程序重复开启：运行中无法再开启第二个窗口\n\n## 改进\n\n- 加载模型按钮同时显示图标与文字\n- API URL 与 API Key 输入框改为各占一行\n- AI 供应商字段顺序：名称、格式、URL、API Key、模型名称、温度",
+    "en": "## Fixed\n\n- Error message position: messages now appear below the object that triggered them\n- AI provider list remained selectable while editing a provider\n- Duplicate launch: no second window can open while the app is running\n\n## Improved\n\n- Load Models button now shows both an icon and a text label\n- API URL and API Key fields moved to separate rows\n- AI provider field order: name, format, URL, API Key, model name, temperature"
   }
 }

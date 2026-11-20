@@ -577,15 +577,26 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 /* 編輯期間鎖定新增 / 刪除 / 修改 */
 .btn[disabled],.btn.is-locked{opacity:.42;cursor:not-allowed;pointer-events:none;filter:grayscale(.4);}
 .prov-actions.locked{position:relative;}
+/* 編輯供應商期間，供應商下拉選單不可操作 */
+.cs.locked{opacity:.55;}
+.cs.locked .cs-btn{pointer-events:none;cursor:not-allowed;}
+/* 就地提示：插在觸發操作的那個欄位下方，不再集中到面板底部 */
+.fg-msg{margin-top:6px;font-size:12px;line-height:1.65;padding:7px 9px;
+  border-radius:var(--r3);overflow-wrap:anywhere;}
+.fg-msg[hidden]{display:none;}
+.fg-msg.err{color:var(--er);background:rgba(255,69,58,.08);border:0.5px solid rgba(255,69,58,.18);}
+.fg-msg.ok{color:var(--ok);background:rgba(48,209,88,.08);border:0.5px solid rgba(48,209,88,.18);}
+.fg-msg.info{color:var(--ac);background:var(--acg);border:0.5px solid rgba(var(--ac-rg),.18);}
 /* 模型列：模型名稱與清單共用同一個輸入框，載入只管抓清單 */
-.model-row{display:grid;grid-template-columns:minmax(0,1fr) 38px;align-items:center;gap:8px;width:100%;}
+.model-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;width:100%;}
 .model-row .cs.cs-model{width:100%;min-width:0;position:relative;}
 .model-row .model-inp{width:100%;min-width:0;padding-right:32px;}
-/* 載入按鈕：固定 38px 方形圖示鈕，說明改由 title / aria-label 呈現，
-   避免長文字（重新載入模型）把模型名稱輸入框壓窄。 */
-.model-row .cs-btn.model-load{width:38px;min-width:38px;height:34px;padding:0;
-  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;}
-.model-row .cs-btn.model-load .cs-txt{display:none;}
+/* 載入按鈕：圖示與文字並列。欄寬用 auto，按鈕只佔自己需要的寬度，
+   模型名稱輸入框仍拿滿剩下的 minmax(0,1fr) 空間，不會被文字壓窄。 */
+.model-row .cs-btn.model-load{width:auto;min-width:0;height:34px;padding:0 10px;
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  flex:0 0 auto;white-space:nowrap;}
+.model-row .cs-btn.model-load .cs-txt{display:inline;font-size:12px;line-height:1;letter-spacing:0;}
 .model-row .model-toggle{
   position:absolute;right:4px;top:50%;transform:translateY(-50%);
   display:inline-flex;align-items:center;justify-content:center;
@@ -609,8 +620,9 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 .cs-dd.cs-dd-pop::-webkit-scrollbar-thumb{background:var(--bd);border-radius:4px;}
 .cs-dd.cs-dd-pop::-webkit-scrollbar-track{background:transparent;}
 @media (max-width:520px){
-  .model-row{grid-template-columns:minmax(0,1fr) 34px;gap:6px;}
-  .model-row .cs-btn.model-load{width:34px;min-width:34px;height:34px;}
+  .model-row{grid-template-columns:minmax(0,1fr) auto;gap:6px;}
+  .model-row .cs-btn.model-load{height:34px;padding:0 8px;gap:4px;}
+  .model-row .cs-btn.model-load .cs-txt{font-size:11px;}
 }
 </style>
 </head>
@@ -829,7 +841,7 @@ header h1{font-size:15px;font-weight:600;color:var(--tx);letter-spacing:-.2px;}
 <div class="ov" id="hOv" onclick="if(event.target===this)toggleHP()"><div class="panel hist"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="10" cy="10" r="8"/><path d="M10 5v5l3 3" stroke-linecap="round"/></svg><span data-i="historyTitle"></span> <span id="hCnt" style="font-size:12px;font-weight:400;color:var(--tx3);"></span></h2><button class="px" onclick="toggleHP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div style="display:flex;justify-content:flex-end;margin-bottom:10px;"><button class="btn btn-d btn-sm" onclick="clrH()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M3 4h10M6 4V3h4v1M5 4v8h6V4"/></svg><span data-i="clearAll"></span></button></div><div class="hl" id="hList"></div></div></div>
 
 <!-- Settings Panel -->
-<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="btns prov-actions prov-actions-in" id="provActions"><button class="btn btn-s btn-sm" type="button" id="provAddBtn" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" id="provDelBtn" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div class="model-row"><div class="cs cs-model" id="modelCS"><input id="modelName" placeholder="gpt-4o" class="model-inp" autocomplete="off" oninput="onModelNameInput()"><button class="cs-btn model-toggle" id="modelToggleBtn" type="button" onclick="toggleModelPicker(this)" data-i-title="modelListBtnTitle" aria-label="Show the loaded model list" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></button><div class="cs-dd model-dd" id="modelDD"></div></div><button class="cs-btn model-load" id="loadModelsBtn" onclick="loadModelList()" type="button" style="color:#fff;background:var(--ac);border-color:var(--ac)"><span class="model-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7M5 6.5L8 9.5l3-3M2.8 11.5v1.2a.8.8 0 00.8.8h8.8a.8.8 0 00.8-.8v-1.2"/></svg></span></button></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div></div>
+<div class="ov" id="sOv"><div class="panel"><div class="ph"><h2><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 4L8.7 1.6 11.3 1.6 12.5 4 15 3.1 16.9 5 16 7.5 18.4 8.7 18.4 11.3 16 12.5 16.9 15 15 16.9 12.5 16 11.3 18.4 8.7 18.4 7.5 16 5 16.9 3.1 15 4 12.5 1.6 11.3 1.6 8.7 4 7.5 3.1 5 5 3.1Z"/><circle cx="10" cy="10" r="3"/></svg><span data-i="settingsTitle"></span></h2><button class="px" onclick="toggleSP()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg></button></div><div class="panel-body"><div class="ps"><div class="ps-t" data-i="quickPreset"></div><div class="chips" id="presetChips"></div></div><div class="ps"><div class="ps-t" data-i="aiProvider"></div><div class="prow one"><div class="fg"><label data-i="provLabel"></label><div class="btns prov-actions prov-actions-in" id="provActions"><button class="btn btn-s btn-sm" type="button" id="provAddBtn" onclick="newProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg><span data-i="provNew"></span></button><button class="btn btn-s btn-sm" type="button" id="provDelBtn" onclick="deleteProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h10M6.5 5V3.5h3V5M5 5l.6 8h4.8L11 5"/></svg><span data-i="provDel"></span></button><button class="btn btn-s btn-sm" type="button" id="provEditBtn" onclick="editProvider()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11.6 2.4l2 2-7.4 7.4-2.6.6.6-2.6 7.4-7.4z"/></svg><span data-i="provEdit"></span></button></div><div class="cs cs-nosync" id="provCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd" id="provDD"></div><input type="hidden" id="provider" value=""></div></div></div><div class="prov-cur" id="provCur"></div><div class="prov-edit" id="provEditBox"><div class="pe-h"><span data-i="provDetails"></span></div><div class="prow one"><div class="fg"><label data-i="provName"></label><input id="provName" placeholder="OpenAI"></div></div><div class="prow one"><div class="fg"><label data-i="apiFormat"></label><div class="cs" id="apiFormatCS"><button class="cs-btn" onclick="csToggle(this)" type="button"><span class="cs-txt" data-i="fmtOpenAI"></span><svg class="cs-arr" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button><div class="cs-dd"><div class="cs-opt sel" data-val="openai" data-i="fmtOpenAI" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="anthropic" data-i="fmtAnthropic" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div><div class="cs-opt" data-val="gemini" data-i="fmtGemini" onclick="csPick(this)"><span></span><span class="cs-chk">✓</span></div></div><input type="hidden" id="apiFormat" value="openai"></div></div></div><div class="prow one"><div class="fg"><label>URL</label><input class="mono" id="apiUrl" placeholder="https://api.openai.com/v1/chat/completions"></div></div><div class="prow one"><div class="fg"><label>API Key</label><div style="display:flex;align-items:center;gap:6px;"><input class="mono" id="apiKey" type="password" placeholder="sk-..." style="flex:1;"><button type="button" onclick="toggleApiKeyVisibility()" data-i-title="apiKeyEye" style="flex-shrink:0;background:none;border:0.5px solid var(--bd);border-radius:var(--r3);padding:6px 8px;cursor:pointer;color:var(--tx2);display:flex;align-items:center;justify-content:center;"><svg id="apiKeyEyeIcon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M1 10s4-7 9-7 9 7 9 7-4 7-9 7-9-7-9-7z"/><circle cx="10" cy="10" r="3"/></svg></button></div></div></div><div class="prow one"><div class="fg"><label data-i="modelName"></label><div class="model-row"><div class="cs cs-model" id="modelCS"><input id="modelName" placeholder="gpt-4o" class="model-inp" autocomplete="off" oninput="onModelNameInput()"><button class="cs-btn model-toggle" id="modelToggleBtn" type="button" onclick="toggleModelPicker(this)" data-i-title="modelListBtnTitle" aria-label="Show the loaded model list" hidden><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></svg></button><div class="cs-dd model-dd" id="modelDD"></div></div><button class="cs-btn model-load" id="loadModelsBtn" onclick="loadModelList()" type="button" style="color:#fff;background:var(--ac);border-color:var(--ac)"><span class="model-ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7M5 6.5L8 9.5l3-3M2.8 11.5v1.2a.8.8 0 00.8.8h8.8a.8.8 0 00.8-.8v-1.2"/></svg></span><span class="cs-txt" id="loadModelsTxt" data-i="loadModels"></span></button></div></div><div class="prow one"><div class="fg"><label data-i="temperature"></label><input type="number" id="temperature" value="0.7" min="0" max="2" step="0.1"></div></div><div class="btns"><button class="btn btn-p btn-sm" type="button" onclick="saveProviderEdit()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.6l3.1 3.1L12.8 5"/></svg><span data-i="provSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="cancelProviderEdit()"><span data-i="provCancel"></span></button></div></div></div><div class="ps"><div class="custom-prompt"><label data-i="customPrompt"></label><textarea id="sysPrompt" placeholder=""></textarea></div></div><div class="ps"><div class="btns" style="margin-top:0;"><button class="btn btn-p btn-sm" onclick="saveCfg()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l3.5 3.5L13 4"/></svg><span data-i="save"></span></button><button class="btn btn-s btn-sm" id="testBtn" onclick="testConn()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 1L4 9h4l-.5 6L12 7H7.5z"/></svg><span data-i="testConn"></span></button></div><div id="testR" style="margin-top:10px;font-size:12px;line-height:1.7;display:none;"></div></div><div class="ps" style="border-top:0.5px solid var(--bd);padding-top:12px;margin-top:4px;"><div class="btns" style="margin-top:0;justify-content:center;"><div class="ps"><div class="ps-t" data-i="letterPrefTitle"></div><div class="pref-row"><span class="pref-text" data-i="letterPrefHint"></span><label class="pref-switch"><input type="checkbox" id="letterPrefEnabled" onchange="saveLetterPrefMode()"><span data-i="letterPrefEnabled"></span></label></div><div class="pref-actions"><button class="btn btn-p btn-sm" type="button" onclick="saveCurrentLetterPrefs()"><span data-i="letterPrefSave"></span></button><button class="btn btn-s btn-sm" type="button" onclick="restoreDefaultLetterPrefs()"><span data-i="letterPrefReset"></span></button></div></div><button class="btn btn-s btn-sm" onclick="openGuide()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><circle cx="8" cy="8" r="6.5"/><path d="M6.5 6.5a1.5 1.5 0 113 0c0 .5-.5.8-1 1.2V9.5"/><circle cx="8" cy="11.5" r=".5" fill="currentColor"/></svg><span data-i="guideReopen"></span></button><button class="btn btn-s btn-sm" id="updBtn" onclick="checkForUpdate()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 8A5.5 5.5 0 112.5 8"/><path d="M13.5 3v5h-5"/></svg><span id="updTxt" data-i="checkUpdate"></span></button></div></div></div></div></div></div>
 
 <!-- Detail Modal -->
 <div class="mo" id="dMo" onclick="if(event.target===this)closeMo()"><div class="mo-c"><h3 data-i="detailTitle"></h3><div class="dt" id="dCont"></div><div class="btns"><button class="btn btn-s btn-sm" onclick="closeMo()"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2 2l8 8M10 2l-8 8"/></svg><span data-i="close"></span></button><button class="btn btn-g btn-sm" onclick="cpDetail()"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5" y="5" width="8" height="9" rx="1.5"/><path d="M3 11V2.5A1.5 1.5 0 014.5 1H9" stroke-linecap="round"/></svg><span data-i="copyResult"></span></button></div></div></div>
@@ -1265,6 +1277,8 @@ function detectLang(){var l=(navigator.language||navigator.userLanguage||'').toL
 
 /* ===== Custom Select ===== */
 function csToggle(btn){
+  var lck=btn.closest?btn.closest('.cs'):null;
+  if(lck&&lck.classList.contains('locked'))return;   /* 鎖定中不得開啟 */
   /* Close the others first: an open menu is parked in <body> (see csPlaceMenu),
      so the button's real sibling only comes back once csCloseAll() has run. */
   var wasOpen=btn.classList.contains('open');
@@ -1508,7 +1522,9 @@ function csLabel(opt){
 }
 function csPick(opt){
   var openDD=opt.closest('.cs-dd');   /* an open menu is parked in <body> */
-  var cs=opt.closest('.cs')||(openDD&&openDD.__cs),h=cs.querySelector('input[type="hidden"]'),btn=cs.querySelector('.cs-btn');
+  var cs=opt.closest('.cs')||(openDD&&openDD.__cs);
+  if(cs&&cs.classList.contains('locked'))return;     /* 鎖定中不得選取 */
+  var h=cs.querySelector('input[type="hidden"]'),btn=cs.querySelector('.cs-btn');
   cs.querySelectorAll('.cs-opt').forEach(function(o){o.classList.remove('sel');});
   opt.classList.add('sel');h.value=opt.dataset.val;
   btn.querySelector('.cs-txt').textContent=csLabel(opt);
@@ -1589,6 +1605,10 @@ function applyI18n(){
   step(renderPresetChips);
   step(renderH);
   step(refreshModelDD);
+  step(function(){if(typeof markModelBtn==='function')markModelBtn();});
+  step(function(){
+    var e=$('provCS');if(e)e.querySelector('.cs-btn').setAttribute('aria-disabled',e.classList.contains('locked')?'true':'false');
+  });
   step(function(){if(typeof applyGuideHTML==='function')applyGuideHTML();});
 }
 
@@ -1659,6 +1679,7 @@ function refreshProviderDD(){
   var h=$('provider');if(h)h.value=activeProvId;
 }
 function onProviderPick(id){
+  if(provEditOpen())return;               /* 編輯中不得切換供應商 */
   if(!id||id===activeProvId)return;
   persistActiveProvider();
   activeProvId=id;
@@ -1695,6 +1716,17 @@ function setProvEdit(on){
   var btn=$('provEditBtn');if(btn)btn.classList.toggle('on',!!on);
   if(on)b.classList.add('open');else b.classList.remove('open');
   setProvActionsLocked(!!on);
+  setProvSelectLocked(!!on);
+  if(on)clearNotes(b);
+}
+/* 編輯期間鎖住供應商下拉：改到一半切換供應商會把編輯內容帶去別家，
+   因此儲存或取消前都不允許開啟、也不允許選取。 */
+function setProvSelectLocked(locked){
+  var cs=$('provCS');if(!cs)return;
+  var btn=cs.querySelector('.cs-btn');
+  if(btn){btn.disabled=!!locked;btn.setAttribute('aria-disabled',locked?'true':'false');}
+  cs.classList.toggle('locked',!!locked);
+  if(locked){try{csCloseAll();}catch(e){}}
 }
 /* 編輯期間鎖定「新增 / 刪除 / 修改」，直到儲存或取消 */
 function setProvActionsLocked(locked){
@@ -1769,9 +1801,10 @@ function markModelBtn(){
   var p=activeProv()||{};
   var has=Array.isArray(p.models)&&p.models.length>0;
   b.classList.toggle('has-list',has);
-  /* 按鈕只放圖示，文字改由 title / aria-label 呈現，避免壓縮模型名稱輸入框 */
+  /* 按鈕圖示與文字並列，文字隨狀態切換（載入／重新載入） */
   var loadText=t(has?'reloadModels':'loadModels');
   b.title=loadText;b.setAttribute('aria-label',loadText);
+  var lt=$('loadModelsTxt');if(lt)lt.textContent=loadText;
   if(toggle){
     var isOpen=!!(dd&&dd.classList.contains('open'));
     toggle.hidden=!has;toggle.classList.toggle('open',isOpen);
@@ -1796,11 +1829,12 @@ function pickModel(opt){
 async function fetchModelList(){
   var p=activeProv();if(!p)return null;
   persistActiveProvider();
-  if(!String(p.url||'').trim()){showTR(t('needUrl'),'err');return null;}
-  if(!String(p.key||'').trim()){showTR(t('needKey'),'err');return null;}
+  clearNotes($('provEditBox'));
+  if(!String(p.url||'').trim()){inlineNote($('apiUrl'),t('needUrl'),'err');return null;}
+  if(!String(p.key||'').trim()){inlineNote($('apiKey'),t('needKey'),'err');return null;}
   var url=modelsUrlFor(p.url,p.format),btn=$('loadModelsBtn');
   if(btn){btn.disabled=true;btn.title=t('loadingModels');btn.setAttribute('aria-label',t('loadingModels'));}
-  showTR(t('loadingModels'),'info');
+  inlineNote(btn,t('loadingModels'),'info');
   try{
     var res;
     if(p.format==='anthropic')res=await fetch(url,{headers:{'x-api-key':p.key,'anthropic-version':'2023-06-01'}});
@@ -1808,12 +1842,12 @@ async function fetchModelList(){
     else res=await fetch(url,{headers:{'Authorization':'Bearer '+p.key}});
     if(!res.ok){var b=await res.text();throw new Error(res.status+': '+String(b).substring(0,160));}
     var list=parseModelList(await res.json(),p.format);
-    if(!list.length){showTR(t('noModels'),'err');return null;}
+    if(!list.length){inlineNote(btn,t('noModels'),'err');return null;}
     if(p.id!==activeProvId)return null;                 /* 載入期間已切換供應商：丟棄結果 */
     p.models=list;modelListProvId=p.id;saveProviders();refreshModelDD();
-    showTR(t('modelsLoaded').replace('{n}',list.length),'ok');
+    inlineNote(btn,t('modelsLoaded').replace('{n}',list.length),'ok');
     return list;
-  }catch(e){showTR(t('modelsFail')+' ('+e.message+')','err');return null;}
+  }catch(e){inlineNote(btn,t('modelsFail')+' ('+e.message+')','err');return null;}
   finally{if(btn){btn.disabled=false;markModelBtn();}}
 }
 /* 已有清單：展開 / 收合清單（不重新載入）。尚未載入：取得清單後直接展開。
@@ -2000,6 +2034,27 @@ async function testConn(){
 }
 function showTR(m,tp){var el=$('testR');el.innerHTML='';var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px';var msg=document.createElement('span');msg.style.flex='1';msg.textContent=m;var close=document.createElement('button');close.type='button';close.className='px';close.setAttribute('aria-label',t('close'));close.textContent='×';close.onclick=function(){el.style.display='none';};row.appendChild(msg);row.appendChild(close);el.appendChild(row);el.style.display='block';el.style.background=tp==='ok'?'rgba(48,209,88,.08)':tp==='info'?'var(--acg)':'rgba(255,69,58,.08)';el.style.color=tp==='ok'?'var(--ok)':tp==='info'?'var(--ac)':'var(--er)';el.style.border='0.5px solid '+(tp==='ok'?'rgba(48,209,88,.12)':tp==='info'?'rgba(var(--ac-rg),.12)':'rgba(255,69,58,.12)');el.style.borderRadius='var(--r3)';el.style.padding='8px 10px';}
 
+/* ===== 就地提示 ===== */
+/* 提示跟著「操作的那個物件」走：訊息插在該欄位（.fg）內容的下方，
+   不再集中寫到面板最底部的 #testR。錨點若不在任何 .fg 內才退回 showTR。 */
+function inlineNote(anchor,msg,tp){
+  var host=anchor&&anchor.closest?anchor.closest('.fg'):null;
+  if(!host){showTR(msg,tp);return;}
+  var box=null,kids=host.children;
+  for(var i=0;i<kids.length;i++){
+    if(kids[i].classList&&kids[i].classList.contains('fg-msg')){box=kids[i];break;}
+  }
+  if(!box){box=document.createElement('div');host.appendChild(box);}
+  box.className='fg-msg '+(tp==='ok'?'ok':tp==='info'?'info':'err');
+  box.textContent=msg;box.hidden=false;
+}
+function clearNotes(scope){
+  var root=scope||document;
+  if(!root.querySelectorAll)return;
+  var list=root.querySelectorAll('.fg-msg');
+  for(var i=0;i<list.length;i++){list[i].hidden=true;list[i].textContent='';}
+}
+
 /* ===== Diff ===== */
 function diffHTML(a,b){var al=a.split('\n'),bl=b.split('\n'),h='',mx=Math.max(al.length,bl.length);for(var i=0;i<mx;i++){var o=al[i]||'',n=bl[i]||'';if(o===n)h+='<div style="padding:1px 6px;color:var(--tx3)">'+esc(o)+'</div>';else{if(o)h+='<div class="df-o">- '+esc(o)+'</div>';if(n)h+='<div class="df-n">+ '+esc(n)+'</div>';}}return h||'<span style="color:var(--tx3)">'+esc(t('emptyDiff'))+'</span>';}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -2059,7 +2114,7 @@ function toast(m){var el=$('toast');el.textContent=m;el.classList.add('show');if
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){if($('guideOv').classList.contains('open')){closeGuide();return;}closeMo();csCloseAll();if($('sOv').classList.contains('open'))toggleSP();if($('hOv').classList.contains('open'))toggleHP();}if(e.key==='Enter'&&(e.ctrlKey||e.metaKey)){var a=document.activeElement;if(a&&a.id==='letterIn'){e.preventDefault();go();}}});
 
 /* ===== Online Update ===== */
-var APP_VERSION='2026.11.20.2';
+var APP_VERSION='2026.11.20.3';
 var UPDATE_URL='https://raw.githubusercontent.com/2mf-hermes/BusinessLetterPolisher/main/version.json';
 var availableUpdate=null;
 function isNewerVersion(version){

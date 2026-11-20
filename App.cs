@@ -490,6 +490,98 @@ class App : Form
     {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new App());
+
+        // The constructor normally sets this, but the single instance check
+        // below runs before any window exists, so set it here as well.
+        try { logPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "crash.log"); }
+        catch { }
+
+        // Single instance: a second launch must not open a second window.
+        // Wait until the main window of an already running copy is shown
+        // instead of retrying on a timer: the updater starts the new build
+        // right after the old process is gone, and the copy that lands first
+        // would otherwise create the lock and let the other one give up.
+        System.Threading.Mutex mutex = AcquireSingleInstanceLock();
+        if (mutex == null) return;
+
+        try
+        {
+            Application.Run(new App());
+        }
+        finally
+        {
+            // Process termination releases the lock anyway (the updater relaunch
+            // path calls Application.Exit), this only keeps the normal path tidy.
+            try { mutex.ReleaseMutex(); } catch { }
+            try { mutex.Dispose(); } catch { }
+        }
+    }
+
+    static string singleInstanceName = @"Local\BusinessLetterPolisher.SingleInstance";
+
+    static System.Threading.Mutex AcquireSingleInstanceLock()
+    {
+        bool createdNew = false;
+        System.Threading.Mutex m = null;
+        try { m = new System.Threading.Mutex(true, singleInstanceName, out createdNew); }
+        catch (UnauthorizedAccessException) { m = null; createdNew = true; }
+        catch { m = null; createdNew = true; }
+
+        if (m == null || createdNew) return m == null ? null : m;
+
+        // Not the first instance: hand the user over to the window that exists.
+        WaitAndActivateExistingInstance();
+        try { m.Dispose(); } catch { }
+        return null;
+    }
+
+    static void WaitAndActivateExistingInstance()
+    {
+        Log("Second instance detected; activating the running window");
+        for (int i = 0; i < 40; i++)
+        {
+            if (ActivateExistingInstance()) return;
+            System.Threading.Thread.Sleep(250);
+        }
+        try
+        {
+            MessageBox.Show("\u7a0b\u5f0f\u5df2\u5728\u57f7\u884c\u4e2d\u3002",
+                "\u63d0\u793a", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+        catch { }
+    }
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    static extern bool SetForegroundWindow(IntPtr hWnd);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    static extern bool IsIconic(IntPtr hWnd);
+
+    static bool ActivateExistingInstance()
+    {
+        bool found = false;
+        try
+        {
+            Process current = Process.GetCurrentProcess();
+            foreach (Process p in Process.GetProcessesByName(current.ProcessName))
+            {
+                try
+                {
+                    if (p.Id == current.Id) continue;
+                    IntPtr h = p.MainWindowHandle;
+                    if (h == IntPtr.Zero) continue;
+                    if (IsIconic(h)) ShowWindow(h, 9);   // SW_RESTORE
+                    SetForegroundWindow(h);
+                    found = true;
+                }
+                catch { }
+                finally { try { p.Dispose(); } catch { } }
+            }
+        }
+        catch { }
+        return found;
     }
 }
